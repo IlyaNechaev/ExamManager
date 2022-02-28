@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\css\tasks\" />
+    <Folder Include="wwwroot\css\admin\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
