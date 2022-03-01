@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExamManager.Models;
 
@@ -11,6 +12,8 @@ public class User : IUserValidationModel
     public string Login { get; set; }
     [Required(ErrorMessage = "Введите пароль")]
     public string PasswordHash { get; set; }
+    [NotMapped]
+    public string? Password { get; set; } = null;
 
     public string FirstName { get; set; }
     public string MiddleName { get; set; }

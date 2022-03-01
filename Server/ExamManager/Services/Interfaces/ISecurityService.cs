@@ -7,5 +7,6 @@
 
         // Соответствие пароля хэш-сумме
         public bool ValidatePassword(string password, string hash);
+        public string GeneratePassword(int passwordLength);
     }
 }

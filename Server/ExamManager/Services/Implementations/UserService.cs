@@ -1,4 +1,5 @@
-﻿using ExamManager.Extensions;
+﻿using AutoMapper;
+using ExamManager.Extensions;
 using ExamManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,12 +12,42 @@ public class UserService : IUserService
 {
     DbContext _dbContext { get; init; }
     ISecurityService _securityService { get; init; }
+    IMapper _mapper { get; set; }
 
     public UserService(DbContext dbContext,
-        [FromServices] ISecurityService securityService)
+        ISecurityService securityService,
+        IMapper mapper)
     {
         _dbContext = dbContext;
         _securityService = securityService;
+        _mapper = mapper;
+    }
+
+
+    public async Task<User> AddUser(RegisterEditModel model)
+    {
+        var UserSet = _dbContext.Set<User>();
+        var random = new Random();
+
+        if (model.Login is null)
+        {
+            do
+            {
+                model.Login = $"{model.FirstName}{random.Next(100, 999)}";
+            }
+            while (!await UserSet.AnyAsync(u => u.Login == model.Login));
+        }
+
+        if (model.Password is null)
+        {
+            model.Password = _securityService.GeneratePassword(10);
+        }
+
+        var user = _mapper.Map<RegisterEditModel, User>(model);
+
+        await UserSet.AddAsync(user);
+
+        return user;
     }
 
     public async Task<ClaimsPrincipal?> CreateUserPrincipal(User user)

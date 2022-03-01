@@ -56,5 +56,32 @@ namespace ExamManager.Controllers
 
             return Ok(createdGroup);
         }
+    
+        [HttpPost("group/add-students")]
+        public async Task<IActionResult> CreateGroupStudents([FromBody] CreateGroupStudentsRequest request)
+        {
+            var studentAccounts = new List<UserViewModel>(request.Students.Count);
+            if (request.Students is not null)
+            {
+                foreach (var student in request.Students)
+                {
+                    var user = await _userService.AddUser(student);
+                    var addStudentTask = _groupService.AddStudent(request.GroupId, user.ObjectID);
+                    studentAccounts.Add(_mapper.Map<User, UserViewModel>(user));
+
+                    await addStudentTask;
+                }
+            }
+            else if (request.File is not null)
+            {
+                Ok("Данная функция не доступна в текущей версии");
+            }
+            else
+            {
+                Ok("Не удалось добавить студентов");
+            }
+
+            return Ok("Студенты добавлены");
+        }
     }
 }
