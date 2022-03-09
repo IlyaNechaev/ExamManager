@@ -6,7 +6,7 @@
     --normal-font-size: 18px; 
 }
 
-body > .nav{
+.account > .nav{
     display: flex;
     position: sticky;
     flex-direction: column;

@@ -7,18 +7,7 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <NavBar userName="Нечаев Илья" items={
-      [
-        {
-          title: "Главная",
-          href: "/home"
-        },
-        {
-          title: "Настройки",
-          href: "/settings"
-        }
-      ]
-    } />
+    <App></App>
   </React.StrictMode>,
   document.querySelector('.main')
 );
