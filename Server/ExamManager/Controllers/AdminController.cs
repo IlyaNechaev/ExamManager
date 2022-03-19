@@ -10,9 +10,10 @@ namespace ExamManager.Controllers
 {
 
     [Route("admin")]
+    [ApiController]
     [Authorize]
-    [NotDefaultUser("Home", nameof(HomeController.ChangeUserData), "pageId", 1)]
-    public class AdminController : Controller
+    //[NotDefaultUser("Home", nameof(HomeController.ChangeUserData), "pageId", 1)]
+    public class AdminController : ControllerBase
     {
         IUserService _userService { get; set; }
         IMapper _mapper { get; set; }
@@ -24,16 +25,6 @@ namespace ExamManager.Controllers
             _userService = userService;
             _mapper = mapper;
             _groupService = groupService;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            var userId = Guid.Parse(User.GetClaim(ClaimKey.Id));
-            var user = await _userService.GetUser(userId);
-            var userView = _mapper.Map<User, UserViewModel>(user);
-            
-            return View(userView);
         }
 
         [HttpPost("group/create")]

@@ -2,14 +2,23 @@ using AutoMapper;
 using ExamManager.DAO;
 using ExamManager.Mapping;
 using ExamManager.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var configManager = builder.Configuration;
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressConsumesConstraintForFormFileParameters = true;
+        options.SuppressInferBindingSourcesForParameters = true;
+        options.SuppressModelStateInvalidFilter = true;
+        options.SuppressMapClientErrors = true;
+        options.ClientErrorMapping[StatusCodes.Status404NotFound].Link =
+            "https://httpstatuses.com/404";
+    });
 
 var connectionString = configManager.GetConnectionString("DefaultConnection");
 
@@ -23,35 +32,40 @@ builder.Services.AddDbContext<DbContext, ApplicationDBContext>(
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IGroupService, GroupService>();
 builder.Services.AddTransient<ISecurityService, SecurityService>();
+builder.Services.AddTransient<IJwtUtils, JwtUtils>();
+builder.Services.AddTransient<SignInManager>((serviceProvider) => new SignInManager(serviceProvider));
 
-builder.Services.AddClaimsAuthentication();
+//builder.Services.AddClaimsAuthentication();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddHttpClient();
 
 builder.Services.AddSingleton(provider => new MapperConfiguration(cfg =>
 {
     cfg.AddProfile(new MappingProfile(provider.GetService<ISecurityService>()!));
 })
-            .CreateMapper());
+.CreateMapper());
+
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
 
 app.UseAuthentication();
+app.UseRouting();
 app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();
