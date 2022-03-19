@@ -28,6 +28,14 @@ public class GroupService : IGroupService
 
         return group;
     }
+    public async Task<List<Group>> GetGroups(string groupName)
+    {
+        var GroupSet = _dbContext.Set<Group>();
+
+        var groups = GroupSet.AsNoTracking().Where(g => g.Name.Contains(groupName));
+
+        return await groups.ToListAsync();
+    }
 
     public async Task AddStudent(Guid groupId, Guid studentId)
     {
@@ -132,7 +140,8 @@ public class GroupService : IGroupService
         };
 
         await GroupSet.AddAsync(group);
+        await _dbContext.SaveChangesAsync();
         return group;
     }
-       
+
 }

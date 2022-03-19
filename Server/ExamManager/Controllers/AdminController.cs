@@ -56,5 +56,59 @@ namespace ExamManager.Controllers
 
             return Ok(createdGroup);
         }
+
+        [HttpGet("/create-group")]
+        public async Task<IActionResult> CreateGroup(string name)
+        {
+            var createdGroup = new Group();
+            try
+            {
+                createdGroup = await _groupService.CreateGroup(name);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { Message = ex.Message });
+            }
+
+            if (createdGroup is null)
+            {
+                return Ok(new { Message = "Не удалось создать группу"  });
+            }
+
+            return Ok(createdGroup);
+        }
+
+        [HttpGet("/get-groups")]
+        public async Task<IActionResult> GetGroups(string name)
+        {
+            var temp = (await _groupService.GetGroups(name)).ToList();
+            var groups = (await _groupService.GetGroups(name))
+                .Select(g => new { g.ObjectID, g.Name });
+            return Ok(groups);
+        }
+
+        [HttpGet("/get-group")]
+        public async Task<IActionResult> GetGroups(string? name, string? id)
+        {
+            Group group = null;
+            if (id is not null)
+            {
+                try
+                {
+                    group = await _groupService.GetGroup(Guid.Parse(id));
+                }
+                catch { }
+            }
+            else if (name is not null && group is null)
+            {
+                try
+                {
+                    group = await _groupService.GetGroup(name);
+                }
+                catch { }
+            }
+
+            return Ok(group);
+        }
     }
 }
