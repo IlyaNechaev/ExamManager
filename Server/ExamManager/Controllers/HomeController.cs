@@ -144,8 +144,8 @@ namespace ExamManager.Controllers
             {
                 null => throw new ArgumentNullException(),
                 { IsDefault: true } => RedirectToAction(nameof(ChangeUserData), new { pageId = 1 }),
-                { Role: UserRole.ADMIN } => RedirectToAction(nameof(AdminController.Index), "Admin"),
-                { Role: UserRole.STUDENT } => RedirectToAction(nameof(AdminController.Index), "Student"),
+                { Role: UserRole.ADMIN } => RedirectToAction(nameof(AdminController.Groups), "Admin"),
+                { Role: UserRole.STUDENT } => RedirectToAction(nameof(AdminController.Groups), "Student"),
                 _ => throw new InvalidOperationException()
             };
 

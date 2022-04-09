@@ -26,8 +26,8 @@ namespace ExamManager.Controllers
             _groupService = groupService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
+        [HttpGet("groups")]
+        public async Task<IActionResult> Groups()
         {
             var userId = Guid.Parse(User.GetClaim(ClaimKey.Id));
             var user = await _userService.GetUser(userId);

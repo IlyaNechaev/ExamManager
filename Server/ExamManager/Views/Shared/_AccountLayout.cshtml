@@ -8,8 +8,8 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="~/css/tasks/admin.css" />
-    <link rel="stylesheet" href="~/css/tasks/navbar.css" />
+    <link rel="stylesheet" href="~/css/account/admin.css" />
+    <link rel="stylesheet" href="~/css/account/navbar.css" />
     <link rel="stylesheet" href="~/css/account/search/groups.css" />
     <link rel="stylesheet" href="~/css/fontawesome/css/all.css" />
     <title>Document</title>
@@ -22,7 +22,7 @@
         @if ((bool)ViewData["IsAdmin"])
         {
             <a href="#" class="nav-item">Главная</a>
-            <a href="#" class="nav-item">Группы</a>
+            <a href="/admin/groups" class="@(Context.Request.Path.Value.Equals("/admin/groups") ? "nav-item hl" : "nav-item" )">Группы</a>
             <a href="#" class="nav-item">Студенты</a>
         }
         else

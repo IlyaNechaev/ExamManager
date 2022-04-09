@@ -37,6 +37,7 @@ body > .nav{
     color: black;
 }
 
+
 /*Navigation items*/
 
 .nav > *{    
@@ -55,6 +56,11 @@ body > .nav{
 }
 
 .nav > .nav-item:hover{
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, .4);
+}
+
+.nav-item.hl {
     cursor: pointer;
     background-color: rgba(0, 0, 0, .4);
 }

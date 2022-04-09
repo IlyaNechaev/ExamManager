@@ -17,11 +17,13 @@ searchInput.addEventListener("input", updateGroups);
 
 function updateGroups(e) {
     const groupName = e.target.value;
+    console.log(groupName);
     const xmlhttp = new XMLHttpRequest();
     xmlhttp.onload = function () {
+        console.log("Response: " + this.responseText);
         fillGroups(JSON.parse(this.responseText));
     };
-    xmlhttp.open("GET", "get-groups?name=" + groupName);
+    xmlhttp.open("GET", "/get-groups?name=" + groupName);
     xmlhttp.send();
 }
 
