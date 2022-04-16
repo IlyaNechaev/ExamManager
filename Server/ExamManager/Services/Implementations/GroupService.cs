@@ -11,7 +11,7 @@ public class GroupService : IGroupService
         _dbContext = context;
     }
 
-    public async Task<Group?> GetGroup(string groupName)
+    public async Task<Group> GetGroup(string groupName)
     {
         var GroupSet = _dbContext.Set<Group>();
 
@@ -20,7 +20,7 @@ public class GroupService : IGroupService
         return group;
     }
 
-    public async Task<Group?> GetGroup(Guid groupId)
+    public async Task<Group> GetGroup(Guid groupId)
     {
         var GroupSet = _dbContext.Set<Group>();
 
@@ -116,7 +116,7 @@ public class GroupService : IGroupService
         throw new NotImplementedException();
     }
 
-    public async Task<Group?> CreateGroup(string name)
+    public async Task<Group> CreateGroup(string name)
     {
         var GroupSet = _dbContext.Set<Group>();
 

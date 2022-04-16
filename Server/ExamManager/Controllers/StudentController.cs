@@ -22,13 +22,6 @@ namespace ExamManager.Controllers
             _userService = userService;
             _mapper = mapper;
         }
-        //public async Task<IActionResult> Index()
-        //{
-        //    var userId = Guid.Parse(User.GetClaim(ClaimKey.Id));
-        //    var user = await _userService.GetUser(userId);
-        //    var userView = _mapper.Map<User, UserViewModel>(user);
-
-        //    return View(userView);
-        //}
+    
     }
 }

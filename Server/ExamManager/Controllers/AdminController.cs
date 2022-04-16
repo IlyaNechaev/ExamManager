@@ -5,6 +5,7 @@ using ExamManager.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using ExamManager.Filters;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ExamManager.Controllers
 {
@@ -37,15 +38,10 @@ namespace ExamManager.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(ex.Message);
+                return Ok(ResponseFactory.CreateResponse(ex));
             }
 
-            if (createdGroup is null)
-            {
-                return Ok("Не удалось создать группу");
-            }
-
-            return Ok(createdGroup);
+            return Ok(ResponseFactory.CreateResponse(createdGroup));
         }
     }
 }

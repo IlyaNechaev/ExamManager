@@ -1,4 +1,5 @@
-﻿using ExamManager.Models.Response;
+﻿using ExamManager.Models;
+using ExamManager.Models.Response;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Net;
 
@@ -44,6 +45,52 @@ public static class ResponseFactory
         {
             status = HttpStatusCode.OK,
             token = jwtToken
+        };
+    }
+    public static Response CreateResponse(Exception ex)
+    {
+        return new ExceptionResponse
+        {
+            exceptionType = ex.GetType().Name,
+            status = HttpStatusCode.BadRequest,
+            message = ex.Message,
+            stackTrace = ex.StackTrace
+        };
+    }
+
+    public static Response CreateResponse(UserViewModel user)
+    {
+        if (user is null)
+        {
+            return new UserDataResponse
+            {
+                status = HttpStatusCode.BadRequest,
+                data = null
+            };
+        }
+
+        return new UserDataResponse
+        {
+            status = HttpStatusCode.OK,
+            data = user
+        };
+    }
+
+    public static Response CreateResponse(Group group)
+    {
+        if (group is null)
+        {
+            return new GroupDataResponse
+            {
+                status = HttpStatusCode.BadRequest,
+                data = null
+            };
+        }
+
+        return new GroupDataResponse
+        {
+            status = HttpStatusCode.OK,
+            data = group
         };
     }
 

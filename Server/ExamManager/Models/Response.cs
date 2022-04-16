@@ -16,3 +16,20 @@ public class JWTResponse : Response
 {
     public string token { get; set; }
 }
+
+public class ExceptionResponse : Response
+{
+    public string exceptionType { get; set; }
+    public string message { get; set; }
+    public string stackTrace { get; set; }
+}
+
+public class UserDataResponse : Response
+{
+    public UserViewModel data { get; set; }
+}
+
+public class GroupDataResponse : Response
+{
+    public Group data { get; set; }
+}
