@@ -5,6 +5,7 @@ namespace ExamManager.Models.Response;
 public class Response
 {
     public HttpStatusCode status { get; set; }
+    public string type { get => GetType().Name; }
 }
 
 public class BadResponse : Response
