@@ -19,5 +19,5 @@ public record RegisterEditModel
     [Required(ErrorMessage = "Введите имя")]
     public string FirstName { get; set; }
     [Required(ErrorMessage = "Введите фамилию")]
-    public string MiddleName { get; set; }
+    public string LastName { get; set; }
 }
