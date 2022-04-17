@@ -1,7 +1,8 @@
-﻿using ATMApplication.Extensions;
+﻿using ExamManager.Extensions;
+using ExamManager.Services;
 using Microsoft.AspNetCore.Http;
 
-namespace ATMApplication.Initial
+namespace ExamManager.Middleware
 {
     public class JwtMiddleware
     {
@@ -24,7 +25,7 @@ namespace ATMApplication.Initial
                 try
                 {
                     var userId = Guid.Parse(principal.GetClaim(ClaimKey.Id));
-                    context.Items["User"] = await userService.GetUserById(userId);
+                    context.Items["User"] = await userService.GetUser(userId);
                 }
                 catch { }
             }

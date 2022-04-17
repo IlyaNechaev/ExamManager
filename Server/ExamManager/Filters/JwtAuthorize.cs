@@ -1,6 +1,4 @@
-﻿using ATMApplication.Extensions;
-using ATMApplication.Models;
-using ATMApplication.Services;
+﻿using ExamManager.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +7,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ATMApplication.Initial.Filters;
+namespace ExamManager.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class JwtAuthorizeAttribute : Attribute, IAuthorizationFilter

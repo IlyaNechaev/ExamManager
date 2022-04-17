@@ -1,11 +1,9 @@
-﻿using ExamManager.Extensions;
-using ExamManager.Models;
+﻿using ExamManager.Models;
 using AutoMapper;
 using ExamManager.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using ExamManager.Filters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using ExamManager.Models.RequestModels;
 
 namespace ExamManager.Controllers
 {
@@ -13,7 +11,6 @@ namespace ExamManager.Controllers
     [Route("admin")]
     [ApiController]
     [Authorize]
-    //[NotDefaultUser("Home", nameof(HomeController.ChangeUserData), "pageId", 1)]
     public class AdminController : ControllerBase
     {
         IUserService _userService { get; set; }
