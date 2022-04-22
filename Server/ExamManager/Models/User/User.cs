@@ -13,7 +13,7 @@ public class User : IUserValidationModel
     public string PasswordHash { get; set; }
 
     public string FirstName { get; set; }
-    public string MiddleName { get; set; }
+    public string LastName { get; set; }
 
     public UserRole Role { get; set; }
 
@@ -22,12 +22,12 @@ public class User : IUserValidationModel
 
     public string GetFirstName() => FirstName;
     public string GetLogin() => Login;
-    public string GetMiddleName() => MiddleName;
+    public string GetLastName() => LastName;
     public Guid GetObjectID() => ObjectID;
 }
 
 public enum UserRole
 {
-    STUDENT = 0,
-    ADMIN = 1 << 0
+    ADMIN = 0,
+    STUDENT = 1 << 0
 }
