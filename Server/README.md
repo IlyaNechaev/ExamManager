@@ -12,8 +12,8 @@
 | **GET** */group/{id}* | Получить информацию о группе по ее ID | id | GroupDataResponse |
 | **GET** */group/{id}/students* | Получить информацию о студентах, которые состоят в группе ID | id | UsersDataResponse |
 | **POST** */group/create* |  Создать группу студентов  |  CreateGroupRequest  |  GroupDataResponse  |
-| **POST** */group/students/add* | Добавить студентов к группе | AddStudentsRequest | GroupDataResponse |
-| **POST** */group/students/remove* | Удалить студентов из группы | RemoveStudentsRequest | GroupDataResponse |
+| **POST** */group/students/add* | Добавить студентов к группе | AddStudentsRequest | UsersDataResponse |
+| **POST** */group/students/remove* | Удалить студентов из группы | RemoveStudentsRequest | UsersDataResponse |
 | **POST** */students* | Получить список информации о студентах | GetStudentsRequest | UsersDataResponse |
 | **POST** */students/create* | Зарегистрировать студентов | CreateStudentsRequest | UsersDataResponse |
 | **POST** */students/delete* | Удалить студентов | DeleteStudentsRequest | Response |

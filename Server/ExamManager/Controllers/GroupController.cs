@@ -65,9 +65,20 @@ namespace ExamManager.Controllers
         }
 
         [HttpPost(Routes.AddGroupStudent)]
-        public async Task<IActionResult> AddGroupStudents()
+        public async Task<IActionResult> AddGroupStudents([FromBody] AddStudentsRequest request)
         {
+            var result = Parallel.ForEach(request.students, (student, token) =>
+            {
+                _groupService.AddStudent(request.groupId, student.id);
+            });
 
+            if (!result.IsCompleted)
+            {
+                return Ok(ResponseFactory.CreateResponse(new Exception("Не удалось добавить студентов")));
+            }
+            var group = await _groupService.GetGroup(request.groupId, true);
+
+            return Ok(ResponseFactory.CreateResponse(group.Students, group.Name));
         }
     }
 }

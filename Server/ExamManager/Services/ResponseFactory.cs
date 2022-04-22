@@ -58,21 +58,27 @@ public static class ResponseFactory
         };
     }
 
-    public static Response CreateResponse(UserViewModel user)
+    public static Response CreateResponse(User user)
     {
         if (user is null)
         {
             return new UserDataResponse
             {
                 status = HttpStatusCode.BadRequest,
-                data = null
+                id = null,
+                firstName = null,
+                lastName = null,
+                role = null
             };
         }
 
         return new UserDataResponse
         {
             status = HttpStatusCode.OK,
-            data = user
+            id = user.ObjectID,
+            firstName = user.FirstName,
+            lastName = user.LastName,
+            role = user.Role
         };
     }
 
@@ -83,14 +89,18 @@ public static class ResponseFactory
             return new GroupDataResponse
             {
                 status = HttpStatusCode.BadRequest,
-                data = null
+                id = null,
+                name = null,
+                studentsCount = null
             };
         }
 
         return new GroupDataResponse
         {
             status = HttpStatusCode.OK,
-            data = group
+            id = group.ObjectID,
+            name = group.Name,
+            studentsCount = group.Students?.Count()
         };
     }
 
@@ -115,7 +125,7 @@ public static class ResponseFactory
                 firstName = u.FirstName,
                 lastName = u.LastName,
                 groupName = groupName
-            }).ToList()
+            }).ToArray()
         };
     }
 
