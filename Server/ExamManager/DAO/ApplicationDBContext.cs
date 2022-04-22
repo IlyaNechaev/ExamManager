@@ -25,7 +25,7 @@ namespace ExamManager.DAO
                     Login = "admin",
                     PasswordHash = securitySerice.Encrypt("admin"),
                     FirstName = "Имя",
-                    MiddleName = "Фамилия",
+                    LastName = "Фамилия",
                     Role = UserRole.ADMIN
                 });
                 SaveChanges();
