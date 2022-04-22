@@ -2,7 +2,7 @@
 
 |          Метод          |          Описание          |          Запрос          |          Ответ          |
 |--------|--------|--------|--------|
-|  **POST** */login*  |  Проверить зарегистрирован ли пользователь и сгенерировать для него JWT-токен  |  LoginEditModel  |  Response  |
+|  **POST** */login*  |  Проверить зарегистрирован ли пользователь и сгенерировать для него JWT-токен  |  LoginEditModel  |  JwtResponse  |
 |  **GET** */user/{id}*  |  Получить информацию о пользователе по его ID  |  id  |  UserDataResponse  |
 | **GET** */user/{id}/tasks* | Получить информацию о заданиях, которые имеются у пользователя ID | id | TasksDataResponse |
 | **GET** */task/{id}* | Получить информацию о задании по его ID | id | TaskDataResponse |
@@ -250,6 +250,59 @@
 | ------ | ---------- | -------------------------------- |
 | status | string     | Статус результата запроса (HTTP) |
 | type   | string     | Тип ответа                       |
+
+
+
+## JwtResponse
+
+<table>
+    <tr>
+    	<th>Поле</th>
+        <th>Тип данных</th>
+        <th>Описание</th>
+    </tr>
+    <tr>
+    	<td>token</td>
+        <td>string</td>
+        <td>Токен, используемый при совершении запросов<br/>авторизованным пользователем</td>
+    </tr>
+</table>
+
+
+
+## UserDataResponse
+
+<table>
+    <tr>
+    	<th>Поле</th>
+        <th>Тип данных</th>
+        <th>Описание</th>
+    </tr>
+    <tr>
+    	<td>id</td>
+        <td>guid</td>
+        <td>ID пользователя</td>
+    </tr>
+    <tr>
+    	<td>firstName</td>
+        <td>string</td>
+        <td>Имя пользователя</td>
+    </tr>
+    <tr>
+    	<td>lastName</td>
+        <td>string</td>
+        <td>Фамилия пользователя</td>
+    </tr>
+    <tr>
+    	<td>role</td>
+        <td>int</td>
+        <td>
+            Роль пользователя<br/>
+            <b>0</b> - администратор<br/>
+            <b>1</b> - студент
+        </td>
+    </tr>
+</table>
 
 
 
