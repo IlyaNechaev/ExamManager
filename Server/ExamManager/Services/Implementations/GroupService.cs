@@ -11,20 +11,26 @@ public class GroupService : IGroupService
         _dbContext = context;
     }
 
-    public async Task<Group> GetGroup(string groupName)
+    public async Task<Group> GetGroup(string groupName, bool includeStudents = false)
     {
         var GroupSet = _dbContext.Set<Group>();
 
-        var group = await GroupSet.AsNoTracking().FirstOrDefaultAsync(g => g.Name == groupName);
+        var query = GroupSet.AsNoTracking();
+        if (includeStudents)
+            query = query.Include(nameof(Group.Students));
+        var group = await query.FirstOrDefaultAsync(g => g.Name == groupName);
 
         return group;
     }
 
-    public async Task<Group> GetGroup(Guid groupId)
+    public async Task<Group> GetGroup(Guid groupId, bool includeStudents = false)
     {
         var GroupSet = _dbContext.Set<Group>();
 
-        var group = await GroupSet.AsNoTracking().FirstOrDefaultAsync(g => g.ObjectID == groupId);
+        var query = GroupSet.AsNoTracking();
+        if (includeStudents)
+            query = query.Include(nameof(Group.Students));
+        var group = await query.FirstOrDefaultAsync(g => g.ObjectID == groupId);
 
         return group;
     }
@@ -132,6 +138,8 @@ public class GroupService : IGroupService
         };
 
         await GroupSet.AddAsync(group);
+        await _dbContext.SaveChangesAsync();
+
         return group;
     }
        

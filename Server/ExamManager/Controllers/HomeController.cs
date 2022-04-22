@@ -30,8 +30,8 @@ namespace ExamManager.Controllers
             _signInManager = signInManager;
         }
 
-        [HttpPost("/login")]
-        public async Task<IActionResult> Login(LoginEditModel model,
+        [HttpPost(Routes.Login)]
+        public async Task<IActionResult> Login([FromBody] LoginEditModel model,
                                    [FromServices] IUserService userService)
         {
             if (!ModelState.IsValid)

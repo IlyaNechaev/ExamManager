@@ -1,6 +1,7 @@
 using AutoMapper;
 using ExamManager.DAO;
 using ExamManager.Mapping;
+using ExamManager.Middleware;
 using ExamManager.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -59,10 +60,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<JwtMiddleware>();
 
-app.UseAuthentication();
 app.UseRouting();
-app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();

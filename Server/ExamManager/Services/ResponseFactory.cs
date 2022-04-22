@@ -94,6 +94,31 @@ public static class ResponseFactory
         };
     }
 
+    public static Response CreateResponse(IEnumerable<User> users, string groupName = null)
+    {
+        if (users is null)
+        {
+            return new UsersDataResponse
+            {
+                status = HttpStatusCode.BadRequest,
+                users = null
+            };
+        }
+
+        return new UsersDataResponse
+        {
+            status = HttpStatusCode.OK,
+            users = users.Select(u =>
+            new UsersDataResponse.UserView
+            {
+                id = u.ObjectID.ToString(),
+                firstName = u.FirstName,
+                lastName = u.LastName,
+                groupName = groupName
+            }).ToList()
+        };
+    }
+
     private static Dictionary<string, List<string>> CreateDictionary(ModelStateDictionary modelState)
     {
         var errors = new Dictionary<string, List<string>>();

@@ -4,19 +4,21 @@ using ExamManager.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using ExamManager.Models.RequestModels;
+using ATMApplication.Filters;
+using ExamManager.Filters;
 
 namespace ExamManager.Controllers
 {
 
-    [Route("admin")]
+    [Route(Routes.Group)]
     [ApiController]
-    [Authorize]
-    public class AdminController : ControllerBase
+    [JwtAuthorize]
+    public class GroupController : ControllerBase
     {
         IUserService _userService { get; set; }
         IMapper _mapper { get; set; }
         IGroupService _groupService { get; set; }
-        public AdminController(IUserService userService,
+        public GroupController(IUserService userService,
             IMapper mapper,
             IGroupService groupService)
         {
@@ -25,7 +27,18 @@ namespace ExamManager.Controllers
             _groupService = groupService;
         }
 
-        [HttpPost("group/create")]
+        [HttpGet(Routes.GetGroup)]
+        [ValidateGuidFormat("id")]
+        public async Task<IActionResult> GetGroup(string id)
+        {
+            var groupId = Guid.Parse(id);
+
+            var group = await _groupService.GetGroup(groupId);
+
+            return Ok(ResponseFactory.CreateResponse(group));
+        }
+
+        [HttpPost(Routes.CreateGroup)]
         public async Task<IActionResult> CreateGroup([FromBody] CreateGroupRequest request)
         {
             var createdGroup = new Group();
@@ -39,6 +52,22 @@ namespace ExamManager.Controllers
             }
 
             return Ok(ResponseFactory.CreateResponse(createdGroup));
+        }
+
+        [HttpGet(Routes.GetGroupStudents)]
+        [ValidateGuidFormat("id")]
+        public async Task<IActionResult> GetGroupStudents(string id)
+        {
+            var groupId = Guid.Parse(id);
+            var group = await _groupService.GetGroup(groupId, true);
+
+            return Ok(ResponseFactory.CreateResponse(group.Students, group.Name));
+        }
+
+        [HttpPost(Routes.AddGroupStudent)]
+        public async Task<IActionResult> AddGroupStudents()
+        {
+
         }
     }
 }
