@@ -401,7 +401,7 @@
 | id          | guid       | ID задания                         |
 | title       | string     | Название                           |
 | description | string     | Описание                           |
-| status      | int        | Статус                             |
+| taskStatus  | int        | Статус                             |
 | authorId    | guid       | ID автора задания                  |
 | url         | string     | URL для перехода к ресурсу задания |
 
