@@ -17,6 +17,16 @@ public static class ResponseFactory
             status = HttpStatusCode.OK
         };
     }
+
+    public static Response CreateResponse(string message, HttpStatusCode statusCode)
+    {
+        return new Response
+        {
+            message = message,
+            status = statusCode
+        };
+    }
+
     public static Response CreateResponse(ModelStateDictionary modelState)
     {
         Response response = null;

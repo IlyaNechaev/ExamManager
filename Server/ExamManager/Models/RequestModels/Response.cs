@@ -5,6 +5,7 @@ namespace ExamManager.Models.Response;
 public record Response
 {
     public HttpStatusCode status { get; set; }
+    public string? message { get; set; }
     public string type { get => GetType().Name; }
 }
 

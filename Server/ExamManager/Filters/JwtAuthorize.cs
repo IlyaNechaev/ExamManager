@@ -1,4 +1,5 @@
 ﻿using ExamManager.Models;
+using ExamManager.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,10 +24,10 @@ public class JwtAuthorizeAttribute : Attribute, IAuthorizationFilter
 
         #endregion
 
-        var user = (User)context.HttpContext.Items["User"];
+        var user = (User?)context.HttpContext.Items["User"];
 
-        if (user == null)
-            context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
+        if (user is null)
+            context.Result = new JsonResult(ResponseFactory.CreateResponse("Пользователь не авторизован", System.Net.HttpStatusCode.Unauthorized));
 
     }
 }

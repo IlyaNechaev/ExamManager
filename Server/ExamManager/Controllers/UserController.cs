@@ -5,11 +5,12 @@ using ExamManager.Models;
 using ExamManager.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using ATMApplication.Filters;
+using ExamManager.Filters;
 
 namespace ExamManager.Controllers
 {
     [Route(Routes.User)]
-    [Authorize]
+    [JwtAuthorize]
     public class UserController : Controller
     {
         IUserService _userService { get; set; }
