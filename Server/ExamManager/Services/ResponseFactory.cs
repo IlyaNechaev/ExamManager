@@ -104,6 +104,12 @@ public static class ResponseFactory
         };
     }
 
+    /// <summary>
+    /// Создает тело ответа
+    /// </summary>
+    /// <param name="users">Пользователи</param>
+    /// <param name="groupName">Группа, в которой состоят пользователи</param>
+    /// <returns><see cref="UsersDataResponse"/></returns>
     public static Response CreateResponse(IEnumerable<User> users, string groupName = null)
     {
         if (users is null)
@@ -126,6 +132,61 @@ public static class ResponseFactory
                 lastName = u.LastName,
                 groupName = groupName
             }).ToArray()
+        };
+    }
+
+    public static Response CreateResponse(StudentTask task)
+    {
+        if (task is null)
+        {
+            return new TaskDataResponse
+            {
+                status = HttpStatusCode.BadRequest,
+                id = null,
+                title = null,
+                description = null,
+                authorId = null,
+                url = null,
+                taskStatus = StudentTask.TaskStatus.CREATED
+            };
+        }
+
+        return new TaskDataResponse
+        {
+            status = HttpStatusCode.OK,
+            id = task.ObjectID,
+            title = task.Title,
+            description = task.Description,
+            authorId = task.AuthorID,
+            url = task.Url,
+            taskStatus = task.Status
+        };
+    }
+
+    public static Response CreateResponse(IEnumerable<StudentTask> tasks)
+    {
+        if (tasks is null)
+        {
+            return new TasksDataResponse
+            {
+                status = HttpStatusCode.BadRequest,
+                tasks = null
+            };
+        }
+
+        return new TasksDataResponse
+        {
+            status = HttpStatusCode.OK,
+            tasks = tasks.Select(t =>
+                new TasksDataResponse.TaskView
+                {
+                    id = t.ObjectID,
+                    title = t.Title,
+                    description = t.Description,
+                    studentId = t.StudentID,
+                    taskStatus = t.Status
+                }
+            ).ToArray()
         };
     }
 

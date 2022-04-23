@@ -80,5 +80,22 @@ namespace ExamManager.Controllers
 
             return Ok(ResponseFactory.CreateResponse(group.Students, group.Name));
         }
+
+        [HttpPost(Routes.RemoveGroupStudent)]
+        public async Task<IActionResult> RemoveGroupStudents([FromBody] RemoveStudentsRequest request)
+        {
+            var result = Parallel.ForEach(request.students, (student, token) =>
+            {
+                _groupService.RemoveStudent(request.groupId, student.studentId);
+            });
+
+            if (!result.IsCompleted)
+            {
+                return Ok(ResponseFactory.CreateResponse(new Exception("Не удалось удалить студентов")));
+            }
+            var group = await _groupService.GetGroup(request.groupId, true);
+
+            return Ok(ResponseFactory.CreateResponse(group.Students, group.Name));
+        }
     }
 }

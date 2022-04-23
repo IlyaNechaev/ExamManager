@@ -41,19 +41,19 @@ public record TasksDataResponse : Response
         public Guid id { get; set; }
         public string title { get; set; }
         public string description { get; set; }
-        public TaskStatus status { get; set; }
+        public StudentTask.TaskStatus taskStatus { get; set; }
         public Guid studentId { get; set; }
     }
 }
 
 public record TaskDataResponse : Response
 {
-    public Guid id { get; set; }
-    public string title { get; set; }
-    public string description { get; set; }
-    public TaskStatus status { get; set; }
-    public Guid authorId { get; set; }
-    public string url { get; set; }
+    public Guid? id { get; set; }
+    public string? title { get; set; }
+    public string? description { get; set; }
+    public StudentTask.TaskStatus? taskStatus { get; set; }
+    public Guid? authorId { get; set; }
+    public string? url { get; set; }
 }
 
 public record GroupDataResponse : Response

@@ -4,10 +4,11 @@ using AutoMapper;
 using ExamManager.Models;
 using ExamManager.Models.Response;
 using Microsoft.AspNetCore.Authorization;
+using ATMApplication.Filters;
 
 namespace ExamManager.Controllers
 {
-    [Route("user")]
+    [Route(Routes.User)]
     [Authorize]
     public class UserController : Controller
     {
@@ -20,14 +21,20 @@ namespace ExamManager.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Index(string id)
+        [HttpGet(Routes.GetUser)]
+        [ValidateGuidFormat("id")]
+        public async Task<IActionResult> GetUser(string id)
         {
             var user = await _userService.GetUser(Guid.Parse(id));
 
-            var userView = _mapper.Map<User, UserViewModel>(user);
+            return Ok(ResponseFactory.CreateResponse(user));
+        }
 
-            return Ok(ResponseFactory.CreateResponse(userView));
+        [HttpGet(Routes.GetUserTasks)]
+        [ValidateGuidFormat("id")]
+        public async Task<IActionResult> GetUserTasks(string id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
