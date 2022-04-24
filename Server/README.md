@@ -61,6 +61,7 @@
 | studentId   | guid       |             | ID студента, для которого создано задание |
 | authorId    | guid       |             | ID автора задания                         |
 | status      | int        |             | Статус задания                            |
+| url         | string     |             | URL ресурса задания                       |
 
 
 
@@ -116,7 +117,7 @@
     <tr>
     	<td colspan=2>groupId</td>
         <td>guid</td>
-        <td></td>
+        <td>Да</td>
         <td>ID группы, из которой необходимо убрать студентов</td>
     </tr>
     <tr>
@@ -127,19 +128,13 @@
     </tr>    
     <tr>
     	<td></td>
-        <td>studentId</td>
+        <td>id</td>
     	<td>guid</td>
         <td>Да</td>
         <td>ID студента, которого необходимо убрать из группы</td>
     </tr> 
-    <tr>
-    	<td></td>
-        <td>groupId</td>
-    	<td>guid</td>
-        <td>Да</td>
-        <td>ID группы, из которой необходимо убрать данного студента</td>
-    </tr>
 </table>
+
 
 
 
