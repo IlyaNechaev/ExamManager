@@ -2,12 +2,13 @@
 public static class Routes
 {
     public const string Login = "/login";
+    public const string GetGroups = "/groups";
 
     #region USER
 
     public const string User  = "user";
     public const string GetUser  = "{id}";
-    public const string GetUserTasks  = "tasks";
+    public const string GetUserTasks  = "{id}/tasks";
 
     #endregion
 
@@ -34,9 +35,9 @@ public static class Routes
 
     #region STUDENTS
 
-    public const string GetStudents  = "students";
-    public const string CreateStudents  = "students/create";
-    public const string DeleteStudents  = "students/delete";
+    public const string GetUsers  = "/users";
+    public const string CreateUsers  = "/users/create";
+    public const string DeleteUsers  = "/users/delete";
 
     #endregion
 }

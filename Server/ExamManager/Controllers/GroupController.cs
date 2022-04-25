@@ -38,13 +38,36 @@ namespace ExamManager.Controllers
             return Ok(ResponseFactory.CreateResponse(group));
         }
 
+        [HttpPost(Routes.GetGroups)]
+        public async Task<IActionResult> GetGroups([FromBody] GetGroupsRequest request)
+        {
+            var options = new GroupOptions
+            {
+                Name = request.name,
+                MinStudentsCount = request.minStudentsCount,
+                MaxStudentsCount = request.maxStudentsCount
+            };
+
+            Group[] groups = null;
+            try
+            {
+                groups = await _groupService.GetGroups(options);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ResponseFactory.CreateResponse(ex));
+            }
+
+            return Ok(ResponseFactory.CreateResponse(groups));
+        }
+
         [HttpPost(Routes.CreateGroup)]
         public async Task<IActionResult> CreateGroup([FromBody] CreateGroupRequest request)
         {
             var createdGroup = new Group();
             try
             {
-                createdGroup = await _groupService.CreateGroup(request.GroupName);
+                createdGroup = await _groupService.CreateGroup(request.name);
             }
             catch (Exception ex)
             {
@@ -67,12 +90,21 @@ namespace ExamManager.Controllers
         [HttpPost(Routes.AddGroupStudent)]
         public async Task<IActionResult> AddGroupStudents([FromBody] AddStudentsRequest request)
         {
-            var result = Parallel.ForEach(request.students, (student, token) =>
-            {
-                _groupService.AddStudent(request.groupId, student.id);
-            });
+            ParallelLoopResult? result = null;
 
-            if (!result.IsCompleted)
+            try
+            {
+                result = Parallel.ForEach(request.students, (student, token) =>
+                {
+                    _groupService.AddStudent(request.groupId, student.id);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(ResponseFactory.CreateResponse(ex));
+            }
+
+            if (!result.Value.IsCompleted)
             {
                 return Ok(ResponseFactory.CreateResponse(new Exception("Не удалось добавить студентов")));
             }
@@ -84,16 +116,23 @@ namespace ExamManager.Controllers
         [HttpPost(Routes.RemoveGroupStudent)]
         public async Task<IActionResult> RemoveGroupStudents([FromBody] RemoveStudentsRequest request)
         {
+            if (request.students.Length == 0)
+            {
+                var exception = new InvalidDataException("В запросе не указаны пользователи");
+                return Ok(ResponseFactory.CreateResponse(exception));
+            }
+
+            var groupId = (await _groupService.GetStudentGroup(request.students[0].id)).ObjectID;
             var result = Parallel.ForEach(request.students, (student, token) =>
             {
-                _groupService.RemoveStudent(request.groupId, student.studentId);
+                _groupService.RemoveStudent(groupId, student.id);
             });
 
             if (!result.IsCompleted)
             {
                 return Ok(ResponseFactory.CreateResponse(new Exception("Не удалось удалить студентов")));
             }
-            var group = await _groupService.GetGroup(request.groupId, true);
+            var group = await _groupService.GetGroup(groupId, true);
 
             return Ok(ResponseFactory.CreateResponse(group.Students, group.Name));
         }

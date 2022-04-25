@@ -5,10 +5,12 @@ namespace ExamManager.Services;
 
 public class GroupService : IGroupService
 {
+    IUserService _userService;   
     DbContext _dbContext;
-    public GroupService(DbContext context)
+    public GroupService(DbContext context, IUserService userService)
     {
         _dbContext = context;
+        _userService = userService;
     }
 
     public async Task<Group> GetGroup(string groupName, bool includeStudents = false)
@@ -37,30 +39,16 @@ public class GroupService : IGroupService
 
     public async Task AddStudent(Guid groupId, Guid studentId)
     {
+        var UserSet = _dbContext.Set<User>();
+        var GroupSet = _dbContext.Set<Group>();
+
         // Проверяем пользователя
-        var studentValidationTask = new Task<(ValidationResult Result, User Student)>(() =>
-        {
-            var UserSet = _dbContext.Set<User>();
-            var user = UserSet.FirstOrDefault(u => u.ObjectID == studentId);
-            var validationResult = ValidateStudent(user);
+        var student = UserSet.FirstOrDefault(u => u.ObjectID == studentId);
+        (ValidationResult Result, User Student) studentValidation = (ValidateStudent(student), student);
 
-            return (validationResult!, user!);
-        });
         // Проверяем группу
-        var groupValidationTask = new Task<(ValidationResult Result, Group Group)>(() =>
-        {
-            var GroupSet = _dbContext.Set<Group>();
-            var group = GroupSet.AsNoTracking().FirstOrDefault(g => g.ObjectID == groupId);
-            var validationResult = ValidateGroup(group);
-
-            return (validationResult!, group!);
-        });
-
-        studentValidationTask.Start();
-        groupValidationTask.Start();
-
-        var studentValidation = await studentValidationTask;
-        var groupValidation = await groupValidationTask;
+        var group = GroupSet.AsNoTracking().FirstOrDefault(g => g.ObjectID == groupId);
+        (ValidationResult Result, Group Group) groupValidation = (ValidateGroup(group), group);
 
         if (studentValidation.Result.HasErrors)
         {
@@ -70,9 +58,6 @@ public class GroupService : IGroupService
         {
             throw new Exception(groupValidation.Result.CommonMessages.First());
         }
-
-        var student = studentValidation.Student;
-        var group = groupValidation.Group;
 
         student.StudentGroup = group;
 
@@ -128,7 +113,7 @@ public class GroupService : IGroupService
 
         if (await GroupSet.AnyAsync(g => g.Name == name))
         {
-            return null;
+            throw new InvalidDataException($"Группа {name} уже существует");
         }
 
         var group = new Group
@@ -142,5 +127,25 @@ public class GroupService : IGroupService
 
         return group;
     }
-       
+
+    public async Task<Group> GetStudentGroup(Guid studentId, bool includeStudents = false)
+    {
+        var userGroup = (await _userService.GetUser(studentId, true)).StudentGroup;
+
+        return userGroup;
+    }
+
+    public async Task<Group[]> GetGroups(GroupOptions options, bool includeStudents = false)
+    {
+        var GroupSet = _dbContext.Set<Group>();
+        var groups = GroupSet.AsEnumerable().Where(g =>
+        {
+            var studentsCount = g.Students?.Count() ?? 0;
+            return (options.Name is null ? true : g.Name.Contains(options.Name, StringComparison.CurrentCultureIgnoreCase)) &&
+                   (options.MinStudentsCount is null ? true : studentsCount >= options.MinStudentsCount) &&
+                   (options.MaxStudentsCount is null ? true : studentsCount <= options.MaxStudentsCount);
+        }).ToArray();
+
+        return groups;
+    }
 }

@@ -57,7 +57,7 @@ namespace ExamManager.Controllers
                 return Ok(ResponseFactory.CreateResponse(ModelState));
             }
 
-            return Ok(ResponseFactory.CreateResponse(token));
+            return Ok(ResponseFactory.CreateResponse(token, user.ObjectID));
         }        
     }
 }

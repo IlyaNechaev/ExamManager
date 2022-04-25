@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExamManager.Models;
 
 public record StudentTask
 {
-    public Guid ObjectID { get; }
+    [Key]
+    public Guid ObjectID { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
     public StudentTask.TaskStatus Status { get; set; }

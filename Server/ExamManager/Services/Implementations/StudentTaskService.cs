@@ -1,57 +1,132 @@
 ﻿using ExamManager.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExamManager.Services.Implementations;
+namespace ExamManager.Services;
 
 
 public class StudentTaskService : IStudentTaskService
 {
     DbContext _dbContext;
-    public StudentTaskService(DbContext context)
+    IUserService _userService;
+    public StudentTaskService(
+        DbContext context, 
+        IUserService userService
+        )
     {
         _dbContext = context;
+        _userService = userService;
     }
 
-    public async Task<StudentTask> ChangeStudentTaskStatus(Guid taskId, StudentTask.TaskStatus status)
+    public async Task<StudentTask> CreateStudentTask(StudentTask task)
     {
-        var StudentTaskSet = _dbContext.Set<StudentTask>();
+        var TaskSet = _dbContext.Set<StudentTask>();
+        var studentTask = (await TaskSet.AddAsync(task)).Entity;
 
-        var studentTask = await StudentTaskSet.FirstOrDefaultAsync(t => t.ObjectID == taskId);
+        return studentTask;
+    }
 
-        studentTask.Status = status;
-        //StudentTaskSet.Update(studentTask);
+    public async Task<StudentTask> CreateStudentTask(string title, string? description, string url, Guid authorId, Guid studentId)
+    {
+        var TaskSet = _dbContext.Set<StudentTask>();
+        var getAuthorTask = _userService.GetUser(authorId);
+        var getStudentTask = _userService.GetUser(studentId);
+
+        var studentTask = new StudentTask
+        {
+            Title = title,
+            Description = description,
+            Url = url,
+            Author = await getAuthorTask,
+            Student = await getStudentTask
+        };
+
+        await TaskSet.AddAsync(studentTask);
         await _dbContext.SaveChangesAsync();
 
         return studentTask;
     }
 
-    public async Task<StudentTask> CreateStudentTask(StudentTask task)
+    public async Task DeleteStudentTask(Guid taskId)
     {
-        throw new NotImplementedException();
+        var TaskSet = _dbContext.Set<StudentTask>();
+        var studentTask = await GetStudentTask(taskId);
+
+        TaskSet.Remove(studentTask);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public Task<StudentTask> CreateStudentTask(string title, string description, string url, Guid authorId, Guid studentId)
+    public async Task<StudentTask> GetStudentTask(Guid taskId)
     {
-        throw new NotImplementedException();
+        var TaskSet = _dbContext.Set<StudentTask>();
+        var studentTask = await TaskSet.FirstOrDefaultAsync(t => t.ObjectID == taskId);
+
+        if (studentTask is null)
+        {
+            throw new InvalidDataException($"Не удалось найти задание {taskId}");
+        }
+
+        return studentTask;
     }
 
-    public Task DeleteStudentTask(Guid taskId)
+    public async Task<IEnumerable<StudentTask>> GetStudentTasks(Guid studentId)
     {
-        throw new NotImplementedException();
+        var TaskSet = _dbContext.Set<StudentTask>();
+        var studentTasks = TaskSet.Where(t => t.StudentID == studentId);
+
+        return await studentTasks.ToListAsync();
+    }
+    public async Task<StudentTask> ChangeTaskStatus(Guid taskId, StudentTask.TaskStatus status)
+    {
+        var studentTask = await GetStudentTask(taskId);
+
+        await UpdateTask(studentTask, task => task.Status = status);
+
+        return studentTask;
     }
 
-    public Task<StudentTask> GetStudentTask(Guid taskId)
+    public async Task<StudentTask> ChangeTaskAuthor(Guid taskId, Guid authorId)
     {
-        throw new NotImplementedException();
+        var studentTask = await GetStudentTask(taskId);
+        var author = await _userService.GetUser(authorId);
+
+        await UpdateTask(studentTask, task => task.Author = author);
+        return studentTask;
     }
 
-    public Task<IEnumerable<StudentTask>> GetStudentTasks(Guid studentId)
+    public async Task<StudentTask> ChangeTaskStudent(Guid taskId, Guid studentId)
     {
-        throw new NotImplementedException();
+        var studentTask = await GetStudentTask(taskId);
+        var student = await _userService.GetUser(studentId);
+
+        await UpdateTask(studentTask, task => task.Student = student);
+        return studentTask;
     }
 
-    public Task<StudentTask> UpdateStudentTask(StudentTask newTask, Guid? taskId = null)
+    private async Task UpdateTask(StudentTask task, Action<StudentTask> update)
     {
-        throw new NotImplementedException();
+        update?.Invoke(task);
+
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<StudentTask> ChangeStudentTask(Guid taskId, string? title, string? description, string? url)
+    {
+        var studentTask = await GetStudentTask(taskId);
+
+        if (!string.IsNullOrEmpty(title))
+        {
+            studentTask.Title = title;
+        }
+        if (!string.IsNullOrEmpty(description))
+        {
+            studentTask.Description = description;
+        }
+        if (!string.IsNullOrEmpty(url))
+        {
+            studentTask.Url = url;
+        }
+
+        await _dbContext.SaveChangesAsync();
+        return studentTask;
     }
 }

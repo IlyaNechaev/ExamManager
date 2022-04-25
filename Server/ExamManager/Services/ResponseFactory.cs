@@ -49,12 +49,13 @@ public static class ResponseFactory
 
         return response;
     }
-    public static Response CreateResponse(string jwtToken)
+    public static Response CreateResponse(string jwtToken, Guid userId)
     {
         return new JWTResponse
         {
             status = HttpStatusCode.OK,
-            token = jwtToken
+            token = jwtToken,
+            id = userId
         };
     }
     public static Response CreateResponse(Exception ex)
@@ -111,6 +112,30 @@ public static class ResponseFactory
             id = group.ObjectID,
             name = group.Name,
             studentsCount = group.Students?.Count()
+        };
+    }
+
+    public static Response CreateResponse(IEnumerable<Group> groups)
+    {
+        if (groups is null)
+        {
+            return new GroupsDataResponse
+            {
+                status = HttpStatusCode.BadRequest,
+                groups = new GroupsDataResponse.GroupView[0]
+            };
+        }
+
+        return new GroupsDataResponse
+        {
+            status = HttpStatusCode.OK,
+            groups = groups.Select(g => 
+            new GroupsDataResponse.GroupView
+            {
+                id = g.ObjectID,
+                studentsCount = g.Students?.Count(),
+                name = g.Name
+            }).ToArray()
         };
     }
 

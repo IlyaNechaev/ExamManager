@@ -33,6 +33,7 @@ builder.Services.AddDbContext<DbContext, ApplicationDBContext>(
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IGroupService, GroupService>();
 builder.Services.AddTransient<ISecurityService, SecurityService>();
+builder.Services.AddTransient<IStudentTaskService, StudentTaskService>();
 builder.Services.AddTransient<IJwtUtils, JwtUtils>();
 builder.Services.AddTransient<SignInManager>((serviceProvider) => new SignInManager(serviceProvider));
 

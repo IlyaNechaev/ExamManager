@@ -35,7 +35,14 @@ namespace ExamManager.Controllers
         [ValidateGuidFormat("id")]
         public async Task<IActionResult> GetUserTasks(string id)
         {
-            throw new NotImplementedException();
+            var userTasks = (await _userService.GetUser(Guid.Parse(id), includeTasks: true)).Tasks;
+            if (userTasks is null || userTasks.Count == 0)
+            {
+                var exception = new InvalidDataException($"У пользователя {id} нет задач");
+                return Ok(ResponseFactory.CreateResponse(exception));
+            }
+
+            return Ok(ResponseFactory.CreateResponse(userTasks));
         }
     }
 }

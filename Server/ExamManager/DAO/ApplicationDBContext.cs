@@ -10,6 +10,7 @@ namespace ExamManager.DAO
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
+        public DbSet<StudentTask> StudentTasks { get; set; }
 
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options,
                                     [FromServices] ISecurityService securitySerice) : base(options)
@@ -30,6 +31,16 @@ namespace ExamManager.DAO
                 });
                 SaveChanges();
             }
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<StudentTask>()
+                .HasOne(t => t.Student)
+                .WithMany(s => s.Tasks);
+
+            modelBuilder.Entity<StudentTask>()
+                .HasOne(t => t.Author);
         }
     }
 }

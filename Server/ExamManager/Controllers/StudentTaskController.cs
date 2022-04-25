@@ -34,7 +34,13 @@ namespace ExamManager.Controllers
         [HttpPost(Routes.CreateTask)]
         public async Task<IActionResult> CreateTask([FromBody] CreateTaskRequest request)
         {
-            var studentTask = await _studentTaskService.CreateStudentTask(request.title, request.description, request.url, request.authorId, request.studentId);
+            var authorId = request.authorId;
+            if (authorId is null)
+            {
+                authorId = ((User)HttpContext.Items["User"]).ObjectID;
+            }
+
+            var studentTask = await _studentTaskService.CreateStudentTask(request.title, request.description, request.url, authorId.Value, request.studentId);
 
             return Ok(ResponseFactory.CreateResponse(studentTask));
         }
@@ -50,7 +56,21 @@ namespace ExamManager.Controllers
         [HttpPost(Routes.ModifyTask)]
         public async Task<IActionResult> ModifyTask([FromBody] ModifyTaskRequest request)
         {
-            throw new NotImplementedException();
+            if (request.studentId is not null)
+            {
+                await _studentTaskService.ChangeTaskStudent(request.taskId, request.studentId.Value);
+            }
+            if (request.authorId is not null)
+            {
+                await _studentTaskService.ChangeTaskAuthor(request.taskId, request.authorId.Value);
+            }
+            if (request.status is not null)
+            {
+                await _studentTaskService.ChangeTaskStatus(request.taskId, request.status.Value);
+            }
+
+            var studentTask = await _studentTaskService.ChangeStudentTask(request.taskId, request.title, request.description, request.url);
+            return Ok(ResponseFactory.CreateResponse(studentTask));
         }
     }
 }
