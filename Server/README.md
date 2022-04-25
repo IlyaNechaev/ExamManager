@@ -5,6 +5,9 @@
 |  **POST** */login*  |  Проверить зарегистрирован ли пользователь и сгенерировать для него JWT-токен  |  LoginEditModel  |  JwtResponse  |
 |  **GET** */user/{id}*  |  Получить информацию о пользователе по его ID  |  id  |  UserDataResponse  |
 | **GET** */user/{id}/tasks* | Получить информацию о заданиях, которые имеются у пользователя ID | id | TasksDataResponse |
+| **GET** */users* | Получить список информации о пользователях | GetUsersRequest | UsersDataResponse |
+| **POST** */users/create* | Зарегистрировать пользователей | CreateUsersRequest | UsersDataResponse |
+| **POST** */users/delete* | Удалить пользователей | DeleteUsersRequest | Response |
 | **GET** */task/{id}* | Получить информацию о задании по его ID | id | TaskDataResponse |
 | **POST** */task/create* | Создать задание | CreateTaskRequest | TaskDataResponse |
 | **POST** */task/delete* | Удалить задание | DeleteTaskRequet | Response |
@@ -14,9 +17,7 @@
 | **POST** */group/create* |  Создать группу студентов  |  CreateGroupRequest  |  GroupDataResponse  |
 | **POST** */group/students/add* | Добавить студентов к группе | AddStudentsRequest | UsersDataResponse |
 | **POST** */group/students/remove* | Удалить студентов из группы | RemoveStudentsRequest | UsersDataResponse |
-| **POST** */students* | Получить список информации о студентах | GetStudentsRequest | UsersDataResponse |
-| **POST** */students/create* | Зарегистрировать студентов | CreateStudentsRequest | UsersDataResponse |
-| **POST** */students/delete* | Удалить студентов | DeleteStudentsRequest | Response |
+| **POST** */groups* | Получить информацию о группах | GetGroupsRequest | GroupsDataResponse |
 
 # 2. Структура запросов
 
@@ -115,12 +116,6 @@
     	<th>Описание</th>
     </tr>
     <tr>
-    	<td colspan=2>groupId</td>
-        <td>guid</td>
-        <td>Да</td>
-        <td>ID группы, из которой необходимо убрать студентов</td>
-    </tr>
-    <tr>
     	<td colspan=2>students</td>
         <td>array</td>
         <td></td>
@@ -137,17 +132,17 @@
 
 
 
-
-## GetStudentsRequest
+## GetUsersRequest
 
 | Поле       | Тип данных | Обязательно | Описание                                                     |
 | ---------- | ---------- | ----------- | ------------------------------------------------------------ |
 | groupId    | guid       |             | ID группы, студенты которой будут добавлены в выборку        |
 | taskStatus | int        |             | Статус задания, при наличии которого (хотя бы одного задания<br />с таким статусом) студент будет добавлен в выборку |
+| role       | int        |             | Роль, пользователи имеющие которую будут добавлены в выборку |
 
 
 
-## CreateStudentsRequest
+## CreateUsersRequest
 
 <table>
     <tr>
@@ -157,13 +152,7 @@
         <th>Описание</th>
     </tr>
     <tr>
-        <td colspan=2>groupId</td>
-        <td>guid</td>
-        <td>Да</td>
-        <td>ID группы, для которой будут созданы студенты</td>
-    </tr>
-    <tr>
-        <td colspan=2>students</td>
+        <td colspan=2>users</td>
         <td>array</td>
         <td></td>
         <td></td>
@@ -196,11 +185,30 @@
         <td>Да</td>
         <td>Фамилия</td>
     </tr>
+    <tr>
+        <td></td>
+        <td>role</td>
+        <td>int</td>
+        <td>Да</td>
+        <td>
+            Роль пользователя<br/>
+            <b>0</b> - администратор<br/>
+            <b>1</b> - студент
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>groupId</td>
+        <td>guid</td>
+        <td></td>
+        <td>ID группы, для которой будет создан пользователь (студент)</td>
+    </tr>
 </table>
 
 
 
-## DeleteStudentsRequest
+
+## DeleteUsersRequest
 
 <table>
     <tr>
@@ -210,7 +218,7 @@
         <th>Описание</th>
     </tr>
     <tr>
-    	<td colspan=2>students</td>
+    	<td colspan=2>users</td>
         <td>array</td>
         <td></td>
         <td></td>
@@ -220,7 +228,7 @@
         <td>id</td>
     	<td>guid</td>
     	<td>Да</td>
-    	<td>ID студента, которого необходимо удалить</td>
+    	<td>ID пользователя, которого необходимо удалить</td>
     </tr>
     <tr>
     	<td></td>
@@ -228,10 +236,41 @@
     	<td>boolean</td>
     	<td>Да</td>
     	<td>
-            В обоих случаях студент лишится возможности авторизоваться в системе<br/>
-            <b>true</b> - информация о студенте сохранится<br/>
-            <b>false</b> - информацию о студенте будет удалена
+            В обоих случаях пользователь лишится возможности авторизоваться в системе<br/>
+            <b>true</b> - информация о пользователе сохранится<br/>
+            <b>false</b> - информацию о пользователе будет удалена
         </td>
+    </tr>
+</table>
+
+
+
+## GetGroupsRequest
+
+<table>
+    <tr>
+    	<th>Поле</th>
+        <th>Тип данных</th>
+        <th>Обязательно</th>
+        <th>Описание</th>
+    </tr>
+    <tr>
+    	<td>name</td>
+    	<td>string</td>
+    	<td></td>
+    	<td>Часть названия группы</td>
+    </tr>
+    <tr>
+    	<td>minStudentsCount</td>
+    	<td>int</td>
+    	<td></td>
+    	<td>Минимальное число студентов в группе</td>
+    </tr>
+    <tr>
+    	<td>maxStudentsCount</td>
+    	<td>int</td>
+    	<td></td>
+    	<td>Максимальное число студентов в группе</td>
     </tr>
 </table>
 
@@ -261,7 +300,13 @@
         <td>string</td>
         <td>Токен, используемый при совершении запросов<br/>авторизованным пользователем</td>
     </tr>
+    <tr>
+    	<td>id</td>
+        <td>guid</td>
+        <td>ID пользователя</td>
+    </tr>
 </table>
+
 
 
 
@@ -409,6 +454,41 @@
 | id            | guid       | ID группы                                |
 | name          | string     | Название                                 |
 | studentsCount | int        | Количество студентов, состоящих в группе |
+
+
+
+## GroupsDataResponse
+
+<table>  
+    <tr>
+    	<th colspan=2>Поле</th>
+    	<th>Тип данных</th>
+    	<th>Описание</th>
+    </tr>
+    <tr>
+    	<td colspan=2>groups</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+    	<td>id</td>
+        <td>guid</td>
+        <td>ID группы</td>
+    </tr>
+    <tr>
+        <td></td>
+    	<td>name</td>
+        <td>string</td>
+        <td>Название группы</td>
+    </tr>
+    <tr>
+        <td></td>
+    	<td>studentsCount</td>
+        <td>int</td>
+        <td>Количество студентов, состоящих в группе</td>
+    </tr>
+</table>
 
 
 
