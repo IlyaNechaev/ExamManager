@@ -40,4 +40,14 @@ public static class Routes
     public const string DeleteUsers  = "/users/delete";
 
     #endregion
+
+    #region PAGES
+
+    public const string HomePage = "/pages/home";
+
+    public const string GroupsPage = "/pages/admin";
+
+    public const string UserPage = "/pages/user";
+
+    #endregion
 }
