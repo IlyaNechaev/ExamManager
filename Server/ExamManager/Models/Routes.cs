@@ -7,8 +7,12 @@ public static class Routes
     #region USER
 
     public const string User  = "user";
+
     public const string GetUser  = "{id}";
+
     public const string GetUserTasks  = "{id}/tasks";
+
+    public const string ModifyUser  = "modify";
 
     #endregion
 
@@ -43,11 +47,11 @@ public static class Routes
 
     #region PAGES
 
+    public const string LoginPage = "/pages/login";
+
     public const string HomePage = "/pages/home";
 
-    public const string GroupsPage = "/pages/admin";
-
-    public const string UserPage = "/pages/user";
+    public const string GroupsPage = "pages/groups";
 
     #endregion
 }

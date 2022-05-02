@@ -17,11 +17,12 @@
 
 </head>
 <body class="main">
-    <form id="form" class="auth-form" method="POST" aciton="@(Routes.Login)">
+    <form id="form" class="auth-form" method="POST" action="@(Routes.Login)" autocomplete="off">
         <div class="header">Авторизация</div>
-        <div class="body">
+        <div id="input-form" class="body">
             <input class="normal" type="text" placeholder="Логин" id="login" />
             <input class="normal" type="password" placeholder="Пароль" id="password" />
+            <div id="default"></div>
         </div>
         <div class="footer">
             <input type="submit" name="sumbitButton" value="Войти"/>
@@ -29,5 +30,8 @@
     </form>
 </body>
 <script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/js.cookie.js"></script>
+<script src="~/js/jwt-decode.js"></script>
+<script src="~/js/request.js"></script>
 <script src="~/js/home/index.js"></script>
 </html>
