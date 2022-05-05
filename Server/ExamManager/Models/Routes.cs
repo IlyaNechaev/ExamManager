@@ -28,12 +28,11 @@ public static class Routes
 
     #region GROUP
 
-    public const string Group  = "group";
-    public const string CreateGroup  = "create";
-    public const string GetGroup  = "{id}";
-    public const string GetGroupStudents  = "{id}/students";
-    public const string AddGroupStudent  = "students/add";
-    public const string RemoveGroupStudent  = "students/remove";
+    public const string CreateGroup  = "/group/create";
+    public const string GetGroup  = "/group/{id}";
+    public const string GetGroupStudents  = "/group/{id}/students";
+    public const string AddGroupStudent  = "/group/students/add";
+    public const string RemoveGroupStudent  = "/group/students/remove";
 
     #endregion
 
