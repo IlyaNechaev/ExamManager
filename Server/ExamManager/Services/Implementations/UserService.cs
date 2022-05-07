@@ -195,4 +195,13 @@ public class UserService : IUserService
 
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task<IEnumerable<User>> GetUsers(IEnumerable<Guid> userIds, bool includeGroup = false, bool includeTasks = false)
+    {
+        var UserSet = _dbContext.Set<User>();
+
+        var users = UserSet.AsQueryable().Where(user => userIds.Contains(user.ObjectID));
+
+        return users.AsEnumerable();
+    }
 }

@@ -30,9 +30,10 @@ public static class Routes
 
     public const string CreateGroup  = "/group/create";
     public const string GetGroup  = "/group/{id}";
+    public const string DeleteGroup = "/group/{id}/delete";
     public const string GetGroupStudents  = "/group/{id}/students";
-    public const string AddGroupStudent  = "/group/students/add";
-    public const string RemoveGroupStudent  = "/group/students/remove";
+    public const string AddGroupStudents  = "/group/students/add";
+    public const string RemoveGroupStudents  = "/group/students/remove";
 
     #endregion
 

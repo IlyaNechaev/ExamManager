@@ -15,6 +15,7 @@
 | **POST** */task/modify* | Изменить задание | ModifyTaskRequest | TaskDataResponse |
 | **GET** */group/{id}* | Получить информацию о группе по ее ID | id | GroupDataResponse |
 | **GET** */group/{id}/students* | Получить информацию о студентах, которые состоят в группе ID | id | UsersDataResponse |
+| **GET** */group/{id}/delete* | Удалить группу | id | Response |
 | **POST** */group/create* |  Создать группу студентов  |  CreateGroupRequest  |  GroupDataResponse  |
 | **POST** */group/students/add* | Добавить студентов к группе | AddStudentsRequest | UsersDataResponse |
 | **POST** */group/students/remove* | Удалить студентов из группы | RemoveStudentsRequest | UsersDataResponse |
