@@ -10,7 +10,6 @@ using ExamManager.Filters;
 namespace ExamManager.Controllers
 {
 
-    [Route(Routes.Group)]
     [ApiController]
     [JwtAuthorize]
     public class GroupController : ControllerBase

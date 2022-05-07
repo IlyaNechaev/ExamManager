@@ -102,7 +102,7 @@ public class UserService : IUserService
         // Если в изменяемых параметрах присутствует логин
         if (data?.Select(field => field.Name).Contains(nameof(Models.User.Login)) ?? false)
         {
-            result = await ValidateRegisterUserLogin(tempUser);
+            result = await ValidateRegisterUserLogin(userId, tempUser);
         }
 
         if (!result.HasErrors)
@@ -114,9 +114,9 @@ public class UserService : IUserService
 
         return result;
 
-        async Task<ValidationResult> ValidateRegisterUserLogin(User userValidation)
+        async Task<ValidationResult> ValidateRegisterUserLogin(Guid userId, User userValidation)
         {
-            if (await UserSet.AnyAsync(user => user.Login.Equals(userValidation.GetLogin())))
+            if (await UserSet.AnyAsync(user => user.Login.Equals(userValidation.GetLogin()) && !user.ObjectID.Equals(userValidation.GetObjectID())))
             {
                 result.AddMessage(nameof(User.Login), "Пользователь с таким логином уже существует");
             }
