@@ -154,10 +154,9 @@ public class GroupService : IGroupService
     public async Task AddStudentRange(Guid groupId, IEnumerable<Guid> studentIds)
     {
         var UserSet = _dbContext.Set<User>();
-        var GroupSet = _dbContext.Set<Group>();
 
         // Проверяем группу
-        var group = GroupSet.AsNoTracking().FirstOrDefault(g => g.ObjectID == groupId);
+        var group = await GetGroup(groupId, includeStudents: true);
         (ValidationResult Result, Group Group) groupValidation = (ValidateGroup(group), group);
 
         if (groupValidation.Result.HasErrors)
@@ -182,7 +181,7 @@ public class GroupService : IGroupService
 
             student.StudentGroup = group;
         }
-
+        await transaction.CommitAsync();
         await _dbContext.SaveChangesAsync();
     }
 
@@ -239,6 +238,7 @@ public class GroupService : IGroupService
             student.StudentGroupID = null;
         }
 
+        await transaction.CommitAsync();
         await _dbContext.SaveChangesAsync();
     }
 }
