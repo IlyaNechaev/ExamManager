@@ -42,7 +42,7 @@ public struct AddStudentsRequest
 
 public struct RemoveStudentsRequest
 {
-    public StudentView[] students { get; set; }
+    public StudentView[]? students { get; set; }
 
     public struct StudentView
     {
@@ -54,7 +54,7 @@ public struct GetUsersRequest
 {
     public string? firstName { get; set; }
     public string? lastName { get; set; }
-    public Guid? groupId { get; set; }
+    public Guid[]? groupIds { get; set; }
     public StudentTask.TaskStatus? taskStatus { get; set; }
     public UserRole? role { get; set; }
 }

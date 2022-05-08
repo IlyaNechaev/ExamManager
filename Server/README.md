@@ -140,7 +140,7 @@
 | ---------- | ---------- | ----------- | ------------------------------------------------------------ |
 | firstName  | string     |             | Имя пользователя                                             |
 | lastName   | string     |             | Фамилия пользователя                                         |
-| groupId    | guid       |             | ID группы, студенты которой будут добавлены в выборку        |
+| groupIds   | guid[]     |             | ID групп, студенты которых будут добавлены в выборку         |
 | taskStatus | int        |             | Статус задания, при наличии которого (хотя бы одного задания<br />с таким статусом) пользователь будет добавлен в выборку |
 | role       | int        |             | Роль, пользователи имеющие которую будут добавлены в выборку |
 
@@ -208,8 +208,6 @@
         <td>ID группы, для которой будет создан пользователь (студент)</td>
     </tr>
 </table>
-
-
 
 
 ## DeleteUsersRequest
@@ -427,46 +425,65 @@
 </table>
 
 
-
-
 ## UsersDataResponse
 
 <table>
     <tr>
-    	<th colspan=2>Поле</th>
+    	<th colspan=3>Поле</th>
         <th>Тип данных</th>
         <th>Описание</th>
     </tr>
     <tr>
-    	<td colspan=2>users</td>
+    	<td colspan=3>users</td>
         <td>array</td>
         <td></td>
     </tr>
     <tr>
     	<td></td>
-        <td>id</td>
+        <td colspan=2>id</td>
         <td>guid</td>
         <td>ID пользователя</td>
     </tr>
     <tr>
     	<td></td>
-        <td>firstName</td>
+        <td colspan=2>firstName</td>
         <td>string</td>
         <td>Имя</td>
     </tr>
     <tr>
     	<td></td>
-        <td>lastName</td>
+        <td colspan=2>lastName</td>
         <td>string</td>
         <td>Фамилия</td>
     </tr>
     <tr>
     	<td></td>
-        <td>groupName</td>
+        <td colspan=2>groupName</td>
         <td>string</td>
         <td>Название группы</td>
     </tr>
+    <tr>
+    	<td></td>
+        <td colspan=2>tasks</td>
+        <td>array</td>
+        <td></td>
+    </tr>
+    <tr>
+    	<td></td>
+    	<td></td>
+        <td>title</td>
+        <td>string</td>
+        <td>Название задания</td>
+    </tr>
+    <tr>
+    	<td></td>
+    	<td></td>
+        <td>status</td>
+        <td>int</td>
+        <td>Статус задания</td>
+    </tr>
 </table>
+
 
 
 

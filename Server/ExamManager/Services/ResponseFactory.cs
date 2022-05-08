@@ -176,7 +176,12 @@ public static class ResponseFactory
                 id = u.ObjectID,
                 firstName = u.FirstName,
                 lastName = u.LastName,
-                groupName = groupName ?? u.StudentGroup?.Name
+                groupName = groupName ?? u.StudentGroup?.Name,
+                tasks = u.Tasks?.Select(task => new UsersDataResponse.TaskView
+                {
+                    title = task.Title,
+                    status = task.Status
+                }).ToArray()
             }).ToArray()
         };
     }
