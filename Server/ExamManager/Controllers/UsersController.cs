@@ -6,6 +6,7 @@ using ExamManager.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ExamManager.Models.RequestModels;
+using System.Linq;
 
 namespace ExamManager.Controllers
 {
@@ -30,18 +31,12 @@ namespace ExamManager.Controllers
         {
             var users = await _userService.GetUsers(user =>
             {
-                return ((request.firstName is null ? true : user.FirstName.Contains(request.firstName, StringComparison.CurrentCultureIgnoreCase)) ||
-                       (request.lastName is null ? true : user.LastName.Contains(request.lastName, StringComparison.CurrentCultureIgnoreCase))) &&
-                       (request.groupId is null ? true : user.StudentGroupID == request.groupId) &&
-                       (request.role is null ? true : user.Role == request.role) &&
-                       (request.taskStatus is null ? true : user.Tasks.Any(t => t.Status == request.taskStatus));
+                return ((request.firstName is null || user.FirstName.Contains(request.firstName, StringComparison.CurrentCultureIgnoreCase)) ||
+                       (request.lastName is null || user.LastName.Contains(request.lastName, StringComparison.CurrentCultureIgnoreCase))) &&
+                       (request.groupIds is null || request.groupIds.Contains(user.StudentGroupID.Value)) &&
+                       (request.role is null || user.Role == request.role) &&
+                       (request.taskStatus is null || user.Tasks.Any(t => t.Status == request.taskStatus));
             }, includeTasks: true, includeGroup: true);
-
-            string? groupName = null;
-            if (request.groupId is not null)
-            {
-                groupName = (await _groupService.GetGroup(request.groupId.Value)).Name;
-            }
 
             return Ok(ResponseFactory.CreateResponse(users));
         }

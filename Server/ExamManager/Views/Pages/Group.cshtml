@@ -16,11 +16,31 @@
 <div class="students-table" value="@(Model.Group.ObjectID)">
     <div class="students-list">
         <div id="students" class="students">
+            <div class="loader"></div>
         </div>
         <div class="footer">
-            <input type="button" class="btn-action" value="Добавить">
+            <input id="open-modal" type="button" class="btn-action" value="Добавить">
         </div>
     </div>
     <div id="student-info" class="student-info">
     </div>
 </div>
+<dialog class="add-student-modal" id="add-student-modal">
+    <div class="container">
+        <div class="page-header">
+            Добавить студентов
+            <input id="search-add-students" class="search-student" />
+        </div>
+        <div class="students-list">
+        </div>
+        <div class="footer">
+            <input type="button"
+                   class="btn-action"
+                   value="Добавить" />
+            <input type="button"
+                   class="btn-cancel"
+                   id="close-modal"
+                   value="Отмена" />
+        </div>
+    </div>
+</dialog>

@@ -12,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="~/css/account/admin.css" />
     <link rel="stylesheet" href="~/css/account/navbar.css" />
+    <link rel="stylesheet" href="~/css/loader.css" />
     @if (Context.Request.Path.Value.Equals(Routes.StudentsPage))
     {
         <link rel="stylesheet" href="~/css/account/students.css" />
@@ -53,10 +54,12 @@
 <script src="~/js/account/index.js"></script>
 @if (Context.Request.Path.Value.Equals(Routes.GroupsPage))
 {
+    <script src="~/js/pagination.js"></script>
     <script src="~/js/account/groups.js"></script>
 }
 @if (Context.Request.Path.Value.Equals(Routes.StudentsPage))
 {
+    <script src="~/js/pagination.js"></script>
     <script src="~/js/account/students.js"></script>
 }
 @if (Context.Request.Path.Value.Equals(Routes.GroupPage))

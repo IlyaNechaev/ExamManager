@@ -64,6 +64,10 @@ let getGroup = function (groupId, onResponse){
     handleRequest(`/group/${groupId}`, "GET", null, onResponse);
 }
 
+let deleteGroup = function (groupId, onResponse) {
+    handleRequest(`/group/${groupId}/delete`, "GET", null, onResponse);
+}
+
 let getGroupStudents = function (groupId, onResponse){
     handleRequest(`/group/${groupId}/students`, "GET", null, onResponse);
 }

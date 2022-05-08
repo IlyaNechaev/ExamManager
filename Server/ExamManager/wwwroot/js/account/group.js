@@ -1,9 +1,13 @@
 ﻿// Заполнение информации о студенте
+
 let fillUserInfo = function (userInfo) {
     let studentInfo = $("#student-info");
     studentInfo.empty();
-    console.log(userInfo);
-    let studentName = $(`<div class="name">${userInfo['lastName']} ${userInfo['firstName']}</div>`);
+
+    if (userInfo == null) {
+        return;
+    }
+    let studentName = $(`<div class="name"><span>${userInfo['lastName']} ${userInfo['firstName']}</span><a id="delete-user"><i class="fa fa-solid fa-trash-can"></i></a></div>`);
     let tasks = $('<div class="tasks"></div>')
     for (let task of userInfo.tasks) {
         let taskElement = $(`<div class="task"><a href="/pages/task?id=${task.id}&student=${userInfo['id']}" class="title">${task.title}</a><div class="status">Выполнено</div></div>`);
@@ -13,6 +17,22 @@ let fillUserInfo = function (userInfo) {
     studentInfo.attr("value", userInfo['id']);
     studentInfo.append(studentName);
     studentInfo.append(tasks);
+
+    $("#delete-user").on("click", function (e) {
+        let data = {
+            students: [
+                {
+                    id: userInfo['id']
+                }
+            ]
+        }
+
+        removeGroupStudents(JSON.stringify(data), (response) => {
+            fillUserInfo(null);
+            let groupId = $(".students-table").attr('value');
+            getGroupStudents(groupId, onStudentsInfoResponse);
+        });
+    });
 }
 
 // При получении списка студентов
@@ -41,8 +61,23 @@ let onStudentsInfoResponse = function (response) {
     }
 }
 
+let onStudentsToAddInfoResponse = function (response) {
+
+}
+
 window.onload = function () {
     let groupId = $(".students-table").attr('value');
-    console.log(groupId);
     getGroupStudents(groupId, onStudentsInfoResponse);
+
+    const modal = document.querySelector("#add-student-modal");
+    const openModal = document.querySelector("#open-modal");
+    const closeModal = document.querySelector("#close-modal");
+
+    openModal.addEventListener("click", () => {
+        modal.showModal();
+    });
+
+    closeModal.addEventListener("click", () => {
+        modal.close();
+    });
 }
