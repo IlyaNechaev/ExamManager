@@ -1,0 +1,47 @@
+.students-table .student-info {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em;
+}
+
+.student-info > .name {
+    margin-bottom: 1em;
+}
+
+    .student-info > .name > span {
+        font-family: var(--font-Roboto);
+        font-size: 2em;
+        font-weight: bold;
+    }
+
+    .student-info > .name #delete-user {
+        color: red;
+        font-size: 1.3em;
+        margin-left: 0.5em;
+    }
+
+        .student-info > .name #delete-user:hover {
+            cursor: pointer;
+            color: rgb(197, 15, 15);
+        }
+
+.student-info > .tasks {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    gap: 0.5em;
+    width: min(100%, 500px);
+}
+
+.tasks > .task {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    align-items: end;
+}
+
+.task > .title {
+    text-decoration: none;
+    color: black;
+    font-family: var(--font-Roboto-Slab);
+    font-size: 1.2em;
+}

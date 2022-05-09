@@ -1,3 +1,8 @@
+.students-table, .student-search {
+    width: 70%;
+    margin-left: 15%;
+}
+
 .student-search {
     display: flex;
     flex-direction: row;
@@ -7,8 +12,8 @@
     .student-search > input.student-name {
         font-size: 1.5rem;
         margin-right: 1rem;
-        padding: 0.5rem;
-        font-family: var(--font-Raleway);
+        padding: 0.3rem 0.5rem;
+        font-family: var(--font-Roboto);
         border: 1px solid rgba(0, 0, 0, 0.4);
         border-radius: 10px;
     }
@@ -72,79 +77,37 @@
     position: relative;
 }
 
-.students-table > .students-list .students > .loader {
+.students-table .students-list .loader {
     position: absolute;
     top: 42%;
     left: 42%;
 }
 
-    .students-list .students > .student {
-        font-size: 1.5em;
-        font-family: var(--font-Raleway);
-        padding: 0.5rem;
-        transition: background-color 200ms;
+.add-student-modal .students-list .loader {
+    position: absolute;
+    top: 44%;
+    left: 44%;
+}
+
+.students-list .students > .student {
+    font-size: 1.5em;
+    font-family: var(--font-Roboto);
+    padding: 0.5rem;
+    transition: background-color 200ms;
+}
+
+    .students-list .student.hl {
+        background-color: rgb(36, 124, 224);
     }
 
-        .students-list .students > .student.hl {
-            background-color: rgb(36, 124, 224);
-        }
-
-        .students-list .students > .student:hover {
-            cursor: pointer;
-            background-color: rgba(36, 124, 224, 0.4);
-        }
-
-        .students-list .students > .student.hl:hover {
-            background-color: rgb(36, 124, 224);
-        }
-
-.students-table .student-info {
-    display: flex;
-    flex-direction: column;
-    padding: 0.5em;
-}
-
-.student-info > .name {
-    margin-bottom: 1em;
-}
-
-    .student-info > .name > span {
-        font-family: var(--font-Raleway);
-        font-size: 2em;
-        font-weight: bold;
+    .students-list .student:hover {
+        cursor: pointer;
+        background-color: rgba(36, 124, 224, 0.4);
     }
 
-    .student-info > .name #delete-user {
-        color: red;
-        font-size: 1.3em;
-        margin-left: 0.5em;
+    .students-list .student.hl:hover {
+        background-color: rgb(36, 124, 224);
     }
-
-        .student-info > .name #delete-user:hover {
-            cursor: pointer;
-            color: rgb(197, 15, 15);
-        }
-
-.student-info > .tasks {
-    display: flex;
-    flex-direction: column;
-    align-self: center;
-    gap: 0.5em;
-    width: min(100%, 500px);
-}
-
-.tasks > .task {
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    align-items: end;
-}
-
-.task > .title {
-    text-decoration: none;
-    color: black;
-    font-family: var(--font-Roboto-Slab);
-    font-size: 1.2em;
-}
 
 .students-table .students::-webkit-scrollbar {
     width: 0.7em;
@@ -196,6 +159,7 @@
             align-items: start;
             height: 60vh;
             overflow-y: auto;
+            position: relative;
         }
 
     .add-student-modal .student {
@@ -224,6 +188,11 @@
     }
 
 @media (max-width: 1200px) {
+    .students-table, .student-search {
+        width: 100%;
+        margin-left: 0;
+    }
+
     .add-student-modal > .container {
         display: flex;
         flex-direction: column;

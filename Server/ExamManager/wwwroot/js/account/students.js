@@ -5,12 +5,12 @@ const closeModal = document.querySelector("#close-button");
 const createButton = document.querySelector("#create-student-button");
 const reloadButton = document.querySelector("#reload-button");
 
-// Поиск групп (выпадающий список)
+// Поиск студента (выпадающий список)
 const searchInput = $("#student-name");
 searchInput.on("input", updateStudents);
 searchInput.val("").trigger("input");
 
-// При вводе названия группы
+// При вводе имени студента
 function updateStudents(e) {
     let studentName = e.target.value;
 
@@ -19,20 +19,21 @@ function updateStudents(e) {
         lastName: studentName
     };
 
-    // Если строка пустая, то возвращаем все группы
+    // Если строка пустая, то возвращаем всех студентов
     if (studentName === "") {
         data.firstName = null;
         data.lastName = null;
     }
 
     let onResponse = function (response) {
+        console.log(response.responseText);
         fillStudents(JSON.parse(response.responseText));
     };
 
     getUsers(JSON.stringify(data), onResponse);
 }
 
-// Заполнение таблицы групп
+// Заполнение таблицы студентов
 function fillStudents(data) {
     let oldTable = $(".students-table>.body");
     if (oldTable) {
@@ -178,7 +179,6 @@ reloadButton.addEventListener("click", () => {
 });
 
 createButton.addEventListener("click", createNewUser);
-
 
 updateStudents(
     {

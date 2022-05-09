@@ -128,7 +128,7 @@ public static class ResponseFactory
 
     public static Response CreateResponse(IEnumerable<Group> groups)
     {
-        if (groups is null)
+        if (groups is null || groups.Count() == 0)
         {
             return new GroupsDataResponse
             {
@@ -158,7 +158,7 @@ public static class ResponseFactory
     /// <returns><see cref="UsersDataResponse"/></returns>
     public static Response CreateResponse(IEnumerable<User> users, string groupName = null)
     {
-        if (users is null)
+        if ((users?.Count() ?? 0) == 0)
         {
             return new UsersDataResponse
             {

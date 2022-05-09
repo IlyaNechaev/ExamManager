@@ -1,5 +1,6 @@
-﻿// Заполнение информации о студенте
+﻿let studentsToAdd = [];
 
+// Заполнение информации о студенте
 let fillUserInfo = function (userInfo) {
     let studentInfo = $("#student-info");
     studentInfo.empty();
@@ -38,10 +39,14 @@ let fillUserInfo = function (userInfo) {
 // При получении списка студентов
 let onStudentsInfoResponse = function (response) {
     let studentsList = $("#students");
+
     let students = JSON.parse(response.responseText).users;
     studentsList.empty();
 
     for (let student of students) {
+        if (student.id === decoded["Claim.Key.Id"]) {
+            continue;
+        }
         let studentElement = $(`<div class="student" value="${student['id']}">${student['lastName']} ${student['firstName']}</div>`);
 
         let onSelected = function () {
@@ -61,8 +66,81 @@ let onStudentsInfoResponse = function (response) {
     }
 }
 
-let onStudentsToAddInfoResponse = function (response) {
+// При вводе имени студента
+function updateStudents(e) {
+    let studentName = e.target.value;
+    let groupId = $(".students-table").attr('value');
 
+    let data = {
+        name: studentName,
+        groupIds: [groupId]
+    };
+
+    // Если строка пустая, то возвращаем всех студентов
+    if (studentName === "") {
+        data.name = null;
+        data.firstName = null;
+        data.lastName = null;
+    }
+
+    getUsers(JSON.stringify(data), onStudentsInfoResponse);
+}
+
+let updateStudentsToAdd = function (e) {
+    let studentName = e.target.value;
+    let groupId = $(".students-table").attr('value');
+
+    let data = {
+        name: studentName,
+        withoutGroup: true
+    };
+
+    // Если строка пустая, то возвращаем всех студентов
+    if (studentName === "") {
+        data.name = null;
+        data.firstName = null;
+        data.lastName = null;
+    }
+
+    getUsers(JSON.stringify(data), onStudentsToAddInfoResponse);
+}
+
+let onStudentsToAddInfoResponse = function (response) {
+    let studentsList = $(".add-student-modal .students-list");
+
+    let students = JSON.parse(response.responseText).users;
+    studentsList.empty();
+
+    for (let student of students) {
+        if (student.id === decoded["Claim.Key.Id"]) {
+            continue;
+        }
+        let studentElement = $(`<div class="student" value="${student['id']}"><i class="fa fa-solid fa-user"></i><div class="name">${student['lastName']} ${student['firstName']}</div></div>`);
+
+        if (studentsToAdd.includes(student['id'])) {
+            studentElement.addClass('hl');
+        }
+
+        let onSelected = function () {
+            studentElement.toggleClass("hl");
+            let studentId = studentElement.attr('value');
+            // Если студент был в списке на добавление
+            if (studentsToAdd.includes(studentId)) {
+                for (var i = 0; i < studentsToAdd.length; i++) {
+                    if (studentsToAdd[i] === studentId) {
+                        studentsToAdd.splice(i, 1);
+                    }
+                }
+            }
+            else {
+                studentsToAdd.push(studentId);
+            }
+            console.log(studentsToAdd);
+        }
+
+        studentElement.on("click", onSelected);
+        studentsList.append(studentElement);
+    }
 }
 
 window.onload = function () {
@@ -71,13 +149,24 @@ window.onload = function () {
 
     const modal = document.querySelector("#add-student-modal");
     const openModal = document.querySelector("#open-modal");
-    const closeModal = document.querySelector("#close-modal");
-
+    const closeModal = document.querySelector("#close-modal")
     openModal.addEventListener("click", () => {
         modal.showModal();
+        searchInput.val("").trigger("input");
     });
 
     closeModal.addEventListener("click", () => {
         modal.close();
+        let studentsList = $(".add-student-modal .students-list");
+        studentsList.empty();
+        studentsList.append($('<div class="loader"></div>'));
+        studentsToAdd = [];
     });
+
+    let searchInput = $("#search-student-name");
+    searchInput.on("input", updateStudents);
+    searchInput.val("").trigger("input");
+
+    searchInput = $("#search-add-students");
+    searchInput.on("input", updateStudentsToAdd);
 }
