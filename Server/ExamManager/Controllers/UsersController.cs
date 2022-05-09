@@ -29,14 +29,18 @@ namespace ExamManager.Controllers
         [HttpPost(Routes.GetUsers)]
         public async Task<IActionResult> GetUsers([FromBody] GetUsersRequest request)
         {
-            var users = await _userService.GetUsers(user =>
+            var options = new UserOptions
             {
-                return ((request.firstName is null || user.FirstName.Contains(request.firstName, StringComparison.CurrentCultureIgnoreCase)) ||
-                       (request.lastName is null || user.LastName.Contains(request.lastName, StringComparison.CurrentCultureIgnoreCase))) &&
-                       (request.groupIds is null || request.groupIds.Contains(user.StudentGroupID.Value)) &&
-                       (request.role is null || user.Role == request.role) &&
-                       (request.taskStatus is null || user.Tasks.Any(t => t.Status == request.taskStatus));
-            }, includeTasks: true, includeGroup: true);
+                Name = request.name,
+                FirstName = request.firstName,
+                LastName = request.lastName,
+                WithoutGroups = request.withoutGroup,
+                Role = request.role,
+                GroupIds = request.groupIds,
+                ExcludeGroupIds = request.excludeGroupIds,
+                TaskStatus = request.taskStatus,
+            };
+            var users = await _userService.GetUsers(options, includeTasks: true);
 
             return Ok(ResponseFactory.CreateResponse(users));
         }

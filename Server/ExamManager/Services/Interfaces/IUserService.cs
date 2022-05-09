@@ -8,7 +8,7 @@ public interface IUserService
     public Task<User> GetUser(Guid userId, bool includeGroup = false, bool includeTasks = false);
     public Task<User> GetUser(string login, string password, bool includeGroup = false, bool includeTasks = false);
     public Task<ClaimsPrincipal> CreateUserPrincipal(User user);
-    public Task<IEnumerable<User>> GetUsers(Func<User, bool> predicate, bool includeGroup = false, bool includeTasks = false);
+    public Task<IEnumerable<User>> GetUsers(UserOptions options, bool includeGroup = false, bool includeTasks = false);
     public Task<IEnumerable<User>> GetUsers(IEnumerable<Guid> userIds, bool includeGroup = false, bool includeTasks = false);
 
     /// <summary>
@@ -23,4 +23,16 @@ public interface IUserService
     public Task<List<User>> RegisterUsers(List<User> users);
     public Task DeleteUser(Guid userId);
     public Task DeleteUsers(HashSet<Guid> userIds);
+}
+
+public struct UserOptions
+{
+    public string? Name { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public bool? WithoutGroups { get; set; }
+    public Guid[]? GroupIds { get; set; }
+    public Guid[]? ExcludeGroupIds { get; set; }
+    public StudentTask.TaskStatus? TaskStatus { get; set; }
+    public UserRole? Role { get; set; }
 }

@@ -1,8 +1,10 @@
-﻿using ExamManager.Extensions;
+﻿using ExamManager.DAO;
+using ExamManager.Extensions;
 using ExamManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Claims;
 
 namespace ExamManager.Services;
@@ -134,11 +136,20 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<IEnumerable<User>> GetUsers(Func<User, bool> predicate, bool includeGroup = false, bool includeTasks = false)
+    public async Task<IEnumerable<User>> GetUsers(UserOptions options, bool includeGroup = false, bool includeTasks = false)
     {
         var UserSet = _dbContext.Set<User>();
 
-        IQueryable<User> request = UserSet.AsQueryable();
+        var query = $"SELECT * FROM `Users`";
+        var conditions = GetQueryConditions(options);
+        if (!string.IsNullOrEmpty(conditions))
+        {
+            query = query + " " + conditions;
+        }
+
+        var userIds = await UserSet.FromSqlRaw(query).Select(user => user.ObjectID).ToListAsync();
+
+        IQueryable<User> request = UserSet.AsNoTracking().AsQueryable();
         if (includeGroup)
         {
             request = request.Include(nameof(User.StudentGroup));
@@ -148,7 +159,22 @@ public class UserService : IUserService
             request = request.Include(nameof(User.Tasks));
         }
 
-        return request.Where(predicate);
+        var result = await request.Where(user => userIds.Contains(user.ObjectID)).ToListAsync();
+        //result = request.Where(user => options.Role == null | user.Role == options.Role);
+
+        //var result =  request.Where(user =>
+        //{
+        //    var result = true;
+        //    result = result & (options.FirstName == null | user.FirstName.Contains(options.FirstName, StringComparison.CurrentCultureIgnoreCase));
+        //    result = result & (options.LastName == null | user.LastName.Contains(options.LastName, StringComparison.CurrentCultureIgnoreCase));
+        //    result = result & (options.GroupIds == null | options.GroupIds.ToList().Contains(user.StudentGroupID.Value));
+        //    result = result & (options.TaskStatus == null | user.Tasks.Any(task => task.Status == options.TaskStatus));
+        //    result = result & (options.Role == null | user.Role == options.Role);
+
+        //    return result;
+        //});
+
+        return result;
     }
 
     public async Task<User> RegisterUser(User user)
@@ -203,5 +229,56 @@ public class UserService : IUserService
         var users = UserSet.AsQueryable().Where(user => userIds.Contains(user.ObjectID));
 
         return users.AsEnumerable();
+    }
+
+    private string GetQueryConditions(UserOptions options)
+    {
+        var conditions = new List<string>(5);
+
+        if (options.Name is not null)
+        {
+            conditions.Add($"(LOWER(`FirstName`) like \"%{options.Name.ToLower()}%\" OR LOWER(`LastName`) like \"%{options.Name.ToLower()}%\")");
+        }
+        else
+        {
+            if (options.FirstName is not null)
+            {
+                conditions.Add($"LOWER(`FirstName`) like \"%{options.FirstName.ToLower()}%\"");
+            }
+            if (options.LastName is not null)
+            {
+                conditions.Add($"LOWER(`LastName`) like \"%{options.LastName.ToLower()}%\"");
+            }
+        }
+        if (options.Role is not null)
+        {
+            conditions.Add($"`Role` = {(int)options.Role}");
+        }
+        if (options.WithoutGroups is not null)
+        {
+            conditions.Add($"`{nameof(User.StudentGroupID)}` IS NULL");
+        }
+        else
+        {
+            if (options.GroupIds is not null)
+            {
+                conditions.Add($"`{nameof(User.StudentGroupID)}` IN (\"{string.Join("\", \"", options.GroupIds)}\")");
+            }
+            if (options.ExcludeGroupIds is not null)
+            {
+                conditions.Add($"(`{nameof(User.StudentGroupID)}` NOT IN (\"{string.Join("\", \"", options.ExcludeGroupIds)}\") OR `{nameof(User.StudentGroupID)}` IS NULL)");
+            }
+        }
+        if (options.TaskStatus is not null)
+        {
+            conditions.Add($"EXISTS (SELECT 1 FROM `StudentTasks` AS t WHERE t.{nameof(StudentTask.StudentID)} = ObjectID AND t.{nameof(StudentTask.Status)} = {(int)options.TaskStatus})");
+        }
+
+        if (conditions.Count > 0)
+        {
+            return $"WHERE {string.Join(" AND ", conditions)}";
+        }
+
+        return string.Empty;
     }
 }
