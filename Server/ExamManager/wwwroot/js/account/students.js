@@ -15,8 +15,7 @@ function updateStudents(e) {
     let studentName = e.target.value;
 
     let data = {
-        firstName: studentName,
-        lastName: studentName
+        name: studentName
     };
 
     // Если строка пустая, то возвращаем всех студентов
@@ -26,7 +25,6 @@ function updateStudents(e) {
     }
 
     let onResponse = function (response) {
-        console.log(response.responseText);
         fillStudents(JSON.parse(response.responseText));
     };
 
@@ -48,7 +46,7 @@ function fillStudents(data) {
         if (decoded["Claim.Key.Id"] == user.id) {
             continue;
         }
-        console.log(user);
+
         let tableRow = $(`<div class="row" student="${user.id}">` +
             `<div>${index}</div>` +
             `<div class="student-name">${user.lastName} ${user.firstName}</div>` +
@@ -58,9 +56,9 @@ function fillStudents(data) {
 
 
         let actionsColumn = $('<div class="actions"> ' +
-            `<a class="edit" href="/pages/user/${user.id}">` +
-            '<i class="fa fa-solid fa-pen"></i>' +
-            '</a>' +
+            //`<a class="edit" href="/pages/user/${user.id}">` +
+            //'<i class="fa fa-solid fa-pen"></i>' +
+            //'</a>' +
             '</div>');
 
         let deleteButton = $(`<a class="delete">` +
@@ -105,6 +103,8 @@ let createNewUser = function () {
     let login = $("#login").val();
     let password = $("#password").val();
 
+    reloadInputs();
+
     let errors = {};
     if (firstName === "") {
         errors["firstname"] = ["Введите имя"];
@@ -138,10 +138,36 @@ let createNewUser = function () {
     }
 
     let onResponse = function (response) {
-        window.location.reload();
+        let responseText = JSON.parse(response.responseText);
+
+        if (responseText.type === "BadResponse") {
+            handleErrors(responseText.errors);
+        }
+        else {
+            window.location.reload();
+        }
     }
 
     createUsers(JSON.stringify(data), onResponse);
+}
+
+let reloadInputs = function () {
+    $("#firstname").removeClass("input-validation-error");
+    $("#lastname").removeClass("input-validation-error");
+    $("#login").removeClass("input-validation-error");
+    $("#password").removeClass("input-validation-error");
+
+    $("#firstname+.field-validation-error").remove();
+    $("#lastname+.field-validation-error").remove();
+    $("#login+.field-validation-error").remove();
+    $("#password+.field-validation-error").remove();
+}
+
+let emptyInput = function () {
+    $("#firstname").val('');
+    $("#lastname").val('');
+    $("#login").val('');
+    $("#password").val('');
 }
 
 let handleErrors = function (errors) {
@@ -166,6 +192,8 @@ openModal.addEventListener("click", () => {
 
 closeModal.addEventListener("click", () => {
     modal.close();
+    reloadInputs();
+    emptyInput();
 });
 
 reloadButton.addEventListener("click", () => {

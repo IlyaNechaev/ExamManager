@@ -11,6 +11,7 @@ using System.Linq;
 namespace ExamManager.Controllers
 {
     [ApiController]
+    [OnlyUserRole(Role: UserRole.ADMIN)]
     [JwtAuthorize]
     public class UsersController : ControllerBase
     {
@@ -40,7 +41,7 @@ namespace ExamManager.Controllers
                 ExcludeGroupIds = request.excludeGroupIds,
                 TaskStatus = request.taskStatus,
             };
-            var users = await _userService.GetUsers(options, includeTasks: true);
+            var users = await _userService.GetUsers(options, includeTasks: true, includeGroup: true);
 
             return Ok(ResponseFactory.CreateResponse(users));
         }
@@ -66,7 +67,24 @@ namespace ExamManager.Controllers
                 return newUser;
             }).ToList();
 
-            var registeredUsers = await _userService.RegisterUsers(users);
+            foreach (var user in users)
+            {
+                var validationResult = await _userService.ValidateUser(user);
+                if (validationResult.HasErrors)
+                {
+                    // TODO: Передавать данные по неудачной валидации о каждом пользователе
+                    ModelState.AddErrors(validationResult.ErrorMessages);
+                    return Ok(ResponseFactory.CreateResponse(ModelState));
+                }
+            }
+
+            var registeredUsers = new List<User>(users.Count);
+            // TODO: Добавить метод добавления нескольких пользователей
+            foreach (var user in users)
+            {
+                var registeredUser = await _userService.RegisterUser(user);
+                registeredUsers.Add(registeredUser);
+            }
 
             return Ok(ResponseFactory.CreateResponse(registeredUsers));
         }

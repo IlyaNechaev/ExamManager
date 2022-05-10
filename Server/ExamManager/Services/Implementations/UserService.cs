@@ -130,7 +130,7 @@ public class UserService : IUserService
     private void CopyFields(User source, User target)
     {
         var userType = typeof(User);
-        foreach(var property in userType.GetProperties())
+        foreach (var property in userType.GetProperties())
         {
             property.SetValue(target, property.GetValue(source));
         }
@@ -160,19 +160,6 @@ public class UserService : IUserService
         }
 
         var result = await request.Where(user => userIds.Contains(user.ObjectID)).ToListAsync();
-        //result = request.Where(user => options.Role == null | user.Role == options.Role);
-
-        //var result =  request.Where(user =>
-        //{
-        //    var result = true;
-        //    result = result & (options.FirstName == null | user.FirstName.Contains(options.FirstName, StringComparison.CurrentCultureIgnoreCase));
-        //    result = result & (options.LastName == null | user.LastName.Contains(options.LastName, StringComparison.CurrentCultureIgnoreCase));
-        //    result = result & (options.GroupIds == null | options.GroupIds.ToList().Contains(user.StudentGroupID.Value));
-        //    result = result & (options.TaskStatus == null | user.Tasks.Any(task => task.Status == options.TaskStatus));
-        //    result = result & (options.Role == null | user.Role == options.Role);
-
-        //    return result;
-        //});
 
         return result;
     }
@@ -185,16 +172,6 @@ public class UserService : IUserService
         await _dbContext.SaveChangesAsync();
 
         return user;
-    }
-
-    public async Task<List<User>> RegisterUsers(List<User> users)
-    {
-        var UserSet = _dbContext.Set<User>();
-        await UserSet.AddRangeAsync(users);
-
-        await _dbContext.SaveChangesAsync();
-
-        return users;
     }
 
     public async Task DeleteUser(Guid userId)
@@ -237,7 +214,8 @@ public class UserService : IUserService
 
         if (options.Name is not null)
         {
-            conditions.Add($"(LOWER(`FirstName`) like \"%{options.Name.ToLower()}%\" OR LOWER(`LastName`) like \"%{options.Name.ToLower()}%\")");
+            var nameParts = options.Name.Split(" ").Select(part => $"(LOWER(`FirstName`) like \"%{part.ToLower()}%\" OR LOWER(`LastName`) like \"%{part.ToLower()}%\")");
+            conditions.Add(String.Join(" AND ", nameParts));
         }
         else
         {
@@ -280,5 +258,26 @@ public class UserService : IUserService
         }
 
         return string.Empty;
+    }
+
+    public async Task<ValidationResult> ValidateUser(User user)
+    {
+        var validationResult = new ValidationResult();
+        var UserSet = _dbContext.Set<User>();
+
+        if (await UserSet.AnyAsync(u => u.Login == user.Login))
+        {
+            validationResult.AddMessage("login", "Пользователь с таким логином уже существует");
+        }
+        if (string.IsNullOrEmpty(user.FirstName))
+        {
+            validationResult.AddMessage("firstname", "Введите имя");
+        }
+        if (string.IsNullOrEmpty(user.LastName))
+        {
+            validationResult.AddMessage("firstname", "Введите фамилию");
+        }
+
+        return validationResult;
     }
 }

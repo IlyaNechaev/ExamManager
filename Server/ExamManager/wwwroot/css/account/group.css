@@ -54,14 +54,17 @@
     display: grid;
     grid-template-columns: 2fr 3fr;
     margin-top: 1em;
-    height: 100%;
     border: 1px solid rgba(0, 0, 0, 0.4);
+    overflow-y: auto;
+    height: 100%;
 }
 
     .students-table > .students-list {
         display: grid;
         grid-template-rows: 9fr 1fr;
+        height: 100%;
         border-right: 1px solid rgba(0, 0, 0, 0.4);
+        overflow-y: auto;
     }
 
 .students-list > .footer {
@@ -79,14 +82,14 @@
 
 .students-table .students-list .loader {
     position: absolute;
-    top: 42%;
-    left: 42%;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
 }
 
 .add-student-modal .students-list .loader {
     position: absolute;
-    top: 44%;
-    left: 44%;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
 }
 
 .students-list .students > .student {
@@ -96,18 +99,18 @@
     transition: background-color 200ms;
 }
 
-    .students-list .student.hl {
-        background-color: rgb(36, 124, 224);
-    }
+.students-list .student.hl {
+    background-color: rgb(36, 124, 224);
+}
 
-    .students-list .student:hover {
-        cursor: pointer;
-        background-color: rgba(36, 124, 224, 0.4);
-    }
+.students-list .student:hover {
+    cursor: pointer;
+    background-color: rgba(36, 124, 224, 0.4);
+}
 
-    .students-list .student.hl:hover {
-        background-color: rgb(36, 124, 224);
-    }
+.students-list .student.hl:hover {
+    background-color: rgb(36, 124, 224);
+}
 
 .students-table .students::-webkit-scrollbar {
     width: 0.7em;

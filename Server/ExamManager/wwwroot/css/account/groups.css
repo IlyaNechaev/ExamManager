@@ -41,9 +41,8 @@
 
     .groups-table .body .loader {
         position: absolute;
-        position: absolute;
-        top: 42%;
-        left: 42%;
+        top: calc(50% - 50px);
+        left: calc(50% - 50px);
     }
 
 .groups-table .row {

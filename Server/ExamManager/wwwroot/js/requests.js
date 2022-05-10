@@ -56,6 +56,10 @@ let createTask = function (body, onResponse){
     handleRequest(`/task/create`, "POST", body, onResponse);
 }
 
+let deleteTask = function (body, onResponse){
+    handleRequest(`/task/delete`, "POST", body, onResponse);
+}
+
 let modifyTask = function (body, onResponse){
     handleRequest(`/task/modify`, "POST", body, onResponse);
 }
@@ -76,7 +80,7 @@ let createGroup = function (body, onResponse){
     handleRequest(`/group/create`, "POST", body, onResponse);
 }
 
-let addGroupStudents = function (body, onResponse){
+let addGroupStudents = function (body, onResponse) {
     handleRequest(`/group/students/add`, "POST", body, onResponse);
 }
 

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="~/css/account/admin.css" />
     <link rel="stylesheet" href="~/css/account/navbar.css" />
     <link rel="stylesheet" href="~/css/loader.css" />
+    <link rel="stylesheet" href="~/css/main-style.css" />
     @if (Context.Request.Path.Value.Equals(Routes.StudentsPage))
     {
         <link rel="stylesheet" href="~/css/account/students.css" />
@@ -66,7 +67,7 @@
 {
     <script src="~/js/account/group.js"></script>
 }
-@if (Context.Request.Path.Value.Equals(Routes.TaskPage))
+@if (Context.Request.Path.Value.Equals(Routes.TaskPage) || Context.Request.Path.Value.Equals(Routes.NewTaskPage))
 {
     <script src=~/js/account/task.js></script>
 }

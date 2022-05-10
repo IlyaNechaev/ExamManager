@@ -82,7 +82,7 @@ namespace ExamManager.Controllers
         [HttpGet(Routes.GroupPage)]
         [ValidateGuidFormat("id")]
         [JwtAuthorize(RedirectUrl: "/pages/login")]
-        [OnlyUserRole(UserRole.ADMIN)]
+        [OnlyUserRole(UserRole.ADMIN, "/pages/login")]
         public async Task<IActionResult> GroupPageIndex(string id)
         {
             var groupId = Guid.Parse(id);
@@ -94,7 +94,7 @@ namespace ExamManager.Controllers
 
         [HttpGet(Routes.StudentsPage)]
         [JwtAuthorize(RedirectUrl: "/pages/login")]
-        [OnlyUserRole(UserRole.ADMIN)]
+        [OnlyUserRole(UserRole.ADMIN, "/pages/login")]
         public async Task<IActionResult> StudentsPageIndex()
         {
             var user = (User)HttpContext.Items["User"];
@@ -116,7 +116,7 @@ namespace ExamManager.Controllers
         [HttpGet(Routes.NewTaskPage)]
         [JwtAuthorize(RedirectUrl: "/pages/login")]
         [ValidateGuidFormat("student")]
-        [OnlyUserRole(UserRole.ADMIN)]
+        [OnlyUserRole(UserRole.ADMIN, "/pages/login")]
         public async Task<IActionResult> NewTaskPageIndex([FromQuery] string student)
         {
             if ((await _userService.GetUser(Guid.Parse(student))) is null)
@@ -129,7 +129,7 @@ namespace ExamManager.Controllers
             {
                 AuthorID = user.ObjectID,
                 StudentID = Guid.Parse(student),
-                Status = StudentTask.TaskStatus.CREATED,
+                Status = StudentTask.TaskStatus.FAILED,
                 Title = string.Empty,
                 Description = string.Empty,
                 Url = string.Empty

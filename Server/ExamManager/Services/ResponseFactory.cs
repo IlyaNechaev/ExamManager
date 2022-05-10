@@ -198,7 +198,7 @@ public static class ResponseFactory
                 description = null,
                 authorId = null,
                 url = null,
-                taskStatus = StudentTask.TaskStatus.CREATED
+                taskStatus = StudentTask.TaskStatus.FAILED
             };
         }
 
