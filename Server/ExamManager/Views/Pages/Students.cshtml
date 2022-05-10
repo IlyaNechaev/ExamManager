@@ -36,18 +36,16 @@
     </div>
 </div>
 <dialog class="create-student-modal" id="create-student-modal">
+    <div class="header">Добавить студентов</div>
     <div class="container">
-        <div class="header">Новый студент</div>
-        <input type="text" class="modal-input" id="firstname" placeholder="Имя" autocomplete="off" />
-        <input type="text" class="modal-input" id="lastname" placeholder="Фамилия" autocomplete="off" />
-        <input type="text" class="modal-input" id="login" placeholder="Логин" autocomplete="off" />
-        <input type="password" class="modal-input" id="password" placeholder="Пароль" />
-        <div class="footer">
-            <input id="create-student-button" type="button" class="btn-action" value="Добавить" />
-            <input type="button"
-                   class="btn-cancel"
-                   id="close-button"
-                   value="Отмена" />
-        </div>
+        <input type="button" id="new-user" class="btn-info" value="Новый студент" />
+        <input type="file" name="file" id="import" class="input-file" />
+        <label for="import" class="input-file">
+            <i class="icon fa fa-check"></i>
+            <span class="js-fileName">Загрузить файл</span>
+        </label>
+    </div>
+    <div class="footer">
+        <input type="button" id="close-button" class="btn-cancel" value="Закрыть">
     </div>
 </dialog>

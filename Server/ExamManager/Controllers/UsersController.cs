@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ExamManager.Models.RequestModels;
 using System.Linq;
+using OfficeOpenXml;
 
 namespace ExamManager.Controllers
 {
@@ -17,14 +18,17 @@ namespace ExamManager.Controllers
     {
         IUserService _userService { get; set; }
         IGroupService _groupService { get; set; }
+        IFileService _fileService { get; set; }
         IMapper _mapper { get; set; }
         public UsersController(IUserService userService,
             IMapper mapper,
-            IGroupService groupService)
+            IGroupService groupService, 
+            IFileService fileService)
         {
             _userService = userService;
             _mapper = mapper;
             _groupService = groupService;
+            _fileService = fileService;
         }
 
         [HttpPost(Routes.GetUsers)]
@@ -87,6 +91,28 @@ namespace ExamManager.Controllers
             }
 
             return Ok(ResponseFactory.CreateResponse(registeredUsers));
+        }
+
+        [HttpPost(Routes.CreateUsersFromFile)]
+        public async Task<IActionResult> CreateUsersFromFile(IList<IFormFile> files, CancellationToken cancellationToken)
+        {
+            var users = new List<User>();
+            foreach (var file in files)
+            {
+                var newUsers = await _fileService.ParseExcelUsers(file, cancellationToken);
+                users.AddRange(newUsers);
+            }
+
+            try
+            {
+                await _userService.RegisterUsers(users);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ResponseFactory.CreateResponse(ex));
+            }
+
+            return Ok(ResponseFactory.CreateResponse(users));
         }
 
         [HttpPost(Routes.DeleteUsers)]

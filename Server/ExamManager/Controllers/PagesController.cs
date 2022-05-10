@@ -21,6 +21,14 @@ namespace ExamManager.Controllers
             _taskService = taskService;
         }
 
+
+        [HttpGet("/")]
+        [HttpGet("/pages")]
+        public IActionResult DefaultRedirect()
+        {
+            return RedirectToAction(nameof(LoginPageIndex));
+        }
+
         [HttpGet(Routes.LoginPage)]
         public IActionResult LoginPageIndex()
         {

@@ -44,6 +44,10 @@ let createUsers = function (body, onResponse){
     handleRequest(`/users/create`, "POST", body, onResponse);
 }
 
+let createUsersFromFile = function (body, onResponse) {
+    handleRequest(`/users/create-from-file`, "POST", body, onResponse);
+}
+
 let deleteUsers = function (body, onResponse){
     handleRequest(`/users/delete`, "POST", body, onResponse);
 }

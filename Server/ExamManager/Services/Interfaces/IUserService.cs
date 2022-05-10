@@ -20,6 +20,7 @@ public interface IUserService
     public Task<ValidationResult> ChangeUserData(Guid userId, params Property[] data);
 
     public Task<User> RegisterUser(User user);
+    public Task RegisterUsers(IEnumerable<User> users);
     public Task DeleteUser(Guid userId);
     public Task DeleteUsers(HashSet<Guid> userIds);
     public Task<ValidationResult> ValidateUser(User user);

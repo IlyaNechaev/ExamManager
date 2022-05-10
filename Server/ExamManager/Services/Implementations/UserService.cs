@@ -280,4 +280,36 @@ public class UserService : IUserService
 
         return validationResult;
     }
+
+    public async Task RegisterUsers(IEnumerable<User> users)
+    {
+        var UserSet = _dbContext.Set<User>();
+        var existsUserLogins = new List<string>();
+
+        foreach (var user in users)
+        {
+            if (await UserSet.AnyAsync(u => u.Login == user.Login))
+            {
+                existsUserLogins.Add(user.Login);
+            }
+        }
+
+        if (existsUserLogins.Count > 0)
+        {
+            throw new InvalidDataException($"Пользователи с логинами {string.Join(", ", existsUserLogins)} уже существуют");
+        }
+
+        var transaction = await _dbContext.Database.BeginTransactionAsync();        
+        try
+        {
+            await UserSet.AddRangeAsync(users);
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+        await transaction.CommitAsync();
+        await _dbContext.SaveChangesAsync();
+    }
 }

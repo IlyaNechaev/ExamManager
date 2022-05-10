@@ -74,7 +74,7 @@ function fillGroups(data) {
 
         let actionsColumn = $('<div class="actions"> ' +
                                 `<a class="edit" href="/pages/group/${group.id}">` +
-                                    '<i class="fa fa-solid fa-pen"></i>' +
+                                    '<i class="fa fa-solid fa-eye"></i>' +
                                 '</a>' +
                              '</div>');
 
