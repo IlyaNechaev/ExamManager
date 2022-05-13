@@ -28,7 +28,7 @@ builder.Services.AddRazorPages();
 
 var connectionString = configManager.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContext<DbContext, ApplicationDBContext>(
+builder.Services.AddDbContext<DbContext, ExamManagerDBContext>(
     dbContextOptions => dbContextOptions
         .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
         .LogTo(Console.WriteLine, LogLevel.Information)

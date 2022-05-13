@@ -6,13 +6,13 @@ using ExamManager.Services;
 
 namespace ExamManager.DAO
 {
-    public class ApplicationDBContext : DbContext
+    public class ExamManagerDBContext : DbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<StudentTask> StudentTasks { get; set; }
 
-        public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options,
+        public ExamManagerDBContext(DbContextOptions<ExamManagerDBContext> options,
                                     [FromServices] ISecurityService securitySerice) : base(options)
         {
             Database.EnsureCreated();
