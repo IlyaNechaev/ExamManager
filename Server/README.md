@@ -4,8 +4,9 @@
 |--------|--------|--------|--------|
 |  **POST** */login*  |  Проверить зарегистрирован ли пользователь и сгенерировать для него JWT-токен  |  LoginEditModel  |  JwtResponse  |
 |  **GET** */user/{id}*  |  Получить информацию о пользователе по его ID  |  id  |  UserDataResponse  |
-| **GET** */user/{id}/tasks* | Получить информацию о заданиях, которые имеются у пользователя ID | id | TasksDataResponse |
-| **POST** */user/{id}/tasks/add?task={taskId}* | Присвоить пользователю задание | **id** - идентификатор пользователя<br />**taskId** - идентификатор задания | TaskDataResponse |
+| **GET** */user/{id}/tasks* | Получить информацию о заданиях, которые имеются у пользователя ID | id | PersonalTasksDataResponse |
+| **POST** */user/{id}/tasks/add* | Присвоить пользователю задания | AddPersonalTasksRequest | PersonalTasksDataResponse |
+| **POST** */user/{id}/tasks/remove* | Убрать задания у пользователя | RemovePersonalTasksRequest | Response |
 | **POST** */user/modify* | Изменить данные пользователя | ModifyUserRequest | UserDataResponse |
 | **GET** */users* | Получить список информации о пользователях | GetUsersRequest | UsersDataResponse |
 | **POST** */users/create* | Зарегистрировать пользователей | CreateUsersRequest | UsersDataResponse |
@@ -33,15 +34,65 @@
 
 
 
+## AddPersonalTasksRequest
+
+<table>
+    <tr>
+        <th colspan=2>Поле</th>
+        <th>Тип данных</th>
+        <th>Обязательно</th>
+        <th>Описание</th>
+    </tr>
+    <tr>
+        <td colspan=2>tasks</td>
+        <td>array</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>id</td>
+        <td>guid</td>
+        <td>Да</td>
+        <td>Идентификатор задания</td>
+    </tr>
+</table>
+
+
+
+## RemovePersonalTasksRequest
+
+<table>
+    <tr>
+        <th colspan=2>Поле</th>
+        <th>Тип данных</th>
+        <th>Обязательно</th>
+        <th>Описание</th>
+    </tr>
+    <tr>
+        <td colspan=2>pesronalTasks</td>
+        <td>array</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>id</td>
+        <td>guid</td>
+        <td>Да</td>
+        <td>Идентификатор задания у пользователя</td>
+    </tr>
+</table>
+
+
+
 ## CreateTaskRequest
 
-| Поле        | Тип данных | Обязательно | Описание                                                     |
-| ----------- | ---------- | ----------- | ------------------------------------------------------------ |
-| title       | string     | Да          | Название задания                                             |
-| description | string     |             | Описание задания                                             |
-| url         | string     | Да          | URL для перехода к ресурсу задания                           |
-| studentId   | guid       | Да          | ID студента, для которого будет создано задание              |
-| authorId    | guid       |             | ID автора задания. Если значение отсутствует,<br />то будет записан ID текущего пользователя |
+| Поле           | Тип данных | Обязательно | Описание                                                     |
+| -------------- | ---------- | ----------- | ------------------------------------------------------------ |
+| title          | string     | Да          | Название задания                                             |
+| description    | string     |             | Описание задания                                             |
+| virtualMachine | int        | Да          | Идентификатор виртуальной машины,<br />на которой будет выполняться задание |
 
 
 
@@ -57,15 +108,11 @@
 
 В теле данного запроса значения всех полей кроме *taskId* заменят текущие значения полей задания 
 
-| Поле        | Тип данных | Обязательно | Описание                                  |
-| ----------- | ---------- | ----------- | ----------------------------------------- |
-| taskId      | guid       | Да          | ID задания, которое необходимо изменить   |
-| title       | string     |             | Название задания                          |
-| description | string     |             | Описание задания                          |
-| studentId   | guid       |             | ID студента, для которого создано задание |
-| authorId    | guid       |             | ID автора задания                         |
-| status      | int        |             | Статус задания                            |
-| url         | string     |             | URL ресурса задания                       |
+| Поле        | Тип данных | Обязательно | Описание                                |
+| ----------- | ---------- | ----------- | --------------------------------------- |
+| taskId      | guid       | Да          | ID задания, которое необходимо изменить |
+| title       | string     |             | Название задания                        |
+| description | string     |             | Описание задания                        |
 
 
 
@@ -337,17 +384,17 @@
 
 
 
-
 # 3. Структура ответов
 
 Каждый ответ имеет в своем теле поле *type*, в котором указан тип ответа, а также *status*, содержащий статус результата запроса.
 
 ## Response
 
-| Поле   | Тип данных | Описание                         |
-| ------ | ---------- | -------------------------------- |
-| status | string     | Статус результата запроса (HTTP) |
-| type   | string     | Тип ответа                       |
+| Поле    | Тип данных | Описание                         |
+| ------- | ---------- | -------------------------------- |
+| status  | string     | Статус результата запроса (HTTP) |
+| message | string     | Информационное сообщение         |
+| type    | string     | Тип ответа                       |
 
 
 
@@ -519,40 +566,84 @@
         <td>description</td>
         <td>string</td>
         <td>Описание</td>
-    </tr>
-    <tr>
-    	<td></td>
-        <td>status</td>
-        <td>int</td>
-        <td>Статус</td>
-    </tr>
-    <tr>
-    	<td></td>
-        <td>studentId</td>
-        <td>guid</td>
-        <td>ID студента, которому принадлежит задание</td>
-    </tr>
-    <tr>
-    	<td></td>
-        <td>url</td>
-        <td>string</td>
-        <td>URL для перехода к ресурсу задания</td>
-    </tr>
+    </tr>    
 </table>
-
 
 
 
 ## TaskDataResponse
 
-| Поле        | Тип данных | Описание                           |
-| ----------- | ---------- | ---------------------------------- |
-| id          | guid       | ID задания                         |
-| title       | string     | Название                           |
-| description | string     | Описание                           |
-| taskStatus  | int        | Статус                             |
-| authorId    | guid       | ID автора задания                  |
-| url         | string     | URL для перехода к ресурсу задания |
+| Поле        | Тип данных | Описание   |
+| ----------- | ---------- | ---------- |
+| id          | guid       | ID задания |
+| title       | string     | Название   |
+| description | string     | Описание   |
+
+
+
+## PersonalTasksDataResponse
+
+<table>
+    <tr>
+    	<th colspan=3>Поле</th>
+    	<th>Тип данных</th>
+    	<th>Описание</th>
+    </tr>
+    <tr>
+    	<td colspan=3>personalTasks</td>
+        <td>array</td>
+        <td></td>
+    </tr>
+    <tr>
+    	<td></td>
+    	<td colspan=2>studentId</td>
+        <td>guid</td>
+        <td>Идентификатор студента, которому присвоены задания</td>
+    </tr>
+    <tr>
+    	<td></td>
+    	<td colspan=2>tasks</td>
+        <td>array</td>
+        <td></td>
+    </tr>
+    <tr>
+    	<td></td>
+    	<td></td>
+        <td>id</td>
+        <td>guid</td>
+        <td>Идентифкатор персонального задания</td>
+    </tr>
+    <tr>
+    	<td></td>
+    	<td></td>
+        <td>title</td>
+        <td>string</td>
+        <td>Название задания</td>
+    </tr>
+    <tr>
+    	<td></td>
+    	<td></td>
+        <td>description</td>
+        <td>string</td>
+        <td>Описание задания</td>
+    </tr>
+    <tr>
+    	<td></td>
+    	<td></td>
+        <td>number</td>
+        <td>ushort</td>
+        <td>Внутренний номер задания</td>
+    </tr>
+    <tr>
+    	<td></td>
+    	<td></td>
+        <td>status</td>
+        <td>int</td>
+        <td>Статус персонального задания</td>
+    </tr>
+</table>
+
+
 
 
 
@@ -601,7 +692,7 @@
 
 
 
-## BadResponse
+## ErrorsResponse
 
 <table>
     <tr>
@@ -638,7 +729,7 @@
 
 
 
-## ExceptionResponse
+## BadResponse
 
 | Поле          | Тип данных | Описание                  |
 | ------------- | ---------- | ------------------------- |

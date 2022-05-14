@@ -72,7 +72,7 @@ public record TaskDataResponse : Response
 
 public record PersonalTasksDataResponse : Response
 {
-    public PersonalTaskView[] personalTasks { get; set; }
+    public PersonalTaskView[]? personalTasks { get; set; }
     public struct PersonalTaskView
     {
         public Guid studentId { get; set; }
@@ -106,12 +106,12 @@ public record GroupsDataResponse : Response
     }
 }
 
-public record BadResponse : Response
+public record ErrorsResponse : Response
 {
     public Dictionary<string, List<string>>? errors { get; set; }
 }
 
-public record ExceptionResponse : Response
+public record BadResponse : Response
 {
     public string exceptionType { get; set; }
     public string message { get; set; }

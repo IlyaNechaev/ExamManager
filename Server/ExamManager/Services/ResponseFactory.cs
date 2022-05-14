@@ -33,7 +33,7 @@ public static class ResponseFactory
 
         if (!modelState.IsValid)
         {
-            response = new BadResponse
+            response = new ErrorsResponse
             {
                 status = HttpStatusCode.BadRequest,
                 errors = CreateDictionary(modelState)
@@ -61,7 +61,7 @@ public static class ResponseFactory
     }
     public static Response CreateResponse(Exception ex)
     {
-        return new ExceptionResponse
+        return new BadResponse
         {
             exceptionType = ex.GetType().Name,
             status = HttpStatusCode.BadRequest,

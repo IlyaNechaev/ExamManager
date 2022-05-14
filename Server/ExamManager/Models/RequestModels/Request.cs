@@ -1,12 +1,29 @@
 ﻿namespace ExamManager.Models.RequestModels;
 
+public struct AddPersonalTasksRequest
+{
+    public PersonalTaskView[]? tasks { get; set; }
+    public struct PersonalTaskView
+    {
+        public Guid id { get; set; }
+    }
+
+}
+
+public struct RemovePersonalTasksRequest
+{
+    public PersonalTaskView[]? personalTasks { get; set; }
+    public struct PersonalTaskView
+    {
+        public Guid id { get; set; }
+    }
+}
+
 public struct CreateTaskRequest
 {
     public string title { get; set; }
     public string? description { get; set; }
-    public string url { get; set; }
-    public Guid studentId { get; set; }
-    public Guid? authorId { get; set; }
+    public string virtualMachine { get; set; }
 }
 
 public struct DeleteTaskRequest
@@ -19,8 +36,6 @@ public struct ModifyTaskRequest
     public Guid taskId { get; set; }
     public string? title { get; set; }
     public string? description { get; set; }
-    public Guid? studentId { get; set; }
-    public Models.TaskStatus? status { get; set; }
 }
 
 public struct CreateGroupRequest
