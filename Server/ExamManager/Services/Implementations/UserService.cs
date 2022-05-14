@@ -91,7 +91,10 @@ public class UserService : IUserService
         var entityManager = new EntityManager();
         // Создаем временного пользователя и копируем значения свойств из user
         var tempUser = new User();
-        tempUser = entityManager.CopyInto(tempUser).AllPropertiesFrom(user).GetResult();
+        tempUser = entityManager
+            .CopyInto(tempUser)
+            .AllPropertiesFrom(user)
+            .GetResult();
 
         // Для изменяемых свойств временного пользователя присваиваем переданные значения
         var userCopyManager = entityManager.CopyInto(tempUser);
@@ -207,59 +210,7 @@ public class UserService : IUserService
 
         return users.AsEnumerable();
     }
-
-    private string GetQueryConditions(UserOptions options)
-    {
-        var conditions = new List<string>(5);
-
-        if (options.Name is not null)
-        {
-            var nameParts = options.Name.Split(" ").Select(part => $"(LOWER(`FirstName`) like \"%{part.ToLower()}%\" OR LOWER(`LastName`) like \"%{part.ToLower()}%\")");
-            conditions.Add(String.Join(" AND ", nameParts));
-        }
-        else
-        {
-            if (options.FirstName is not null)
-            {
-                conditions.Add($"LOWER(`FirstName`) like \"%{options.FirstName.ToLower()}%\"");
-            }
-            if (options.LastName is not null)
-            {
-                conditions.Add($"LOWER(`LastName`) like \"%{options.LastName.ToLower()}%\"");
-            }
-        }
-        if (options.Role is not null)
-        {
-            conditions.Add($"`Role` = {(int)options.Role}");
-        }
-        if (options.WithoutGroups is not null)
-        {
-            conditions.Add($"`{nameof(User.StudentGroupID)}` IS NULL");
-        }
-        else
-        {
-            if (options.GroupIds is not null)
-            {
-                conditions.Add($"`{nameof(User.StudentGroupID)}` IN (\"{string.Join("\", \"", options.GroupIds)}\")");
-            }
-            if (options.ExcludeGroupIds is not null)
-            {
-                conditions.Add($"(`{nameof(User.StudentGroupID)}` NOT IN (\"{string.Join("\", \"", options.ExcludeGroupIds)}\") OR `{nameof(User.StudentGroupID)}` IS NULL)");
-            }
-        }
-        if (options.TaskStatus is not null)
-        {
-            conditions.Add($"EXISTS (SELECT 1 FROM `StudentTasks` AS t WHERE t.{nameof(StudentTask.StudentID)} = ObjectID AND t.{nameof(StudentTask.Status)} = {(int)options.TaskStatus})");
-        }
-
-        if (conditions.Count > 0)
-        {
-            return $"WHERE {string.Join(" AND ", conditions)}";
-        }
-
-        return string.Empty;
-    }
-
+    
     public async Task<ValidationResult> ValidateUser(User user)
     {
         var validationResult = new ValidationResult();
@@ -310,6 +261,104 @@ public class UserService : IUserService
             throw;
         }
         await transaction.CommitAsync();
+        await _dbContext.SaveChangesAsync();
+    }
+
+    private string GetQueryConditions(UserOptions options)
+    {
+        var conditions = new List<string>(5);
+
+        if (options.Name is not null)
+        {
+            var nameParts = options.Name.Split(" ").Select(part => $"(LOWER(`FirstName`) like \"%{part.ToLower()}%\" OR LOWER(`LastName`) like \"%{part.ToLower()}%\")");
+            conditions.Add(String.Join(" AND ", nameParts));
+        }
+        else
+        {
+            if (options.FirstName is not null)
+            {
+                conditions.Add($"LOWER(`FirstName`) like \"%{options.FirstName.ToLower()}%\"");
+            }
+            if (options.LastName is not null)
+            {
+                conditions.Add($"LOWER(`LastName`) like \"%{options.LastName.ToLower()}%\"");
+            }
+        }
+        if (options.Role is not null)
+        {
+            conditions.Add($"`Role` = {(int)options.Role}");
+        }
+        if (options.WithoutGroups is not null)
+        {
+            conditions.Add($"`{nameof(User.StudentGroupID)}` IS NULL");
+        }
+        else
+        {
+            if (options.GroupIds is not null)
+            {
+                conditions.Add($"`{nameof(User.StudentGroupID)}` IN (\"{string.Join("\", \"", options.GroupIds)}\")");
+            }
+            if (options.ExcludeGroupIds is not null)
+            {
+                conditions.Add($"(`{nameof(User.StudentGroupID)}` NOT IN (\"{string.Join("\", \"", options.ExcludeGroupIds)}\") OR `{nameof(User.StudentGroupID)}` IS NULL)");
+            }
+        }
+        if (options.TaskStatus is not null)
+        {
+            conditions.Add($"EXISTS (SELECT 1 FROM `StudentTasks` AS t WHERE t.{nameof(PersonalTask.StudentID)} = ObjectID AND t.{nameof(PersonalTask.Status)} = {(int)options.TaskStatus})");
+        }
+
+        if (conditions.Count > 0)
+        {
+            return $"WHERE {string.Join(" AND ", conditions)}";
+        }
+
+        return string.Empty;
+    }
+
+    public async Task<IEnumerable<PersonalTask>> AddUserTasks(Guid userId, Guid[] taskIds)
+    {
+        var UserSet = _dbContext.Set<User>();
+        var StudyTaskSet = _dbContext.Set<StudyTask>();
+
+        var user = await UserSet.FirstOrDefaultAsync(u => u.ObjectID == userId);
+
+        if (user is null)
+        {
+            throw new InvalidDataException($"Пользователя {userId} не существует");
+        }
+
+        var PersonalTaskSet = _dbContext.Set<PersonalTask>();
+        var studyTasks = await StudyTaskSet.Where(task => taskIds.Contains(task.ObjectID)).ToListAsync();
+        var personalTasks = new List<PersonalTask>(studyTasks.Count);
+
+        foreach (var task in studyTasks)
+        {
+            personalTasks.Add(new PersonalTask
+            {
+                Student = user,
+                Task = task,
+                Status = Models.TaskStatus.FAILED
+            });
+
+        }
+
+        await PersonalTaskSet.AddRangeAsync(personalTasks);
+        await _dbContext.SaveChangesAsync();
+
+        return personalTasks;
+    }
+
+    public async Task RemoveUserTasks(Guid[] personalTaskIds)
+    {
+        var PersonalTaskSet = _dbContext.Set<PersonalTask>();
+
+        var tasks = await PersonalTaskSet
+            .Where(task => personalTaskIds.Contains(task.ObjectID))
+            .ToListAsync();
+
+        PersonalTaskSet.RemoveRange(tasks);
+
         await _dbContext.SaveChangesAsync();
     }
 }

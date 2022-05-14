@@ -17,15 +17,18 @@ namespace ExamManager.Controllers
     public class UserController : Controller
     {
         IUserService _userService { get; set; }
+        IStudyTaskService _studyTaskService { get; set; }
         IMapper _mapper { get; set; }
         public UserController(IUserService userService,
-            IMapper mapper)
+            IMapper mapper, IStudyTaskService studyTaskService)
         {
             _userService = userService;
             _mapper = mapper;
+            _studyTaskService = studyTaskService;
         }
 
         [HttpGet(Routes.GetUser)]
+        [OnlyUserRole(UserRole.ADMIN | UserRole.TEACHER)]
         [ValidateGuidFormat("id")]
         public async Task<IActionResult> GetUser(string id)
         {
@@ -33,21 +36,6 @@ namespace ExamManager.Controllers
 
             return Ok(ResponseFactory.CreateResponse(user));
         }
-
-        [HttpGet(Routes.GetUserTasks)]
-        [ValidateGuidFormat("id")]
-        public async Task<IActionResult> GetUserTasks(string id)
-        {
-            var userTasks = (await _userService.GetUser(Guid.Parse(id), includeTasks: true)).Tasks;
-            if (userTasks is null || userTasks.Count == 0)
-            {
-                var exception = new InvalidDataException($"У пользователя {id} нет задач");
-                return Ok(ResponseFactory.CreateResponse(exception));
-            }
-
-            return Ok(ResponseFactory.CreateResponse(userTasks));
-        }
-
 
         [HttpPost(Routes.ModifyUser)]
         public async Task<IActionResult> ModifyUser([FromBody] ModifyUserRequest request)
@@ -84,6 +72,59 @@ namespace ExamManager.Controllers
 
             var user = await _userService.GetUser(request.id);
             return Ok(ResponseFactory.CreateResponse(user));
+        }
+
+        [HttpGet(Routes.GetUserTasks)]
+        [OnlyUserRole(UserRole.ADMIN | UserRole.TEACHER)]
+        [ValidateGuidFormat("id")]
+        public async Task<IActionResult> GetUserTasks(string id)
+        {
+            var options = new StudyTaskOptions
+            {
+                StudentIds = new Guid[] { Guid.Parse(id) }
+            };
+
+            var userTasks = await _studyTaskService.GetStudyTasksAsync(options);
+            if (userTasks is null || userTasks.Count() == 0)
+            {
+                var exception = new InvalidDataException($"У пользователя {id} нет задач");
+                return Ok(ResponseFactory.CreateResponse(exception));
+            }
+
+            return Ok(ResponseFactory.CreateResponse(userTasks));
+        }
+
+        [HttpPost(Routes.AddUserTasks)]
+        [OnlyUserRole(UserRole.ADMIN | UserRole.TEACHER)]
+        [ValidateGuidFormat("id")]
+        public async Task<IActionResult> AddUserTasks([FromBody] AddPersonalTasksRequest request, string id)
+        {
+            if (request.tasks is null)
+            {
+                return Ok(ResponseFactory.CreateResponse());
+            }
+
+            var studentId = Guid.Parse(id);
+            var personalTasks = await _userService.AddUserTasks(studentId, request.tasks.Select(task => task.id).ToArray());
+
+            return Ok(ResponseFactory.CreateResponse(personalTasks));
+        }
+
+        [HttpPost(Routes.RemoveUserTasks)]
+        [OnlyUserRole(UserRole.ADMIN | UserRole.TEACHER)]
+        [ValidateGuidFormat("id")]
+        public async Task<IActionResult> RemoveUserTasks([FromBody] RemovePersonalTasksRequest request, string id)
+        {
+            try
+            {
+                await _userService.RemoveUserTasks(request.personalTasks.Select(task => task.id).ToArray());
+            }
+            catch (Exception ex)
+            {
+                return Ok(ResponseFactory.CreateResponse(ex));
+            }
+
+            return Ok(ResponseFactory.CreateResponse());
         }
     }
 }

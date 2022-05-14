@@ -12,8 +12,8 @@ namespace ExamManager.Controllers
         IMapper _mapper { get; set; }
         IGroupService _groupService { get; set; }
         IUserService _userService { get; set; }
-        IStudentTaskService _taskService { get; set; }
-        public PagesController(IMapper mapper, IGroupService groupService, IUserService userService, IStudentTaskService taskService)
+        IStudyTaskService _taskService { get; set; }
+        public PagesController(IMapper mapper, IGroupService groupService, IUserService userService, IStudyTaskService taskService)
         {
             _mapper = mapper;
             _groupService = groupService;
@@ -117,7 +117,7 @@ namespace ExamManager.Controllers
             var user = (User)HttpContext.Items["User"];
             var taskId = Guid.Parse(id);
 
-            var task = await _taskService.GetStudentTask(taskId);
+            var task = await _taskService.GetStudyTasksAsync(taskId);
             return View("Task", (user, task));
         }
 
@@ -133,14 +133,12 @@ namespace ExamManager.Controllers
             }
 
             var user = (User)HttpContext.Items["User"];
-            var task = new StudentTask
+            var task = new StudyTask
             {
-                AuthorID = user.ObjectID,
-                StudentID = Guid.Parse(student),
-                Status = StudentTask.TaskStatus.FAILED,
                 Title = string.Empty,
                 Description = string.Empty,
-                Url = string.Empty
+                Number = 0,
+                VirtualMachineID = 0
             };
             
             return View("Task", (user, task));

@@ -5,11 +5,12 @@
 |  **POST** */login*  |  Проверить зарегистрирован ли пользователь и сгенерировать для него JWT-токен  |  LoginEditModel  |  JwtResponse  |
 |  **GET** */user/{id}*  |  Получить информацию о пользователе по его ID  |  id  |  UserDataResponse  |
 | **GET** */user/{id}/tasks* | Получить информацию о заданиях, которые имеются у пользователя ID | id | TasksDataResponse |
+| **POST** */user/{id}/tasks/add?task={taskId}* | Присвоить пользователю задание | **id** - идентификатор пользователя<br />**taskId** - идентификатор задания | TaskDataResponse |
 | **POST** */user/modify* | Изменить данные пользователя | ModifyUserRequest | UserDataResponse |
 | **GET** */users* | Получить список информации о пользователях | GetUsersRequest | UsersDataResponse |
 | **POST** */users/create* | Зарегистрировать пользователей | CreateUsersRequest | UsersDataResponse |
 | **POST** */users/delete* | Удалить пользователей | DeleteUsersRequest | Response |
-| **GET** */task/{id}* | Получить информацию о задании по его ID | id | TaskDataResponse |
+| **GET** */tasks/{id}* | Получить информацию о задании по его ID | id | TaskDataResponse |
 | **POST** */task/create* | Создать задание | CreateTaskRequest | TaskDataResponse |
 | **POST** */task/delete* | Удалить задание | DeleteTaskRequet | Response |
 | **POST** */task/modify* | Изменить задание | ModifyTaskRequest | TaskDataResponse |

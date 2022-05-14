@@ -24,6 +24,8 @@ public interface IUserService
     public Task DeleteUser(Guid userId);
     public Task DeleteUsers(HashSet<Guid> userIds);
     public Task<ValidationResult> ValidateUser(User user);
+    public Task<IEnumerable<PersonalTask>> AddUserTasks(Guid userId, Guid[] taskIds);
+    public Task RemoveUserTasks(Guid[] personalTaskIds);
 }
 
 public struct UserOptions
@@ -34,6 +36,6 @@ public struct UserOptions
     public bool? WithoutGroups { get; set; }
     public Guid[]? GroupIds { get; set; }
     public Guid[]? ExcludeGroupIds { get; set; }
-    public StudentTask.TaskStatus? TaskStatus { get; set; }
+    public Models.TaskStatus? TaskStatus { get; set; }
     public UserRole? Role { get; set; }
 }

@@ -10,7 +10,8 @@ namespace ExamManager.DAO
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
-        public DbSet<StudentTask> StudentTasks { get; set; }
+        public DbSet<StudyTask> Tasks { get; set; }
+        public DbSet<PersonalTask> UserTasks { get; set; }
 
         public ExamManagerDBContext(DbContextOptions<ExamManagerDBContext> options,
                                     [FromServices] ISecurityService securitySerice) : base(options)
@@ -35,12 +36,10 @@ namespace ExamManager.DAO
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<StudentTask>()
-                .HasOne(t => t.Student)
-                .WithMany(s => s.Tasks);
-
-            modelBuilder.Entity<StudentTask>()
-                .HasOne(t => t.Author);
+            // Конфигурация моделей
+            modelBuilder.Entity<StudyTask>()
+                .HasMany(st => st.PersonalTasks)
+                .WithOne(pt => pt.Task);
         }
     }
 }

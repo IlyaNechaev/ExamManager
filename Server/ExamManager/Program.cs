@@ -38,7 +38,7 @@ builder.Services.AddDbContext<DbContext, ExamManagerDBContext>(
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IGroupService, GroupService>();
 builder.Services.AddTransient<ISecurityService, SecurityService>();
-builder.Services.AddTransient<IStudentTaskService, StudentTaskService>();
+builder.Services.AddTransient<IStudyTaskService, StudyTaskService>();
 builder.Services.AddTransient<IJwtUtils, JwtUtils>();
 builder.Services.AddTransient<IFileService, FileService>();
 builder.Services.AddTransient<SignInManager>((serviceProvider) => new SignInManager(serviceProvider));

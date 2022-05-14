@@ -7,12 +7,11 @@ public static class Routes
     #region USER
 
     public const string User  = "user";
-
     public const string GetUser  = "{id}";
-
     public const string GetUserTasks  = "{id}/tasks";
-
     public const string ModifyUser  = "modify";
+    public const string AddUserTasks  = "{id}/tasks/add";
+    public const string RemoveUserTasks  = "{id}/tasks/remove";
 
     #endregion
 

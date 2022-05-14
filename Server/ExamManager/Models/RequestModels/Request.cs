@@ -20,9 +20,7 @@ public struct ModifyTaskRequest
     public string? title { get; set; }
     public string? description { get; set; }
     public Guid? studentId { get; set; }
-    public Guid? authorId { get; set; }
-    public StudentTask.TaskStatus? status { get; set; }
-    public string? url { get; set; }
+    public Models.TaskStatus? status { get; set; }
 }
 
 public struct CreateGroupRequest
@@ -58,7 +56,7 @@ public struct GetUsersRequest
     public bool? withoutGroup { get; set; }
     public Guid[]? groupIds { get; set; }
     public Guid[]? excludeGroupIds { get; set; }
-    public StudentTask.TaskStatus? taskStatus { get; set; }
+    public Models.TaskStatus? taskStatus { get; set; }
     public UserRole? role { get; set; }
 }
 

@@ -99,7 +99,7 @@ public static class ResponseFactory
             tasks = user.Tasks?.Select(task => new UserDataResponse.TaskView
             {
                 id = task.ObjectID,
-                title = task.Title
+                title = task.Task.Title
             }).ToArray()
         };
     }
@@ -140,7 +140,7 @@ public static class ResponseFactory
         return new GroupsDataResponse
         {
             status = HttpStatusCode.OK,
-            groups = groups.Select(g => 
+            groups = groups.Select(g =>
             new GroupsDataResponse.GroupView
             {
                 id = g.ObjectID,
@@ -179,14 +179,14 @@ public static class ResponseFactory
                 groupName = groupName ?? u.StudentGroup?.Name,
                 tasks = u.Tasks?.Select(task => new UsersDataResponse.TaskView
                 {
-                    title = task.Title,
+                    title = task.Task.Title,
                     status = task.Status
                 }).ToArray()
             }).ToArray()
         };
     }
 
-    public static Response CreateResponse(StudentTask task)
+    public static Response CreateResponse(StudyTask task)
     {
         if (task is null)
         {
@@ -195,10 +195,7 @@ public static class ResponseFactory
                 status = HttpStatusCode.BadRequest,
                 id = null,
                 title = null,
-                description = null,
-                authorId = null,
-                url = null,
-                taskStatus = StudentTask.TaskStatus.FAILED
+                description = null
             };
         }
 
@@ -207,14 +204,44 @@ public static class ResponseFactory
             status = HttpStatusCode.OK,
             id = task.ObjectID,
             title = task.Title,
-            description = task.Description,
-            authorId = task.AuthorID,
-            url = task.Url,
-            taskStatus = task.Status
+            description = task.Description
         };
     }
 
-    public static Response CreateResponse(IEnumerable<StudentTask> tasks)
+    public static Response CreateResponse(IEnumerable<PersonalTask> tasks)
+    {
+        if (tasks is null)
+        {
+            return new PersonalTasksDataResponse
+            {
+                personalTasks = null
+            };
+        }
+
+        var studentIds = tasks
+            .Select(task => task.StudentID)
+            .Distinct();
+
+        return new PersonalTasksDataResponse
+        {
+            personalTasks = studentIds.Select(id => new PersonalTasksDataResponse.PersonalTaskView
+            {
+                studentId = id,
+                tasks = tasks
+                    .Where(task => task.StudentID == id)
+                    .Select(task => new PersonalTasksDataResponse.PersonalTaskView.TaskView
+                    {
+                        id = task.ObjectID,
+                        title = task.Task.Title,
+                        description = task.Task.Description,
+                        status = task.Status,
+                        number = task.Task.Number.Value
+                    })
+                    .ToArray()
+            }).ToArray()
+        };
+    }
+    public static Response CreateResponse(IEnumerable<StudyTask> tasks)
     {
         if (tasks is null)
         {
@@ -233,14 +260,12 @@ public static class ResponseFactory
                 {
                     id = t.ObjectID,
                     title = t.Title,
-                    description = t.Description,
-                    studentId = t.StudentID,
-                    taskStatus = t.Status,
-                    url = t.Url
+                    description = t.Description
                 }
             ).ToArray()
         };
     }
+
 
     private static Dictionary<string, List<string>> CreateDictionary(ModelStateDictionary modelState)
     {
