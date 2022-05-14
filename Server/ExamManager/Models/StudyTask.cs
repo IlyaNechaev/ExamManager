@@ -26,7 +26,7 @@ public record StudyTask
     /// Идентификатор виртуальной машины
     /// </summary>
     [Required]
-    public int? VirtualMachineID { get; set; }
+    public string? VirtualMachineID { get; set; }
 
     public IEnumerable<PersonalTask> PersonalTasks { get; set; }
 }
