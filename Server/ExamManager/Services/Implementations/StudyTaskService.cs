@@ -17,7 +17,7 @@ public class StudyTaskService : IStudyTaskService
         _dbContext = context;
     }
 
-    public async Task<StudyTask> CreateStudyTaskAsync(string title, string description, int virtualMachine)
+    public async Task<StudyTask> CreateStudyTaskAsync(string title, string description, string virtualMachine)
     {
         var random = new Random();
         var task = new StudyTask
@@ -85,9 +85,19 @@ public class StudyTaskService : IStudyTaskService
         return tasks;
     }
 
-    public Task<StudyTask> ModifyTaskAsync(Guid taskId, StudyTask task)
+    public async Task<StudyTask> ModifyTaskAsync(Guid taskId, StudyTask task)
     {
-        throw new NotImplementedException();
+        var currentTask = await _dbContext.Tasks.FirstOrDefaultAsync(task => task.ObjectID == taskId);
+
+        if (currentTask is null)
+        {
+            throw new InvalidDataException($"Задания {taskId} не существует");
+        }
+
+        var entityManager = new EntityManager();
+        entityManager.Modify(currentTask).BasedOn(task);
+
+        await _dbContext.SaveChangesAsync();
     }
 
     private (string Condition, SqlParameter[] Parameters) GetQueryConditions(StudyTaskOptions options)

@@ -138,7 +138,7 @@ namespace ExamManager.Controllers
                 Title = string.Empty,
                 Description = string.Empty,
                 Number = 0,
-                VirtualMachineID = 0
+                VirtualMachineID = string.Empty
             };
             
             return View("Task", (user, task));

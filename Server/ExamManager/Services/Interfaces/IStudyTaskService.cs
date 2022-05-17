@@ -7,7 +7,7 @@ public interface IStudyTaskService
     public Task<StudyTask> GetStudyTaskAsync(Guid taskId);
     public Task<IEnumerable<StudyTask>> GetStudyTasksAsync(params Guid[] taskIds);
     public Task<IEnumerable<StudyTask>> GetStudyTasksAsync(StudyTaskOptions options);
-    public Task<StudyTask> CreateStudyTaskAsync(string title, string description, int virtualMachine);
+    public Task<StudyTask> CreateStudyTaskAsync(string title, string description, string virtualMachine);
     public Task AddStudyTaskAsync(StudyTask task);
     public Task DeleteStudyTaskAsync(Guid taskId);
 
