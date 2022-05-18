@@ -34,5 +34,6 @@ public class User : IUserValidationModel
 public enum UserRole
 {
     STUDENT = 1 << 0,
-    ADMIN = 1 << 1
+    ADMIN = 1 << 1,
+    TEACHER = 1 << 2
 }

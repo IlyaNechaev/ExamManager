@@ -95,9 +95,11 @@ public class StudyTaskService : IStudyTaskService
         }
 
         var entityManager = new EntityManager();
-        entityManager.Modify(currentTask).BasedOn(task);
+        //entityManager.Modify(currentTask).BasedOn(task);
 
         await _dbContext.SaveChangesAsync();
+
+        throw new NotImplementedException();
     }
 
     private (string Condition, SqlParameter[] Parameters) GetQueryConditions(StudyTaskOptions options)
