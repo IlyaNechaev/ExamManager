@@ -2,7 +2,7 @@ name: .NET
 
 on:
   push:
-    branches: [ master, asp-refact ]
+    branches: [ master, asp-mvc ]
   pull_request:
     branches: [ master ]
 
@@ -23,5 +23,6 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
       working-directory: ./Server
-#    - name: Test
-#      run: dotnet test --no-build --verbosity normal
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+      working-directory: ./Server/ServicesTests
