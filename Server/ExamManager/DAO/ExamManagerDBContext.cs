@@ -12,6 +12,8 @@ namespace ExamManager.DAO
         public DbSet<Group> Groups { get; set; }
         public DbSet<StudyTask> Tasks { get; set; }
         public DbSet<PersonalTask> UserTasks { get; set; }
+        public DbSet<VirtualMachine> VirtualMachines { get; set; }
+        public DbSet<VirtualMachineImage> VMImages { get; set; }
 
         public ExamManagerDBContext(DbContextOptions<ExamManagerDBContext> options,
                                     [FromServices] ISecurityService securitySerice) : base(options)

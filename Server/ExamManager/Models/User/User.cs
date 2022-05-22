@@ -23,7 +23,8 @@ public class User : IUserValidationModel
     [ForeignKey(nameof(StudentGroupID))]
     public Group? StudentGroup { get; set; }
     public Guid? StudentGroupID { get; set; }
-    public List<PersonalTask> Tasks { get; set; }
+    public ICollection<PersonalTask>? Tasks { get; set; }
+    public ICollection<VirtualMachine>? VirtualMachines { get; set; }
 
     public string GetFirstName() => FirstName;
     public string GetLogin() => Login;
