@@ -18,9 +18,9 @@ createButton.addEventListener("click", () => {
         window.location.reload();
     };
 
-    let data = JSON.stringify({
+    let data = {
         name: $("#create-group-name").val()
-    });
+    };
 
     createGroup(data, onResponse);
 });
@@ -35,11 +35,11 @@ function updateGroups(e) {
 
     let groupName = e.target.value;
 
-    let data = JSON.stringify({
+    let data = {
         name: groupName,
         minStudentsCount: null,
         maxStudentsCount: null
-    });
+    };
 
     // Если строка пустая, то возвращаем все группы
     if (groupName === "") {
@@ -47,7 +47,7 @@ function updateGroups(e) {
     }
 
     let onResponse = function (response) {
-        fillGroups(JSON.parse(response.responseText));
+        fillGroups(response);
     };
 
     getGroups(data, onResponse);

@@ -21,10 +21,10 @@ function updateStudents(e) {
     }
 
     let onResponse = function (response) {
-        fillStudents(JSON.parse(response.responseText));
+        fillStudents(response);
     };
 
-    getUsers(JSON.stringify(data), onResponse);
+    getUsers(data, onResponse);
 }
 
 // Заполнение таблицы студентов
@@ -87,7 +87,7 @@ let deleteUser = function (id) {
         window.location.reload();
     }
 
-    deleteUsers(JSON.stringify(data), onResponse);
+    deleteUsers(data, onResponse);
 }
 
 // Добавить нового студента
@@ -132,17 +132,16 @@ let createNewUser = function () {
     }
 
     let onResponse = function (response) {
-        let responseText = JSON.parse(response.responseText);
 
-        if (responseText.type === "BadResponse") {
-            handleErrors(responseText.errors);
+        if (response.type === "BadResponse") {
+            handleErrors(response.errors);
         }
         else {
             window.location.reload();
         }
     }
 
-    createUsers(JSON.stringify(data), onResponse);
+    createUsers(data, onResponse);
 }
 
 let importFile = function (e) {
