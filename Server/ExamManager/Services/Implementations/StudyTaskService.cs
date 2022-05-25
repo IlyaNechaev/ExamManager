@@ -17,7 +17,7 @@ public class StudyTaskService : IStudyTaskService
         _dbContext = context;
     }
 
-    public async Task<StudyTask> CreateStudyTaskAsync(string title, string description, string virtualMachine)
+    public async Task<StudyTask> CreateStudyTaskAsync(string title, string description, VirtualMachineImage[] virtualMachines)
     {
         var random = new Random();
         var task = new StudyTask
@@ -25,7 +25,7 @@ public class StudyTaskService : IStudyTaskService
             Title = title,
             Description = description,
             Number = (ushort)random.Next(100, 100_000),
-            VirtualMachineID = virtualMachine
+            VirtualMachines = virtualMachines
         };
 
         await _dbContext.Tasks.AddAsync(task);
@@ -33,7 +33,7 @@ public class StudyTaskService : IStudyTaskService
 
         return task;
     }
-    public async Task AddStudyTaskAsync(StudyTask task)
+    public async Task CreateStudyTaskAsync(StudyTask task)
     {
         await _dbContext.Tasks.AddAsync(task);
 
@@ -102,6 +102,7 @@ public class StudyTaskService : IStudyTaskService
         throw new NotImplementedException();
     }
 
+
     private (string Condition, SqlParameter[] Parameters) GetQueryConditions(StudyTaskOptions options)
     {
         var conditions = new List<(string Condition, SqlParameter Parameter)>(5);
@@ -139,5 +140,6 @@ public class StudyTaskService : IStudyTaskService
 
         return (string.Empty, new SqlParameter[0]);
     }
+
 
 }

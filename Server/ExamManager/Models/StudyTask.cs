@@ -22,11 +22,11 @@ public record StudyTask
     /// </summary>
     [Required]
     public ushort? Number { get; set; }
+
     /// <summary>
-    /// Идентификатор виртуальной машины
+    /// Идентификаторы виртуальных машин
     /// </summary>
-    [Required]
-    public string? VirtualMachineID { get; set; }
+    public VirtualMachineImage[]? VirtualMachines { get; set; }
 
     public IEnumerable<PersonalTask> PersonalTasks { get; set; }
 }

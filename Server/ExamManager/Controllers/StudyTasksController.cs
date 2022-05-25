@@ -13,9 +13,7 @@ namespace ExamManager.Controllers
         IUserService _userService { get; }
 
         public StudyTasksController(
-            IStudyTaskService studentTaskService, 
-            IUserService userService
-            )
+            IStudyTaskService studentTaskService, IUserService userService)
         {
             _taskService = studentTaskService;
             _userService = userService;
@@ -34,9 +32,10 @@ namespace ExamManager.Controllers
         [HttpPost(Routes.CreateTask)]
         public async Task<IActionResult> CreateTask([FromBody] CreateTaskRequest request)
         {
+            var studyTask = RequestMapper.MapFrom(request);
             try
             {
-                var studyTask = await _taskService.CreateStudyTaskAsync(request.title, request.description, request.virtualMachine);
+                studyTask = await _taskService.CreateStudyTaskAsync(studyTask.Title!, studyTask.Description!, studyTask.VirtualMachines!);
 
                 return Ok(ResponseFactory.CreateResponse(studyTask));
             }
