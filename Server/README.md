@@ -11,10 +11,13 @@
 | **GET** */users* | Получить список информации о пользователях | GetUsersRequest | UsersDataResponse |
 | **POST** */users/create* | Зарегистрировать пользователей | CreateUsersRequest | UsersDataResponse |
 | **POST** */users/delete* | Удалить пользователей | DeleteUsersRequest | Response |
-| **GET** */tasks/{id}* | Получить информацию о задании по его ID | id | TaskDataResponse |
+| **POST** */tasks/* | Получить список информации о заданиях | GetTasksRequest | TasksDataResponse |
+| **GET** */task/{id}* | Получить информацию о задании по его ID | id | TaskDataResponse |
 | **POST** */task/create* | Создать задание | CreateTaskRequest | TaskDataResponse |
 | **POST** */task/delete* | Удалить задание | DeleteTaskRequet | Response |
 | **POST** */task/modify* | Изменить задание | ModifyTaskRequest | TaskDataResponse |
+| **GET** */task/start/{id}* | Запустить виртуальную машину по ее ID | id | Response |
+| **GET** */task/stop/{id}* | Остановить виртуальную машину по ее ID | id |  |
 | **GET** */group/{id}* | Получить информацию о группе по ее ID | id | GroupDataResponse |
 | **GET** */group/{id}/students* | Получить информацию о студентах, которые состоят в группе ID | id | UsersDataResponse |
 | **GET** */group/{id}/delete* | Удалить группу | id | Response |
@@ -85,14 +88,74 @@
 </table>
 
 
+## GetTasksRequest
+
+<table>
+    <tr>
+    	<th>Поле</th>
+    	<th>Тип данных</th>
+    	<th>Обязательно</th>
+    	<th>Описание</th>
+    </tr>
+    <tr>
+    	<td>title</td>
+    	<td>string</td>
+    	<td></td>
+    	<td>Название задания</td>
+    </tr>
+</table>
+
+
 
 ## CreateTaskRequest
 
-| Поле           | Тип данных | Обязательно | Описание                                                     |
-| -------------- | ---------- | ----------- | ------------------------------------------------------------ |
-| title          | string     | Да          | Название задания                                             |
-| description    | string     |             | Описание задания                                             |
-| virtualMachine | int        | Да          | Идентификатор виртуальной машины,<br />на которой будет выполняться задание |
+<table>
+    <tr>
+    	<th colspan=2>Поле</th>
+    	<th>Тип данных</th>
+    	<th>Обязательно</th>
+    	<th>Описание</th>
+    </tr>
+    <tr>
+    	<td colspan=2>title</td>
+        <td>string</td>
+        <td>Да</td>
+        <td>Название задания</td>
+    </tr>
+    <tr>
+    	<td colspan=2>description</td>
+        <td>string</td>
+        <td>Да</td>
+        <td>Описание задания</td>
+    </tr>
+    <tr>
+    	<td colspan=2>virtualMachines</td>
+        <td>array</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+    	<td></td>
+    	<td>id</td>
+        <td>string</td>
+        <td>Да</td>
+        <td>Идентификатор виртуальной машины</td>
+    </tr>
+    <tr>
+    	<td></td>
+    	<td>title</td>
+        <td>string</td>
+        <td></td>
+        <td>Название виртуальной машины</td>
+    </tr>
+    <tr>
+    	<td></td>
+    	<td>order</td>
+        <td>int</td>
+        <td></td>
+        <td>Порядковый номер виртуальной машины</td>
+    </tr>
+</table>
 
 
 

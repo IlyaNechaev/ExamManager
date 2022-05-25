@@ -22,6 +22,8 @@ public static class Routes
     public const string CreateTask  = "create";
     public const string DeleteTask  = "delete";
     public const string ModifyTask  = "modify";
+    public const string StartVirtualMachine  = "start/{id}";
+    public const string StopVirtualMachine= "stop/{id}";
 
     #endregion
 
