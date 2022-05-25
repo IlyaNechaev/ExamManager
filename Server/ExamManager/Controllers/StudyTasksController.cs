@@ -11,12 +11,14 @@ namespace ExamManager.Controllers
     {
         IStudyTaskService _taskService { get; }
         IUserService _userService { get; }
+        IVirtualMachineService _virtualMachineService { get; set; }
 
         public StudyTasksController(
-            IStudyTaskService studentTaskService, IUserService userService)
+            IStudyTaskService studentTaskService, IUserService userService, IVirtualMachineService virtualMachineService)
         {
             _taskService = studentTaskService;
             _userService = userService;
+            _virtualMachineService = virtualMachineService;
         }
 
         [HttpGet(Routes.GetTask)]
@@ -65,6 +67,41 @@ namespace ExamManager.Controllers
 
             var studentTask = await _taskService.ModifyTaskAsync(request.taskId, studyTask);
             return Ok(ResponseFactory.CreateResponse(studentTask));
+        }
+
+        [HttpGet(Routes.StartVirtualMachine)]
+        public async Task<IActionResult> StartVirtualMachine(string id)
+        {
+            var currentUserID = ((User)HttpContext.Items["User"]).ObjectID;
+
+            var vmId = string.Empty;
+            try
+            {
+                await _virtualMachineService.StartVirtualMachine(id, currentUserID);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ResponseFactory.CreateResponse(ex));
+            }
+
+            return Ok(ResponseFactory.CreateResponse());
+        }
+
+        [HttpGet(Routes.StopVirtualMachine)]
+        public async Task<IActionResult> StopVirtualMachine(string id)
+        {
+            var currentUserID = ((User)HttpContext.Items["User"]).ObjectID;
+
+            try
+            {
+                await _virtualMachineService.StopVirtualMachine(id, currentUserID);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ResponseFactory.CreateResponse(ex));
+            }
+
+            return Ok(ResponseFactory.CreateResponse());
         }
     }
 }
