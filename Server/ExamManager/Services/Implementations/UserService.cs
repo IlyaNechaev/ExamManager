@@ -112,7 +112,10 @@ public class UserService : IUserService
 
         if (!result.HasErrors)
         {
-            user = entityManager.CopyInto(user).AllPropertiesFrom(tempUser).GetResult();
+            user = entityManager
+                .CopyInto(user)
+                .AllPropertiesFrom(tempUser)
+                .GetResult();
 
             await _dbContext.SaveChangesAsync();
         }
@@ -215,6 +218,7 @@ public class UserService : IUserService
     {
         var validationResult = new ValidationResult();
         var UserSet = _dbContext.Set<User>();
+        var GroupSet = _dbContext.Set<Group>();
 
         if (await UserSet.AnyAsync(u => u.Login == user.Login))
         {
@@ -227,6 +231,10 @@ public class UserService : IUserService
         if (string.IsNullOrEmpty(user.LastName))
         {
             validationResult.AddMessage("firstname", "Введите фамилию");
+        }
+        if (user.StudentGroupID is not null && ! await GroupSet.AnyAsync(group => group.ObjectID == user.StudentGroupID))
+        {
+            validationResult.AddMessage("group", "Группа не существует");
         }
 
         return validationResult;
