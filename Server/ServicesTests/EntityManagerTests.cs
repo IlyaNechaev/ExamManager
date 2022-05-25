@@ -28,6 +28,17 @@ namespace ServicesTests
             Assert.Equal(user, resultUser, new UsersComparer());
         }
 
+        [Theory]
+        [MemberData(nameof(StudyTaskFieldData))]
+        public void StudyTaskFields_AreModified(StudyTask currentTask, StudyTask newTask, StudyTask resultTask)
+        {
+            _entityManager
+                .Modify(currentTask)
+                .BasedOn(newTask);
+
+            Assert.Equal(resultTask, currentTask);
+        }
+
         private static IEnumerable<object[]> UserFieldsData()
         {
             yield return new object[]
@@ -101,6 +112,29 @@ namespace ServicesTests
                 }
             };
         }
+
+        private static IEnumerable<object[]> StudyTaskFieldData()
+        {
+            yield return new object[]
+            {
+                new StudyTask { Title = "Задание 1", Description = "Выполнить задание 1", Number = 100 },
+                new StudyTask { Title = null, Description = "Выполнить задание 1 снова", Number = null },
+                new StudyTask { Title = "Задание 1", Description = "Выполнить задание 1 снова", Number = 100 }
+            };
+            yield return new object[]
+            {
+                new StudyTask { Title = "Задание 1", Description = "Выполнить задание 1", Number = 100 },
+                new StudyTask { Title = null, Description = null, Number = null },
+                new StudyTask { Title = "Задание 1", Description = "Выполнить задание 1", Number = 100 }
+            };
+            yield return new object[]
+            {
+                new StudyTask { Title = "Задание 1", Description = "Выполнить задание 1", Number = 100 },
+                new StudyTask { Title = "Задание 2", Description = "Выполнить задание 2", Number = null },
+                new StudyTask { Title = "Задание 2", Description = "Выполнить задание 2", Number = 100 }
+            };
+        }
+
     }
 
     public class UsersComparer : IEqualityComparer<User>
@@ -114,6 +148,23 @@ namespace ServicesTests
         }
 
         public int GetHashCode([DisallowNull] User obj)
+        {
+            return obj.GetHashCode();
+        }
+    }
+
+    public class StudyTasksComparer : IEqualityComparer<StudyTask>
+    {
+        public bool Equals(StudyTask? x, StudyTask? y)
+        {
+            var title = x.Title == y.Title;
+            var description = x.Description == y.Description;
+            var number = x.Number == y.Number;
+
+            return title && description && number;
+        }
+
+        public int GetHashCode([DisallowNull] StudyTask obj)
         {
             return obj.GetHashCode();
         }
