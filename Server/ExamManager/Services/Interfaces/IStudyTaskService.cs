@@ -16,6 +16,7 @@ public interface IStudyTaskService
     /// </summary>
     /// <param name="task">Объект, значения свойств которого будут изменены у имеющегося в БД (свойства со значением null не будут изменены)</param>
     public Task<StudyTask> ModifyTaskAsync(Guid taskId, StudyTask task);
+    public Task AssignTaskToStudentAsync(Guid taskId, Guid studentId);
 }
 
 public struct StudyTaskOptions

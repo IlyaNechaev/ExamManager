@@ -102,6 +102,28 @@ public class StudyTaskService : IStudyTaskService
         throw new NotImplementedException();
     }
 
+    public async Task AssignTaskToStudentAsync(Guid taskId, Guid studentId)
+    {
+        var existedTask = await _dbContext.UserTasks
+            .Include(nameof(PersonalTask.Task))
+            .Include(nameof(PersonalTask.Student))
+            .FirstOrDefaultAsync(task => task.TaskID == taskId && task.StudentID == studentId);
+
+        if (existedTask is not null)
+        {
+            throw new Exception($"Задание {existedTask.Task.Title} уже привязано к пользователю {existedTask.Student.FirstName}");
+        }
+
+        var personalTask = new PersonalTask
+        {
+            StudentID = studentId,
+            TaskID = taskId,
+            Status = Models.TaskStatus.FAILED
+        };
+
+        _dbContext.UserTasks.Add(personalTask);
+        await _dbContext.SaveChangesAsync();
+    }
 
     private (string Condition, SqlParameter[] Parameters) GetQueryConditions(StudyTaskOptions options)
     {
