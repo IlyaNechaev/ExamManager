@@ -145,7 +145,7 @@ namespace ExamManager.Controllers
         {
             var user = (User)HttpContext.Items["User"];
 
-            return View("Tasks", user);
+            return View("PersonalTasks", user);
         }
     }
 }
