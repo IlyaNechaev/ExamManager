@@ -23,11 +23,11 @@ public class FileService : IFileService
 
     public async Task<IEnumerable<User>> ParseUsersFromFile(IFormFile file, CancellationToken cancellationToken)
     {
-        var extension = Path.GetExtension(file.Name);
+        var extension = Path.GetExtension(file.FileName);
         var newUsers = extension switch
         {
-            "xlsx" or "xls" => await ParseExcelUsers(file, cancellationToken),
-            "csv" => await ParseCsvUsers(file, cancellationToken),
+            ".xlsx" or ".xls" => await ParseExcelUsers(file, cancellationToken),
+            ".csv" => await ParseCsvUsers(file, cancellationToken),
             _ => throw new InvalidDataException($"Файл с расширением .{extension} не поддерживается")
         };
 

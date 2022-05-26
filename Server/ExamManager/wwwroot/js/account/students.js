@@ -397,7 +397,7 @@ let addCreateUsersButton = function () {
                     if (data.type === "UsersDataResponse") {
                         window.location.reload();
                     }
-                    else if (data.type === "ExceptionResponse") {
+                    else if (data.type === "BadResponse") {
                         new Notify({
                             status: 'error',
                             title: 'Ошибка',
