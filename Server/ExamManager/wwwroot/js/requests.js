@@ -4,7 +4,8 @@
         method: method,
         processData: false,
         contentType: "application/json",
-        data: data,
+        dataType: "json",
+        data: JSON.stringify(data),
         success: onResponse
     });
 }
