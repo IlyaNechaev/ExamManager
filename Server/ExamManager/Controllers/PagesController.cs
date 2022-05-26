@@ -34,7 +34,7 @@ namespace ExamManager.Controllers
         {
             var user = (User)HttpContext.Items["User"];
             // Если пользователь не авторизован
-            if (user is null)
+            if (user is null || user.IsDefault)
             {
                 return View("Login");
             }
@@ -52,12 +52,6 @@ namespace ExamManager.Controllers
             {
                 RedirectToAction(nameof(LoginPageIndex));
             }
-            //// Если пользователь не администратор
-            //var view = user.Role switch
-            //{
-            //    UserRole.ADMIN => View("Admin", user),
-            //    UserRole.STUDENT => View("User", user)
-            //};
 
             var view = user.Role switch
             {
@@ -138,7 +132,7 @@ namespace ExamManager.Controllers
                 Title = string.Empty,
                 Description = string.Empty,
                 Number = 0,
-                VirtualMachineID = string.Empty
+                VirtualMachines = new VirtualMachineImage[0]
             };
             
             return View("Task", (user, task));
