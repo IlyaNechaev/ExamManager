@@ -117,7 +117,7 @@ namespace ExamManager.Controllers
         {
             try
             {
-                await _userService.RemoveUserTasks(request.personalTasks.Select(task => task.id).ToArray());
+                await _userService.RemoveUserTasks(request.personalTasks?.Select(task => task.id).ToArray() ?? new Guid[0]);
             }
             catch (Exception ex)
             {

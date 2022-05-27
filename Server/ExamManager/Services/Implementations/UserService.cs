@@ -21,7 +21,7 @@ public class UserService : IUserService
         _securityService = securityService;
     }
 
-    public async Task<ClaimsPrincipal?> CreateUserPrincipal(User user)
+    public ClaimsPrincipal? CreateUserPrincipal(User user)
     {
         if (user is null)
             return null;
@@ -36,7 +36,7 @@ public class UserService : IUserService
         // Создаем объект ClaimsIdentity
         var claimId = new ClaimsIdentity(claims, "AppCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
 
-        return await Task.FromResult(new ClaimsPrincipal(claimId));
+        return new ClaimsPrincipal(claimId);
     }
 
     public async Task<User?> GetUser(Guid userId, bool includeGroup = false, bool includeTasks = false)
@@ -57,7 +57,7 @@ public class UserService : IUserService
         return user;
     }
 
-    public async Task<User> GetUser(string login, string password, bool includeGroup = false, bool includeTasks = false)
+    public async Task<User?> GetUser(string login, string password, bool includeGroup = false, bool includeTasks = false)
     {
         var UserSet = _dbContext.Set<User>();
         var passwordHash = _securityService.Encrypt(password);

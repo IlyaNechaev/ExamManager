@@ -28,5 +28,5 @@ public record StudyTask
     /// </summary>
     public VirtualMachineImage[]? VirtualMachines { get; set; }
 
-    public IEnumerable<PersonalTask> PersonalTasks { get; set; }
+    public IEnumerable<PersonalTask>? PersonalTasks { get; set; }
 }

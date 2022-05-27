@@ -48,7 +48,7 @@ namespace ExamManager.Controllers
                 Count = request.count
             };
 
-            Group[] groups = null;
+            var groups = new Group[0];
             try
             {
                 groups = await _groupService.GetGroups(options, includeStudents: true);
