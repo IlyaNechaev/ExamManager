@@ -55,20 +55,20 @@ function updateGroups(e) {
 
 // Заполнение таблицы групп
 function fillGroups(data) {
-    let oldTable = $(".groups-table .body");
+    let oldTable = $(".table .body");
     if (oldTable) {
         oldTable.empty();
     }
 
-    let groupsTableBody = $(".groups-table>.body");
+    let groupsTableBody = $(".table>.body");
 
     let index = 1;
     for (group of data.groups) {
 
         let tableRow = $(`<div class="row" group="${group.id}">` +
                             `<div>${index}</div>` +
-                            `<div class="group-name">${group.name}</div>` +
-                            `<div class="description">Количество: ${group.studentsCount}</div >` +
+                            `<div class="bold">${group.name}</div>` +
+                            `<div>Количество: ${group.studentsCount}</div >` +
                          '</div> ');
 
 
@@ -93,5 +93,7 @@ function fillGroups(data) {
 
         groupsTableBody.append(tableRow);
         index += 1;
-    } 
+    }
+
+    applyTableTemplate();
 }

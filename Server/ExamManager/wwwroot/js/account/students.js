@@ -29,12 +29,12 @@ function updateStudents(e) {
 
 // Заполнение таблицы студентов
 function fillStudents(data) {
-    let oldTable = $(".students-table>.body");
+    let oldTable = $(".table>.body");
     if (oldTable) {
         oldTable.empty();
     }
 
-    let studentsTableBody = $(".students-table>.body");
+    let studentsTableBody = $(".table>.body");
 
     let index = 1;
     for (user of data.users) {
@@ -43,9 +43,9 @@ function fillStudents(data) {
             continue;
         }
 
-        let tableRow = $(`<div class="row" student="${user.id}">` +
+        let tableRow = $(`<div class="row s" student="${user.id}">` +
             `<div class="number">${index}</div>` +
-            `<div class="student-name">${user.lastName} ${user.firstName}</div>` +
+            `<div class="bold">${user.lastName} ${user.firstName}</div>` +
             `<div class="description">${user.groupName == null ? "-" : user.groupName}</div >` +
             `<div class="description">${user.tasks.length}</div >` +
             '</div> ');
@@ -71,6 +71,7 @@ function fillStudents(data) {
         studentsTableBody.append(tableRow);
         index += 1;
     }
+    applyTableTemplate();
 }
 
 let deleteUser = function (id) {
@@ -442,10 +443,3 @@ $("#import").on('change', function (e) {
         fillFiles([]);
     }
 });
-
-updateStudents(
-    {
-        target: {
-            value: ""
-        }
-    });
