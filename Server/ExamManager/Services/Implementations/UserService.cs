@@ -211,7 +211,7 @@ public class UserService : IUserService
 
         var users = UserSet.AsQueryable().Where(user => userIds.Contains(user.ObjectID));
 
-        return users.AsEnumerable();
+        return await users.ToListAsync();
     }
     
     public async Task<ValidationResult> ValidateUser(User user)

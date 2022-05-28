@@ -38,7 +38,7 @@ public static class ScriptManagerExtensions
 {
     public static void AddScriptManager(this IServiceCollection services)
     {
-        services.AddTransient<ScriptManager>(provider => new(provider.GetService<IConfiguration>()));
+        services.AddTransient<ScriptManager>(provider => new(provider.GetService<IConfiguration>()!));
     }
 }
 

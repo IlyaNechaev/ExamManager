@@ -29,26 +29,20 @@ public static class ResponseFactory
 
     public static Response CreateResponse(ModelStateDictionary modelState)
     {
-        Response response = null;
-
         if (!modelState.IsValid)
         {
-            response = new ErrorsResponse
+            return new ErrorsResponse
             {
                 status = HttpStatusCode.BadRequest,
                 errors = CreateDictionary(modelState)
             };
         }
-        else
+        return new Response
         {
-            response = new Response
-            {
-                status = HttpStatusCode.OK
-            };
-        }
-
-        return response;
+            status = HttpStatusCode.OK
+        };
     }
+
     public static Response CreateResponse(string jwtToken, Guid userId, bool isDefault = false)
     {
         return new JWTResponse
@@ -66,11 +60,11 @@ public static class ResponseFactory
             exceptionType = ex.GetType().Name,
             status = HttpStatusCode.BadRequest,
             message = ex.Message,
-            stackTrace = ex.StackTrace
+            stackTrace = ex.StackTrace ?? string.Empty
         };
     }
 
-    public static Response CreateResponse(User user)
+    public static Response CreateResponse(User? user)
     {
         if (user is null)
         {
@@ -99,12 +93,12 @@ public static class ResponseFactory
             tasks = user.Tasks?.Select(task => new UserDataResponse.TaskView
             {
                 id = task.ObjectID,
-                title = task.Task.Title
+                title = task.Task.Title!
             }).ToArray()
         };
     }
 
-    public static Response CreateResponse(Group group)
+    public static Response CreateResponse(Group? group)
     {
         if (group is null)
         {
@@ -156,21 +150,21 @@ public static class ResponseFactory
     /// <param name="users">Пользователи</param>
     /// <param name="groupName">Группа, в которой состоят пользователи</param>
     /// <returns><see cref="UsersDataResponse"/></returns>
-    public static Response CreateResponse(IEnumerable<User> users, string groupName = null)
+    public static Response CreateResponse(IEnumerable<User>? users, string? groupName = null)
     {
         if ((users?.Count() ?? 0) == 0)
         {
             return new UsersDataResponse
             {
                 status = HttpStatusCode.BadRequest,
-                users = null
+                users = new UsersDataResponse.UserView[0]
             };
         }
 
         return new UsersDataResponse
         {
             status = HttpStatusCode.OK,
-            users = users.Select(u =>
+            users = users!.Select(u =>
             new UsersDataResponse.UserView
             {
                 id = u.ObjectID,
@@ -179,7 +173,7 @@ public static class ResponseFactory
                 groupName = groupName ?? u.StudentGroup?.Name,
                 tasks = u.Tasks?.Select(task => new UsersDataResponse.TaskView
                 {
-                    title = task.Task.Title,
+                    title = task.Task.Title!,
                     status = task.Status
                 }).ToArray()
             }).ToArray()
@@ -248,7 +242,7 @@ public static class ResponseFactory
             return new TasksDataResponse
             {
                 status = HttpStatusCode.BadRequest,
-                tasks = null
+                tasks = new TasksDataResponse.TaskView[0]
             };
         }
 

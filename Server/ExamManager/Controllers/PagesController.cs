@@ -32,7 +32,7 @@ namespace ExamManager.Controllers
         [HttpGet(Routes.LoginPage)]
         public IActionResult LoginPageIndex()
         {
-            var user = (User)HttpContext.Items["User"];
+            var user = (User?)HttpContext.Items["User"];
             // Если пользователь не авторизован
             if (user is null || user.IsDefault)
             {
@@ -46,7 +46,7 @@ namespace ExamManager.Controllers
         [JwtAuthorize(RedirectUrl: "/pages/login")]
         public IActionResult HomePageIndex()
         {
-            var user = (User)HttpContext.Items["User"];
+            var user = (User?)HttpContext.Items["User"];
 
             if (user.IsDefault)
             {
@@ -67,7 +67,7 @@ namespace ExamManager.Controllers
         [OnlyUserRole(UserRole.ADMIN)]
         public IActionResult GroupsPageIndex()
         {
-            var user = (User)HttpContext.Items["User"];
+            var user = (User?)HttpContext.Items["User"];
 
             return View("Groups", user);
         }
@@ -76,7 +76,7 @@ namespace ExamManager.Controllers
         [JwtAuthorize(RedirectUrl: "/pages/login")]
         public IActionResult SettingsPageIndex()
         {
-            var user = (User)HttpContext.Items["User"];
+            var user = (User?)HttpContext.Items["User"];
 
             return View("Settings", user);
         }
@@ -88,7 +88,7 @@ namespace ExamManager.Controllers
         public async Task<IActionResult> GroupPageIndex(string id)
         {
             var groupId = Guid.Parse(id);
-            var user = (User)HttpContext.Items["User"];
+            var user = (User?)HttpContext.Items["User"];
             var group = await _groupService.GetGroup(groupId);
 
             return View("Group", (user, group));
@@ -99,7 +99,7 @@ namespace ExamManager.Controllers
         [OnlyUserRole(UserRole.ADMIN, "/pages/login")]
         public async Task<IActionResult> StudentsPageIndex()
         {
-            var user = (User)HttpContext.Items["User"];
+            var user = (User?)HttpContext.Items["User"];
             return View("Students", user);
         }
 
@@ -108,7 +108,7 @@ namespace ExamManager.Controllers
         [JwtAuthorize(RedirectUrl: "/pages/login")]
         public async Task<IActionResult> TaskPageIndex([FromQuery] string id, [FromQuery] string student)
         {
-            var user = (User)HttpContext.Items["User"];
+            var user = (User?)HttpContext.Items["User"];
             var taskId = Guid.Parse(id);
 
             var task = await _taskService.GetStudyTasksAsync(taskId);
@@ -126,7 +126,7 @@ namespace ExamManager.Controllers
                 return RedirectToAction(nameof(HomePageIndex));
             }
 
-            var user = (User)HttpContext.Items["User"];
+            var user = (User?)HttpContext.Items["User"];
             var task = new StudyTask
             {
                 Title = string.Empty,
@@ -143,7 +143,7 @@ namespace ExamManager.Controllers
         [OnlyUserRole(UserRole.STUDENT)]
         public async Task<IActionResult> TasksPageIndex()
         {
-            var user = (User)HttpContext.Items["User"];
+            var user = (User?)HttpContext.Items["User"];
 
             return View("PersonalTasks", user);
         }
