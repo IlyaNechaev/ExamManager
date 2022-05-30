@@ -333,7 +333,7 @@ public class UserService : IUserService
 
         if (user is null)
         {
-            throw new InvalidDataException($"Пользователя {userId} не существует");
+            throw new InvalidDataException($"Пользователь {userId} не существует");
         }
 
         var PersonalTaskSet = _dbContext.Set<PersonalTask>();

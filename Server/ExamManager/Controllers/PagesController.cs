@@ -140,12 +140,18 @@ namespace ExamManager.Controllers
 
         [HttpGet(Routes.TasksPage)]
         [JwtAuthorize(RedirectUrl: "/pages/login")]
-        [OnlyUserRole(UserRole.STUDENT)]
         public async Task<IActionResult> TasksPageIndex()
         {
-            var user = (User?)HttpContext.Items["User"];
+            User user = (User?)HttpContext.Items["User"]!;
 
-            return View("PersonalTasks", user);
+            IActionResult view = user.Role switch
+            {
+                UserRole.STUDENT => View("PersonalTasks", user),
+                UserRole.ADMIN => View("Tasks", user),
+                _ => Ok(ResponseFactory.CreateResponse(new Exception("")))
+            };
+
+            return view;
         }
     }
 }

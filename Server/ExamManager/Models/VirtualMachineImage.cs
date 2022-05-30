@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExamManager.Models;
 
@@ -10,8 +11,11 @@ public record VirtualMachineImage
     [Required]
     public string ID { get; set; }
 
-    [Required]
     public string Title { get; set; }
 
     public int? Order { get; set; }
+
+    [ForeignKey(nameof(TaskID))]
+    public StudyTask Task { get; set; }
+    public Guid TaskID { get; set; }
 }

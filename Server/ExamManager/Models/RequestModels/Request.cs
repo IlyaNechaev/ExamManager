@@ -19,6 +19,12 @@ public struct RemovePersonalTasksRequest
     }
 }
 
+public struct GetTasksRequest
+{
+    public string? title { get; set; }
+    public Guid[]? studentIds { get; set; }
+}
+
 public struct CreateTaskRequest
 {
     public string title { get; set; }
@@ -27,7 +33,7 @@ public struct CreateTaskRequest
     public struct VirtualMachineView
     {
         public string id { get; set; }
-        public string title { get; set; }
+        public string? title { get; set; }
         public int? order { get; set; }
     }
 }

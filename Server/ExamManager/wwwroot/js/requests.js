@@ -18,6 +18,14 @@ let getUserTasks = function (userId, onResponse){
     handleRequest(`/user/${userId}/tasks`, "GET", null, onResponse);
 }
 
+let addPersonalTasks = function (userId, data, onResponse) {
+    handleRequest(`/user/${userId}/tasks/add`, "POST", data, onResponse);
+}
+
+let removePersonalTasks = function (userId, data, onResponse) {
+    handleRequest(`/user/${userId}/tasks/remove`, "POST", data, onResponse);
+}
+
 let modifyUser = function (data, onResponse){
     handleRequest(`/user/modify`, "POST", data, onResponse);
 }
@@ -38,6 +46,10 @@ let deleteUsers = function (data, onResponse){
     handleRequest(`/users/delete`, "POST", data, onResponse);
 }
 
+let getTasks = function (data, onResponse){
+    handleRequest(`/tasks`, "POST", data, onResponse);
+}
+
 let getTask = function (taskId, onResponse){
     handleRequest(`/task/${taskId}`, "GET", null, onResponse);
 }
@@ -52,6 +64,14 @@ let deleteTask = function (data, onResponse){
 
 let modifyTask = function (data, onResponse){
     handleRequest(`/task/modify`, "POST", data, onResponse);
+}
+
+let startTask = function (virtualMachineId, onResponse){
+    handleRequest(`/task/start/${virtualMachineId}`, "GET", null, onResponse);
+}
+
+let stopTask = function (virtualMachineId, onResponse) {
+    handleRequest(`/task/stop/${virtualMachineId}`, "GET", null, onResponse);
 }
 
 let getGroup = function (groupId, onResponse){

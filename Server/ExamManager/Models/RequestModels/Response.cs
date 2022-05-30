@@ -58,7 +58,7 @@ public record TasksDataResponse : Response
     public struct TaskView
     {
         public Guid id { get; set; }
-        public string title { get; set; }
+        public string? title { get; set; }
         public string description { get; set; }
     }
 }
@@ -84,6 +84,7 @@ public record PersonalTasksDataResponse : Response
             public string? description { get; set; }
             public ushort number { get; set; }
             public Models.TaskStatus status { get; set; }
+            public string[]? vMachines { get; set; }
         }
     }
 }

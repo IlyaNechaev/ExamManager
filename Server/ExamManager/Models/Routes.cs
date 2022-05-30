@@ -18,12 +18,15 @@ public static class Routes
     #region TASK
 
     public const string Task  = "task";
-    public const string GetTask  = "{id}";
-    public const string CreateTask  = "create";
-    public const string DeleteTask  = "delete";
-    public const string ModifyTask  = "modify";
-    public const string StartVirtualMachine  = "start/{id}";
-    public const string StopVirtualMachine= "stop/{id}";
+    public const string GetTask  = "/task/{id}";
+    public const string GetTasks  = "/tasks";
+    public const string CreateTask  = "/task/create";
+    public const string DeleteTask  = "/task/delete";
+    public const string ModifyTask  = "/task/modify";
+    public const string StartTask  = "/task/{taskId}/start/{id}";
+    public const string ConnectVirtualMachine  = "/task/{taskId}/connect/{id}";
+    public const string CheckTask  = "/task/{taskId}/check";
+    public const string StopTask= "/task/{taskId}/stop/{id}";
 
     #endregion
 

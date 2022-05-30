@@ -65,4 +65,22 @@ public static class RequestMapper
     {
         return request.tasks?.Select(task => task.id);
     }
+
+    public static IEnumerable<Guid> MapFrom(RemovePersonalTasksRequest request)
+    {
+        return request.personalTasks?.Select(task => task.id) ?? new List<Guid>();
+    }
+
+    public static StudyTaskOptions MapFrom(GetTasksRequest request)
+    {
+        var isNumber = ushort.TryParse(request.title, out var number);
+
+        return new StudyTaskOptions
+        {
+            Title = request.title,
+            Number = isNumber ? number : null,
+            StudentIds = request.studentIds
+        };
+    }
+
 }

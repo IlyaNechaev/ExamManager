@@ -15,5 +15,11 @@ public partial class MappingProfile
             .ForMember(vmImage => vmImage.ID, options => options.MapFrom(vmView => vmView.id))
             .ForMember(vmImage => vmImage.Title, options => options.MapFrom(vmView => vmView.title))
             .ForMember(vmImage => vmImage.Order, options => options.MapFrom(vmView => vmView.order));
+
+        CreateMap<StartVirtualMachineResult, VirtualMachine>()
+            .ForMember(vMachine => vMachine.Name, options => options.MapFrom(result => result.vmid))
+            .ForMember(vMachine => vMachine.Host, options => options.MapFrom(result => result.address))
+            .ForMember(vMachine => vMachine.Port, options => options.MapFrom(result => result.port))
+            .ForMember(vMachine => vMachine.Password, options => options.MapFrom(result => result.password));
     }
 }

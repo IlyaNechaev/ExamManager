@@ -39,9 +39,11 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IGroupService, GroupService>();
 builder.Services.AddTransient<ISecurityService, SecurityService>();
 builder.Services.AddTransient<IStudyTaskService, StudyTaskService>();
+builder.Services.AddTransient<IVirtualMachineService, VirtualMachineService>();
 builder.Services.AddTransient<IJwtUtils, JwtUtils>();
 builder.Services.AddTransient<IFileService, FileService>();
 builder.Services.AddTransient<SignInManager>((serviceProvider) => new SignInManager(serviceProvider));
+builder.Services.AddScriptManager(builder.Environment);
 
 //builder.Services.AddClaimsAuthentication();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

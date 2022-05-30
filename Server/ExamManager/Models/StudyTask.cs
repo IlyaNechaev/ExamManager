@@ -26,7 +26,7 @@ public record StudyTask
     /// <summary>
     /// Идентификаторы виртуальных машин
     /// </summary>
-    public VirtualMachineImage[]? VirtualMachines { get; set; }
+    public ICollection<VirtualMachineImage>? VirtualMachines { get; set; }
 
     public IEnumerable<PersonalTask>? PersonalTasks { get; set; }
 }

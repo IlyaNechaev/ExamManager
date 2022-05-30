@@ -11,13 +11,15 @@
 | **GET** */users* | Получить список информации о пользователях | GetUsersRequest | UsersDataResponse |
 | **POST** */users/create* | Зарегистрировать пользователей | CreateUsersRequest | UsersDataResponse |
 | **POST** */users/delete* | Удалить пользователей | DeleteUsersRequest | Response |
-| **POST** */tasks/* | Получить список информации о заданиях | GetTasksRequest | TasksDataResponse |
+| **POST** */tasks* | Получить список информации о заданиях | GetTasksRequest | TasksDataResponse |
 | **GET** */task/{id}* | Получить информацию о задании по его ID | id | TaskDataResponse |
 | **POST** */task/create* | Создать задание | CreateTaskRequest | TaskDataResponse |
 | **POST** */task/delete* | Удалить задание | DeleteTaskRequet | Response |
 | **POST** */task/modify* | Изменить задание | ModifyTaskRequest | TaskDataResponse |
-| **GET** */task/start/{id}* | Запустить виртуальную машину по ее ID | id | Response |
-| **GET** */task/stop/{id}* | Остановить виртуальную машину по ее ID | id |  |
+| **GET** */task/{taskId}/start/{id}* | Запустить виртуальную машину по ее ID | taskId - идентификатор задания<br />id - идентификатор образа виртуальной машины | Response |
+| **GET** */task/{taskId}/connect/{id}* | Подключиться к виртуальной машине | taskId - идентификатор задания<br />id - идентификатор виртуальной машины | File |
+| **GET** */task/{taskId}/check* | Начать проверку выполнения задания | taskId - идентификатор задания | Response |
+| **GET** */task/{taskId}/stop/{id}* | Остановить виртуальную машину по ее ID | taskId - идентификатор задания<br />id - идентификатор виртуальной машины | Response |
 | **GET** */group/{id}* | Получить информацию о группе по ее ID | id | GroupDataResponse |
 | **GET** */group/{id}/students* | Получить информацию о студентах, которые состоят в группе ID | id | UsersDataResponse |
 | **GET** */group/{id}/delete* | Удалить группу | id | Response |
@@ -103,7 +105,17 @@
     	<td></td>
     	<td>Название задания</td>
     </tr>
+    <tr>
+    	<td>studentIds</td>
+    	<td>array(guid)</td>
+    	<td></td>
+        <td>
+            Массив идентификаторов студентов, задания<br/> 
+            которых будут добавлены в выборку
+        </td>
+    </tr>
 </table>
+
 
 
 
@@ -703,6 +715,16 @@
         <td>status</td>
         <td>int</td>
         <td>Статус персонального задания</td>
+    </tr>
+    <tr>
+    	<td></td>
+    	<td></td>
+        <td>vMachines</td>
+        <td>array(string)</td>
+        <td>
+            Массив идентификаторов виртуальных машин, <br/>
+            относящихся к данному заданию
+        </td>
     </tr>
 </table>
 
