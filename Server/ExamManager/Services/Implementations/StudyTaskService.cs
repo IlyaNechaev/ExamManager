@@ -321,4 +321,25 @@ public class StudyTaskService : IStudyTaskService
         await _dbContext.SaveChangesAsync();
     }
 
+    public async Task<IEnumerable<VirtualMachine>?> GetPersonalTaskVirtualMachinesAsync(Guid taskId)
+    {
+        var pTask = await _dbContext.UserTasks!
+            .AsNoTracking()
+            .Include(pTask => pTask.VirtualMachines)
+            .FirstOrDefaultAsync(pTask => pTask.ObjectID == taskId);
+
+        if (pTask is null)
+        {
+            throw new DataNotFoundException<PersonalTask>();
+        }
+
+        var vMachines = pTask.VirtualMachines;
+
+        if (vMachines is null || vMachines.Count == 0)
+        {
+            throw new DataNotFoundException<VirtualMachine>();
+        }
+
+        return vMachines;
+    }
 }

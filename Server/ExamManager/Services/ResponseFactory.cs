@@ -261,6 +261,13 @@ public static class ResponseFactory
         };
     }
 
+    public static Response CreateResponse(VMStatus vmStatus)
+    {
+        return new TaskStatusResponse
+        {
+            status = vmStatus
+        };
+    }
 
     private static Dictionary<string, List<string>> CreateDictionary(ModelStateDictionary modelState)
     {

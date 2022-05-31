@@ -26,6 +26,8 @@ public interface IStudyTaskService
 
     public Task<IEnumerable<PersonalTask>> GetPersonalTasksAsync(params Guid[] studentIds);
 
+    public Task<IEnumerable<VirtualMachine>?> GetPersonalTaskVirtualMachinesAsync(Guid taskId);
+
     #endregion
 
     #region TRANSFORM

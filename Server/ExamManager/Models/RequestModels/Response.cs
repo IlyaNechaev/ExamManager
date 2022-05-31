@@ -70,6 +70,11 @@ public record TaskDataResponse : Response
     public string? description { get; set; }
 }
 
+public record TaskStatusResponse : Response
+{
+    public VMStatus status { get; set; }
+}
+
 public record PersonalTasksDataResponse : Response
 {
     public PersonalTaskView[]? personalTasks { get; set; }

@@ -16,10 +16,11 @@
 | **POST** */task/create* | Создать задание | CreateTaskRequest | TaskDataResponse |
 | **POST** */task/delete* | Удалить задание | DeleteTaskRequet | Response |
 | **POST** */task/modify* | Изменить задание | ModifyTaskRequest | TaskDataResponse |
-| **GET** */task/{taskId}/start/{id}* | Запустить виртуальную машину по ее ID | taskId - идентификатор задания<br />id - идентификатор образа виртуальной машины | Response |
-| **GET** */task/{taskId}/connect/{id}* | Подключиться к виртуальной машине | taskId - идентификатор задания<br />id - идентификатор виртуальной машины | File |
-| **GET** */task/{taskId}/check* | Начать проверку выполнения задания | taskId - идентификатор задания | Response |
-| **GET** */task/{taskId}/stop/{id}* | Остановить виртуальную машину по ее ID | taskId - идентификатор задания<br />id - идентификатор виртуальной машины | Response |
+| **GET** */task/{taskId}/start/{id}* | Запустить виртуальную машину по ее ID | **taskId** - идентификатор задания<br />**id** - идентификатор образа виртуальной машины | Response |
+| **GET** */task/{taskId}/status/{id}* | Получить информацию о статусе виртуальной машины | **taskId** - идентификатор задания<br />**id** - идентификатор образа виртуальной машины | TaskStatusResponse |
+| **GET** */task/{taskId}/connect/{id}* | Подключиться к виртуальной машине | **taskId** - идентификатор задания<br />**id** - идентификатор виртуальной машины | File |
+| **GET** */task/{taskId}/check* | Начать проверку выполнения задания | **taskId** - идентификатор задания | Response |
+| **GET** */task/{taskId}/stop/{id}* | Остановить виртуальную машину по ее ID | **taskId** - идентификатор задания<br />**id** - идентификатор виртуальной машины | Response |
 | **GET** */group/{id}* | Получить информацию о группе по ее ID | id | GroupDataResponse |
 | **GET** */group/{id}/students* | Получить информацию о студентах, которые состоят в группе ID | id | UsersDataResponse |
 | **GET** */group/{id}/delete* | Удалить группу | id | Response |
@@ -656,6 +657,14 @@
 
 
 
+## TaskStatusResponse
+
+| Поле   | Тип данных | Описание                                                     |
+| ------ | ---------- | ------------------------------------------------------------ |
+| status | int        | Код статуса виртуальной машины<br />**1** - RUNNING<br />**2** - KILLED |
+
+
+
 ## PersonalTasksDataResponse
 
 <table>
@@ -727,6 +736,7 @@
         </td>
     </tr>
 </table>
+
 
 
 
