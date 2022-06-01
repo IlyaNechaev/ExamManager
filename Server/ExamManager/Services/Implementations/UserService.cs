@@ -311,9 +311,17 @@ public class UserService : IUserService
                 conditions.Add($"(`{nameof(User.StudentGroupID)}` NOT IN (\"{string.Join("\", \"", options.ExcludeGroupIds)}\") OR `{nameof(User.StudentGroupID)}` IS NULL)");
             }
         }
+        if (options.TaskIds is not null)
+        {
+            conditions.Add($"EXISTS (SELECT 1 FROM `UserTasks` AS t WHERE t.{nameof(PersonalTask.StudentID)} = ObjectID AND t.{nameof(PersonalTask.TaskID)} IN ('{string.Join("', '", options.TaskIds)}'))");
+        }
+        if (options.ExcludeTaskIds is not null)
+        {
+            conditions.Add($"NOT EXISTS (SELECT 1 FROM `UserTasks` AS t WHERE t.{nameof(PersonalTask.StudentID)} = ObjectID AND t.{nameof(PersonalTask.TaskID)} IN ('{string.Join("', '", options.ExcludeTaskIds)}'))");
+        }
         if (options.TaskStatus is not null)
         {
-            conditions.Add($"EXISTS (SELECT 1 FROM `StudentTasks` AS t WHERE t.{nameof(PersonalTask.StudentID)} = ObjectID AND t.{nameof(PersonalTask.Status)} = {(int)options.TaskStatus})");
+            conditions.Add($"EXISTS (SELECT 1 FROM `UserTasks` AS t WHERE t.{nameof(PersonalTask.StudentID)} = ObjectID AND t.{nameof(PersonalTask.Status)} = {(int)options.TaskStatus})");
         }
 
         if (conditions.Count > 0)

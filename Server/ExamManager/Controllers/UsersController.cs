@@ -43,6 +43,8 @@ namespace ExamManager.Controllers
                 Role = request.role,
                 GroupIds = request.groupIds,
                 ExcludeGroupIds = request.excludeGroupIds,
+                TaskIds = request.taskIds,
+                ExcludeTaskIds = request.excludeTaskIds,
                 TaskStatus = request.taskStatus,
             };
             var users = await _userService.GetUsers(options, includeTasks: true, includeGroup: true);

@@ -88,7 +88,8 @@ public class StudyTaskService : IStudyTaskService
     {
         var task = await _dbContext.Tasks
             .AsNoTracking()
-            .Include(nameof(StudyTask.PersonalTasks))
+            .Include(task => task.PersonalTasks)!
+            .ThenInclude(pTask => pTask.Student)
             .FirstOrDefaultAsync(task => task.ObjectID == taskId);
 
         return task ?? throw new InvalidDataException($"Задания {taskId} не существует");

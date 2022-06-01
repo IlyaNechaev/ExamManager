@@ -189,7 +189,9 @@ public static class ResponseFactory
                 status = HttpStatusCode.BadRequest,
                 id = null,
                 title = null,
-                description = null
+                description = null,
+                virtualMachines = null,
+                students = null
             };
         }
 
@@ -198,7 +200,18 @@ public static class ResponseFactory
             status = HttpStatusCode.OK,
             id = task.ObjectID,
             title = task.Title,
-            description = task.Description
+            description = task.Description,
+            virtualMachines = task.VirtualMachines.Select(vm =>
+            new TaskDataResponse.VirtualMachineView
+            {
+                id = vm.ID
+            }).ToArray(),
+            students = task.PersonalTasks?.Select(pTask => pTask.Student).Select(student => 
+            new TaskDataResponse.UserView
+            {
+                id = student.ObjectID,
+                fullName = $"{student.LastName} {student.FirstName}"
+            }).ToArray()
         };
     }
 

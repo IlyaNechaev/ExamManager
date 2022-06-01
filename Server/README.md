@@ -77,7 +77,7 @@
         <th>Описание</th>
     </tr>
     <tr>
-        <td colspan=2>pesronalTasks</td>
+        <td colspan=2>tasks</td>
         <td>array</td>
         <td></td>
         <td></td>
@@ -87,9 +87,10 @@
         <td>id</td>
         <td>guid</td>
         <td>Да</td>
-        <td>Идентификатор задания у пользователя</td>
+        <td>Идентификатор задания</td>
     </tr>
 </table>
+
 
 
 ## GetTasksRequest

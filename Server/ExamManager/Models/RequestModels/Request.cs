@@ -83,6 +83,8 @@ public struct GetUsersRequest
     public bool? withoutGroup { get; set; }
     public Guid[]? groupIds { get; set; }
     public Guid[]? excludeGroupIds { get; set; }
+    public Guid[]? taskIds { get; set; }
+    public Guid[]? excludeTaskIds { get; set; }
     public Models.TaskStatus? taskStatus { get; set; }
     public UserRole? role { get; set; }
 }

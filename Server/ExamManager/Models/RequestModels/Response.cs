@@ -69,11 +69,19 @@ public record TaskDataResponse : Response
     public Guid? id { get; set; }
     public string? title { get; set; }
     public string? description { get; set; }
-    public VirtualMachineView[] virtualMachines { get; set; }
+    public VirtualMachineView[]? virtualMachines { get; set; }
+    public UserView[]? students { get; set; }
     public struct VirtualMachineView
     {
         public string id { get; set; }
     }
+
+    public struct UserView
+    {
+        public Guid id { get; set; }
+        public string fullName { get; set; }
+    }
+
 }
 
 public record TaskStatusResponse : Response

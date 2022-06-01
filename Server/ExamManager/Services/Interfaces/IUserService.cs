@@ -36,6 +36,8 @@ public struct UserOptions
     public bool? WithoutGroups { get; set; }
     public Guid[]? GroupIds { get; set; }
     public Guid[]? ExcludeGroupIds { get; set; }
+    public Guid[]? TaskIds { get; set; }
+    public Guid[]? ExcludeTaskIds { get; set; }
     public Models.TaskStatus? TaskStatus { get; set; }
     public UserRole? Role { get; set; }
 }
