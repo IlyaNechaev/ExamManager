@@ -4,6 +4,7 @@
 |--------|--------|--------|--------|
 |  **POST** */login*  |  Проверить зарегистрирован ли пользователь и сгенерировать для него JWT-токен  |  LoginEditModel  |  JwtResponse  |
 |  **GET** */user/{id}*  |  Получить информацию о пользователе по его ID  |  id  |  UserDataResponse  |
+| **GET** */user/{id}/task/{taskId}* | Получить информацию о задании пользователя по его ID | **id** - идентификатор пользователя<br />**taskId** - идентификатор задания пользователя | PersonalTaskDataResponse |
 | **GET** */user/{id}/tasks* | Получить информацию о заданиях, которые имеются у пользователя ID | id | PersonalTasksDataResponse |
 | **POST** */user/{id}/tasks/add* | Присвоить пользователю задания | AddPersonalTasksRequest | PersonalTasksDataResponse |
 | **POST** */user/{id}/tasks/remove* | Убрать задания у пользователя | RemovePersonalTasksRequest | Response |
@@ -14,13 +15,13 @@
 | **POST** */tasks* | Получить список информации о заданиях | GetTasksRequest | TasksDataResponse |
 | **GET** */task/{id}* | Получить информацию о задании по его ID | id | TaskDataResponse |
 | **POST** */task/create* | Создать задание | CreateTaskRequest | TaskDataResponse |
-| **POST** */task/delete* | Удалить задание | DeleteTaskRequet | Response |
+| **POST** */task/delete* | Удалить задание | DeleteTaskRequest | Response |
 | **POST** */task/modify* | Изменить задание | ModifyTaskRequest | TaskDataResponse |
 | **GET** */task/{taskId}/start/{id}* | Запустить виртуальную машину по ее ID | **taskId** - идентификатор задания<br />**id** - идентификатор образа виртуальной машины | Response |
 | **GET** */task/{taskId}/status/{id}* | Получить информацию о статусе виртуальной машины | **taskId** - идентификатор задания<br />**id** - идентификатор образа виртуальной машины | TaskStatusResponse |
-| **GET** */task/{taskId}/connect/{id}* | Подключиться к виртуальной машине | **taskId** - идентификатор задания<br />**id** - идентификатор виртуальной машины | File |
+| **GET** */task/{taskId}/connect/{id}* | Подключиться к виртуальной машине | **taskId** - идентификатор задания<br />**id** - идентификатор образа виртуальной машины | File |
 | **GET** */task/{taskId}/check* | Начать проверку выполнения задания | **taskId** - идентификатор задания | Response |
-| **GET** */task/{taskId}/stop/{id}* | Остановить виртуальную машину по ее ID | **taskId** - идентификатор задания<br />**id** - идентификатор виртуальной машины | Response |
+| **GET** */task/{taskId}/stop/{id}* | Остановить виртуальную машину по ее ID | **taskId** - идентификатор задания<br />**id** - идентификатор образа виртуальной машины | Response |
 | **GET** */group/{id}* | Получить информацию о группе по ее ID | id | GroupDataResponse |
 | **GET** */group/{id}/students* | Получить информацию о студентах, которые состоят в группе ID | id | UsersDataResponse |
 | **GET** */group/{id}/delete* | Удалить группу | id | Response |
@@ -116,8 +117,6 @@
         </td>
     </tr>
 </table>
-
-
 
 
 ## CreateTaskRequest
@@ -633,6 +632,12 @@
     </tr>
     <tr>
     	<td></td>
+        <td>number</td>
+        <td>ushort</td>
+        <td>Внутренний номер задания</td>
+    </tr>
+    <tr>
+    	<td></td>
         <td>title</td>
         <td>string</td>
         <td>Название</td>
@@ -649,19 +654,107 @@
 
 ## TaskDataResponse
 
-| Поле        | Тип данных | Описание   |
-| ----------- | ---------- | ---------- |
-| id          | guid       | ID задания |
-| title       | string     | Название   |
-| description | string     | Описание   |
+<table>
+    <tr>
+    	<th colspan=2>Поле</th>
+    	<th>Тип данных</th>
+    	<th>Описание</th>
+    </tr>
+    <tr>
+    	<td colspan=2>id</td>
+    	<td>guid</td>
+    	<td>ID задания</td>
+    </tr>
+    <tr>
+    	<td colspan=2>title</td>
+    	<td>string</td>
+    	<td>Название</td>
+    </tr>
+    <tr>
+    	<td colspan=2>description</td>
+    	<td>string</td>
+    	<td>Описание</td>
+    </tr>
+    <tr>
+    	<td colspan=2>virtualMachines</td>
+    	<td>array</td>
+    	<td></td>
+    </tr>
+    <tr>
+    	<td></td>
+    	<td>id</td>
+    	<td>guid</td>
+    	<td>ID образа виртуальной машины</td>
+    </tr>
+</table>
 
 
 
 ## TaskStatusResponse
 
-| Поле   | Тип данных | Описание                                                     |
-| ------ | ---------- | ------------------------------------------------------------ |
-| status | int        | Код статуса виртуальной машины<br />**1** - RUNNING<br />**2** - KILLED |
+| Поле       | Тип данных | Описание                                                     |
+| ---------- | ---------- | ------------------------------------------------------------ |
+| id         | string     | Идентификатор образа виртуальной машины                      |
+| vMachineId | string     | Идентификатор виртуальной машины                             |
+| status     | int        | Код статуса виртуальной машины<br />**1** - RUNNING<br />**2** - KILLED |
+
+
+
+## PersonalTaskDataResponse
+
+<table>
+    <tr>
+    	<th colspan=3>Поле</th>
+    	<th>Тип данных</th>
+    	<th>Описание</th>
+    </tr>
+    <tr>
+    	<td colspan=3>title</td>
+        <td>string</td>
+        <td>Название задания</td>
+    </tr>
+    <tr>
+    	<td colspan=3>number</td>
+        <td>ushort</td>
+        <td>Внутренний номер задания</td>
+    </tr>
+    <tr>
+    	<td colspan=3>description</td>
+        <td>string</td>
+        <td>Название задания</td>
+    </tr>
+    <tr>
+    	<td colspan=3>virtualMachines</td>
+        <td>array</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+    	<td colspan=2>image</td>
+        <td>object</td>
+        <td>Образ виртуальной машины</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    	<td>id</td>
+        <td>string</td>
+        <td>Идентификатор образа виртуальной машины</td>
+    </tr>
+    <tr>
+        <td></td>
+    	<td colspan=2>instance</td>
+        <td>object</td>
+        <td>Виртуальная машина</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    	<td>status</td>
+        <td>int</td>
+        <td>Статус виртуальной машины</td>
+    </tr>
+</table>
 
 
 
@@ -725,20 +818,7 @@
         <td>int</td>
         <td>Статус персонального задания</td>
     </tr>
-    <tr>
-    	<td></td>
-    	<td></td>
-        <td>vMachines</td>
-        <td>array(string)</td>
-        <td>
-            Массив идентификаторов виртуальных машин, <br/>
-            относящихся к данному заданию
-        </td>
-    </tr>
 </table>
-
-
-
 
 
 

@@ -32,7 +32,7 @@ public interface IStudyTaskService
 
     #region TRANSFORM
 
-    public Task<StudyTask> CreateStudyTaskAsync(string title, string description, VirtualMachineImage[] virtualMachines);
+    public Task<StudyTask> CreateStudyTaskAsync(string? title, string description, VirtualMachineImage[]? virtualMachines);
     public Task CreateStudyTaskAsync(StudyTask task);
     public Task DeleteStudyTaskAsync(Guid taskId);
 

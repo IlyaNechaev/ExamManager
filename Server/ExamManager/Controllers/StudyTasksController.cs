@@ -46,7 +46,7 @@ namespace ExamManager.Controllers
             var studyTask = RequestMapper.MapFrom(request);
             try
             {
-                studyTask = await _taskService.CreateStudyTaskAsync(studyTask.Title, studyTask.Description!, studyTask.VirtualMachines!.ToArray());
+                studyTask = await _taskService.CreateStudyTaskAsync(studyTask.Title, studyTask.Description!, studyTask.VirtualMachines?.ToArray());
 
                 return Ok(ResponseFactory.CreateResponse(studyTask));
             }
@@ -60,7 +60,14 @@ namespace ExamManager.Controllers
         [HttpPost(Routes.DeleteTask)]
         public async Task<IActionResult> DeleteTask([FromBody] DeleteTaskRequest request)
         {
-            await _taskService.DeleteStudyTaskAsync(request.taskId);
+            try
+            {
+                await _taskService.DeleteStudyTaskAsync(request.taskId);
+            }
+            catch(Exception ex)
+            {
+                return Ok(ResponseFactory.CreateResponse(ex));
+            }
 
             return Ok(ResponseFactory.CreateResponse());
         }

@@ -58,6 +58,7 @@ public record TasksDataResponse : Response
     public struct TaskView
     {
         public Guid id { get; set; }
+        public ushort? number { get; set; }
         public string? title { get; set; }
         public string description { get; set; }
     }
@@ -68,11 +69,40 @@ public record TaskDataResponse : Response
     public Guid? id { get; set; }
     public string? title { get; set; }
     public string? description { get; set; }
+    public VirtualMachineView[] virtualMachines { get; set; }
+    public struct VirtualMachineView
+    {
+        public string id { get; set; }
+    }
 }
 
 public record TaskStatusResponse : Response
 {
+    public string id { get; set; }
+    public string vMachine { get; set; }
     public VMStatus status { get; set; }
+}
+
+public record PersonalTaskDataResponse : Response
+{
+    public string? title { get; set; }
+    public ushort number { get; set; }
+    public string description { get; set; }
+    public VirtualMachineView[]? virtualMachines { get; set;}
+
+    public struct VirtualMachineView
+    {
+        public Image image { get; set; }
+        public Instance instance { get; set; }
+        public struct Image
+        {
+            public string id { get; set; }
+        }
+        public struct Instance
+        {
+            public VMStatus status { get; set; }
+        }
+    }
 }
 
 public record PersonalTasksDataResponse : Response

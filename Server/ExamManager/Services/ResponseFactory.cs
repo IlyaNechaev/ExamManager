@@ -254,6 +254,7 @@ public static class ResponseFactory
                 new TasksDataResponse.TaskView
                 {
                     id = t.ObjectID,
+                    number = t.Number,
                     title = t.Title,
                     description = t.Description
                 }

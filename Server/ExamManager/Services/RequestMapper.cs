@@ -18,11 +18,11 @@ public static class RequestMapper
         {
             Title = request.title,
             Description = request.description,
-            VirtualMachines = request.virtualMachines.Select(vm =>
+            VirtualMachines = request.virtualMachines?.Select(vm =>
             new VirtualMachineImage
             {
                 ID = vm.id,
-                Title = vm.title,
+                Title = vm.title ?? string.Empty,
                 Order = vm.order
             }).ToArray()
         };
