@@ -77,7 +77,7 @@
         <th>Описание</th>
     </tr>
     <tr>
-        <td colspan=2>tasks</td>
+        <td colspan=2>pesronalTasks</td>
         <td>array</td>
         <td></td>
         <td></td>
@@ -87,10 +87,9 @@
         <td>id</td>
         <td>guid</td>
         <td>Да</td>
-        <td>Идентификатор задания</td>
+        <td>Идентификатор задания у пользователя</td>
     </tr>
 </table>
-
 
 
 ## GetTasksRequest
@@ -719,10 +718,20 @@
         <td>ushort</td>
         <td>Внутренний номер задания</td>
     </tr>
-    <tr>
+    <tr class="new">
     	<td colspan=3>description</td>
         <td>string</td>
-        <td>Название задания</td>
+        <td>Описание задания</td>
+    </tr>
+    <tr>
+    	<td colspan=3>status</td>
+        <td>int</td>
+        <td>Статус задания</td>
+    </tr>
+    <tr>
+        <td colspan=3>message</td>
+        <td>string</td>
+        <td>Комментарий к статусу задания</td>
     </tr>
     <tr>
     	<td colspan=3>virtualMachines</td>
