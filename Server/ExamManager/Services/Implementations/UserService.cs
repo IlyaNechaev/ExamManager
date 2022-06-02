@@ -142,7 +142,7 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<IEnumerable<User>> GetUsers(UserOptions options, bool includeGroup = false, bool includeTasks = false)
+    public async Task<IEnumerable<User>> GetUsers(UserOptions options, bool includeGroup = false, bool includePersonalTasks = false, bool includeTasks = false)
     {
         var UserSet = _dbContext.Set<User>();
 
@@ -158,11 +158,12 @@ public class UserService : IUserService
         IQueryable<User> request = UserSet.AsNoTracking().AsQueryable();
         if (includeGroup)
         {
-            request = request.Include(nameof(User.StudentGroup));
+            request = request.Include(u => u.StudentGroup);
         }
-        if (includeTasks)
+        if (includePersonalTasks)
         {
-            request = request.Include(nameof(User.Tasks));
+            //request = request.Include(u => u.Tasks);            
+            request = request.Include($"{nameof(User.Tasks)}.{nameof(PersonalTask.Task)}");            
         }
 
         var result = await request.Where(user => userIds.Contains(user.ObjectID)).ToListAsync();

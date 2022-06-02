@@ -47,7 +47,7 @@ function fillStudents(data) {
             `<div class="number">${index}</div>` +
             `<div class="bold">${user.lastName} ${user.firstName}</div>` +
             `<div class="description">${user.groupName == null ? "-" : user.groupName}</div >` +
-            `<div class="description">${user.tasks.length}</div >` +
+            `<div class="description">${user.tasks == null ? 0 : user.tasks.length}</div >` +
             '</div> ');
 
 

@@ -80,6 +80,7 @@ public struct GetUsersRequest
     public string? name { get; set; }
     public string? firstName { get; set; }
     public string? lastName { get; set; }
+    public bool? excludeYourself { get; set; }
     public bool? withoutGroup { get; set; }
     public Guid[]? groupIds { get; set; }
     public Guid[]? excludeGroupIds { get; set; }

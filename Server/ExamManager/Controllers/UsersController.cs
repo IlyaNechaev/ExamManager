@@ -34,20 +34,9 @@ namespace ExamManager.Controllers
         [HttpPost(Routes.GetUsers)]
         public async Task<IActionResult> GetUsers([FromBody] GetUsersRequest request)
         {
-            var options = new UserOptions
-            {
-                Name = request.name,
-                FirstName = request.firstName,
-                LastName = request.lastName,
-                WithoutGroups = request.withoutGroup,
-                Role = request.role,
-                GroupIds = request.groupIds,
-                ExcludeGroupIds = request.excludeGroupIds,
-                TaskIds = request.taskIds,
-                ExcludeTaskIds = request.excludeTaskIds,
-                TaskStatus = request.taskStatus,
-            };
-            var users = await _userService.GetUsers(options, includeTasks: true, includeGroup: true);
+            var user = (User)HttpContext.Items["User"]!;
+            var options = RequestMapper.MapFrom(request, user);
+            var users = await _userService.GetUsers(options, includePersonalTasks: true, includeGroup: true, includeTasks: true);
 
             return Ok(ResponseFactory.CreateResponse(users));
         }
