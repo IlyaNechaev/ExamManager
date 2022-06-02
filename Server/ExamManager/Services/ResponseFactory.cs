@@ -90,11 +90,11 @@ public static class ResponseFactory
             role = user.Role,
             isDefault = user.IsDefault,
             groupId = user.StudentGroupID,
-            tasks = user.Tasks?.Select(task => new UserDataResponse.TaskView
+            tasks = (user.Tasks?.Count ?? 0) > 0 ? user.Tasks?.Select(task => new UserDataResponse.TaskView
             {
                 id = task.ObjectID,
                 title = task.Task.Title!
-            }).ToArray()
+            }).ToArray() : null
         };
     }
 

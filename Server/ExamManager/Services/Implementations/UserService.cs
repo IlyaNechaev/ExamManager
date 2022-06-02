@@ -39,7 +39,7 @@ public class UserService : IUserService
         return new ClaimsPrincipal(claimId);
     }
 
-    public async Task<User?> GetUser(Guid userId, bool includeGroup = false, bool includeTasks = false)
+    public async Task<User?> GetUser(Guid userId, bool includeGroup = false, bool includeTasks = false, bool includePersonalTasks = false)
     {
         var UserSet = _dbContext.Set<User>();
 
@@ -50,8 +50,13 @@ public class UserService : IUserService
         }
         if (includeTasks)
         {
+            query = query.Include($"{nameof(User.Tasks)}.{nameof(PersonalTask.Task)}");
+        }
+        else if (includePersonalTasks)
+        {
             query = query.Include(u => u.Tasks);
         }
+
         var user = await query.FirstOrDefaultAsync(user => user.ObjectID == userId);
 
         return user;
@@ -160,10 +165,13 @@ public class UserService : IUserService
         {
             request = request.Include(u => u.StudentGroup);
         }
-        if (includePersonalTasks)
+        if (includeTasks)
         {
-            //request = request.Include(u => u.Tasks);            
-            request = request.Include($"{nameof(User.Tasks)}.{nameof(PersonalTask.Task)}");            
+            request = request.Include($"{nameof(User.Tasks)}.{nameof(PersonalTask.Task)}");
+        }
+        else if (includePersonalTasks)
+        {
+            request = request.Include(u => u.Tasks);
         }
 
         var result = await request.Where(user => userIds.Contains(user.ObjectID)).ToListAsync();
@@ -214,7 +222,7 @@ public class UserService : IUserService
 
         return await users.ToListAsync();
     }
-    
+
     public async Task<ValidationResult> ValidateUser(User user)
     {
         var validationResult = new ValidationResult();
@@ -233,7 +241,7 @@ public class UserService : IUserService
         {
             validationResult.AddMessage("firstname", "Введите фамилию");
         }
-        if (user.StudentGroupID is not null && ! await GroupSet.AnyAsync(group => group.ObjectID == user.StudentGroupID))
+        if (user.StudentGroupID is not null && !await GroupSet.AnyAsync(group => group.ObjectID == user.StudentGroupID))
         {
             validationResult.AddMessage("group", "Группа не существует");
         }
@@ -259,7 +267,7 @@ public class UserService : IUserService
             throw new InvalidDataException($"Пользователи с логинами {string.Join(", ", existsUserLogins)} уже существуют");
         }
 
-        var transaction = await _dbContext.Database.BeginTransactionAsync();        
+        var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
             await UserSet.AddRangeAsync(users);

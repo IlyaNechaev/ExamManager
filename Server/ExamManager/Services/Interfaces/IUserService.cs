@@ -5,7 +5,7 @@ namespace ExamManager.Services;
 
 public interface IUserService
 {
-    public Task<User?> GetUser(Guid userId, bool includeGroup = false, bool includeTasks = false);
+    public Task<User?> GetUser(Guid userId, bool includeGroup = false, bool includeTasks = false, bool includePersonalTasks = false);
     public Task<User?> GetUser(string login, string password, bool includeGroup = false, bool includeTasks = false);
     public ClaimsPrincipal? CreateUserPrincipal(User user);
     public Task<IEnumerable<User>> GetUsers(UserOptions options, bool includeGroup = false, bool includePersonalTasks = false, bool includeTasks = false);
