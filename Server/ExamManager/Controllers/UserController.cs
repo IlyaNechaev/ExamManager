@@ -28,7 +28,7 @@ namespace ExamManager.Controllers
         }
 
         [HttpGet(Routes.GetUser)]
-        [OnlyUserRole(UserRole.ADMIN | UserRole.TEACHER, "/pages/login")]
+        [OnlyUserRole(UserRole.ADMIN | UserRole.TEACHER)]
         [ValidateGuidFormat("id")]
         public async Task<IActionResult> GetUser(string id)
         {
@@ -75,7 +75,7 @@ namespace ExamManager.Controllers
         }
 
         [HttpGet(Routes.GetUserTasks)]
-        [OnlyUserRole(UserRole.ADMIN | UserRole.TEACHER, "/pages/login")]
+        [OnlyUserRole(UserRole.ADMIN | UserRole.TEACHER)]
         [ValidateGuidFormat("id")]
         public async Task<IActionResult> GetUserTasks(string id)
         {
@@ -92,7 +92,7 @@ namespace ExamManager.Controllers
         }
 
         [HttpPost(Routes.AddUserTasks)]
-        [OnlyUserRole(UserRole.ADMIN | UserRole.TEACHER, "/pages/login")]
+        [OnlyUserRole(UserRole.ADMIN | UserRole.TEACHER)]
         [ValidateGuidFormat("id")]
         public async Task<IActionResult> AddUserTasks([FromBody] AddPersonalTasksRequest request, string id)
         {
@@ -122,7 +122,7 @@ namespace ExamManager.Controllers
         }
 
         [HttpPost(Routes.RemoveUserTasks)]
-        [OnlyUserRole(UserRole.ADMIN | UserRole.TEACHER, "/pages/login")]
+        [OnlyUserRole(UserRole.ADMIN | UserRole.TEACHER)]
         [ValidateGuidFormat("id")]
         public async Task<IActionResult> RemoveUserTasks([FromBody] RemovePersonalTasksRequest request, string id)
         {

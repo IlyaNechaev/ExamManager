@@ -12,7 +12,7 @@ using OfficeOpenXml;
 namespace ExamManager.Controllers
 {
     [ApiController]
-    [OnlyUserRole(Role: UserRole.ADMIN, RedirectUrl: "/pages/login")]
+    [OnlyUserRole(Role: UserRole.ADMIN)]
     [JwtAuthorize]
     public class UsersController : ControllerBase
     {
