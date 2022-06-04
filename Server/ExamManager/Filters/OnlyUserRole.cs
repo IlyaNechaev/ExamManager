@@ -31,6 +31,7 @@ namespace ExamManager.Filters
                     else
                     {
                         context.Result = new OkObjectResult(ResponseFactory.CreateResponse(new Exception("Данный метод недоступен пользователю с текущей ролью")));
+                        return;
                     }
                 }
             }
