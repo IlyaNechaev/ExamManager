@@ -35,7 +35,7 @@ builder.Services.AddDbContext<DbContext, ExamManagerDBContext>(
         .EnableSensitiveDataLogging()
         .EnableDetailedErrors());
 
-builder.Services.AddSingleton<NotificationService>();
+builder.Services.AddSingleton<INotificationService, NotificationService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IGroupService, GroupService>();
 builder.Services.AddTransient<ISecurityService, SecurityService>();
