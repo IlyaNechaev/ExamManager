@@ -90,6 +90,7 @@ public class StudyTaskService : IStudyTaskService
     {
         var task = await _dbContext.Tasks
             .AsNoTracking()
+            .Include(task => task.VirtualMachines)
             .Include(task => task.PersonalTasks)!
             .ThenInclude(pTask => pTask.Student)
             .FirstOrDefaultAsync(task => task.ObjectID == taskId);
@@ -211,6 +212,11 @@ public class StudyTaskService : IStudyTaskService
         if (personalTask is null)
         {
             throw new InvalidDataException($"Не удалось найти индивидуальное задание {personalTaskId}");
+        }
+
+        if (personalTask.Status == Models.TaskStatus.SUCCESSED)
+        {
+            throw new InvalidDataException($"Задание {personalTask.Task?.Number.ToString() ?? personalTaskId.ToString()} нельзя удалить у студента {personalTask.Student.FirstName}, поскольку оно выполнено");
         }
 
         _dbContext.Remove(personalTask);
