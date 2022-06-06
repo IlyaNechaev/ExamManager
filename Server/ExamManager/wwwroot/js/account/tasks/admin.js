@@ -38,7 +38,7 @@ function fillTasks(data) {
         let tableRow = $(`<div class="row s" task="${task.id}">` +
             `<div>${task.number}</div>` +
             `<div class="bold">${task.title != null ? task.title : "-"}</div>` +
-            `<div>${task.description}</div >` +
+            `<div class="description">${task.description}</div >` +
             `<div>Количество: ${0}</div >` +
             '</div> ');
 

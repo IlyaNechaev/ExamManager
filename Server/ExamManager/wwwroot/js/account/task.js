@@ -15,12 +15,15 @@ let createNewTask = function () {
         if (element.value === '') {
             continue;
         }
-        vMachines.push(element.value);
+        vMachines.push(
+            {
+                id: element.value
+            });
     }
 
     let data = {
         title: taskTitle.val(),
-        description: taskDescription.val(),
+        description: editor.getData(),
         students: studentsToRemove,
         virtualMachines: vMachines
     };
@@ -38,7 +41,11 @@ let saveTask = function () {
         if (element.value === '') {
             continue;
         }
-        vMachines.push(element.value);
+
+        vMachines.push(
+            {
+                id: element.value
+            });
     }
 
     let data = {

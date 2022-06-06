@@ -143,11 +143,34 @@ public class StudyTaskService : IStudyTaskService
             throw new InvalidDataException($"Задания {taskId} не существует");
         }
 
+        var vMachines = newTask.VirtualMachines;
+        newTask.VirtualMachines = null;
+
         var entityManager = new EntityManager();
         entityManager
             .Modify(currentTask)
             .Except(nameof(StudyTask.ObjectID))
             .BasedOn(newTask);
+
+        var taskVMachines = _dbContext.VMImages!.Where(vm => vm.TaskID == currentTask.ObjectID).ToList();
+        foreach (var vMachine in vMachines ?? new List<VirtualMachineImage>())
+        {
+            var existedVMachine = taskVMachines.FirstOrDefault(vm => vm.ID == vMachine.ID);
+
+            if (existedVMachine is null)
+            {
+                await _dbContext.VMImages!.AddAsync(vMachine);
+                vMachine.TaskID = currentTask.ObjectID;
+            }
+            else
+            {
+                taskVMachines.Remove(existedVMachine);
+            }
+        }
+        foreach (var vMachine in taskVMachines)
+        {
+            _dbContext.VMImages?.Remove(vMachine);
+        }
 
         await _dbContext.SaveChangesAsync();
 
@@ -248,11 +271,13 @@ public class StudyTaskService : IStudyTaskService
     public async Task<string> StartTaskVirtualMachine(string vmImageId, Guid personalTaskId, Guid ownerId)
     {
         // Проверить наличие включенных виртуальных машин на других заданиях
+        // TODO
 
         // Отправляем команду на запуск виртуальной машины
         var virtualMachine = await _vMachineService.StartVirtualMachine(vmImageId, personalTaskId, ownerId);
         
         // Отправить уведомление пользователю
+        // TODO
 
         if (virtualMachine is null)
         {

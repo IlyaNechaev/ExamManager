@@ -43,7 +43,8 @@ public class VirtualMachineService : IVirtualMachineService
 
     public async Task<VirtualMachine?> StartVirtualMachine(string vmImageId, Guid ownerId, Guid personalTaskId)
     {
-        var vMachine = await _dbContext.VirtualMachines!.Include(vm => vm.Image).FirstOrDefaultAsync(vm => vm.Image.ID == vmImageId && vm.OwnerID == ownerId && vm.TaskID == personalTaskId);
+        var vMachineQuery = _dbContext.VirtualMachines!.Include(vm => vm.Image);
+        var vMachine = await vMachineQuery.AnyAsync() ? await vMachineQuery.FirstOrDefaultAsync(vm => vm.Image.ID == vmImageId && vm.OwnerID == ownerId && vm.TaskID == personalTaskId) : null;
         // Если уже существует подходящий объект виртуальной машины,
         // то удаляем его
         if (vMachine is not null)
@@ -61,26 +62,26 @@ public class VirtualMachineService : IVirtualMachineService
                 {
                     { "id", vmImageId }
                 });
-        
 
-        var vmStatus = JsonConvert.DeserializeObject<StartVirtualMachineResult?>(result);
-        
-        if (vmStatus is null)
-        {
-            return null;
-        }
 
-        vMachine = _mapper.Map<StartVirtualMachineResult, VirtualMachine>(vmStatus.Value);
-        vMachine.OwnerID = ownerId;
-        vMachine.TaskID = personalTaskId;
-        vMachine.Status = VMStatus.RUNNING;
+            var vmStatus = JsonConvert.DeserializeObject<StartVirtualMachineResult?>(result);
+
+            if (vmStatus is null)
+            {
+                return null;
+            }
+
+            vMachine = _mapper.Map<StartVirtualMachineResult, VirtualMachine>(vmStatus.Value);
+            vMachine.OwnerID = ownerId;
+            vMachine.TaskID = personalTaskId;
+            vMachine.Status = VMStatus.RUNNING;
         }
         catch
         {
             return null;
         }
 
-        await _dbContext.AddAsync(vMachine);
+        await _dbContext.VirtualMachines!.AddAsync(vMachine);
         await _dbContext.SaveChangesAsync();
 
         return vMachine;
@@ -136,11 +137,11 @@ public class VirtualMachineService : IVirtualMachineService
 
 public struct StartVirtualMachineResult
 {
-    public string vmid { get; set; }	
-	public string status { get; set; }
+    public string vmid { get; set; }
+    public string status { get; set; }
     public string address { get; set; }
-	public ushort port { get; set; }
-	public string password { get; set; }
+    public ushort port { get; set; }
+    public string password { get; set; }
 }
 
 public struct VirtualMachineStatus
