@@ -3,6 +3,7 @@ using ExamManager.Models;
 using ExamManager.Models.RequestModels;
 using ExamManager.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace ExamManager.Controllers
 {
@@ -198,7 +199,6 @@ namespace ExamManager.Controllers
         }
 
         [HttpGet(Routes.ConnectVirtualMachine)]
-        [ValidateGuidFormat("taskId")]
         public async Task<IActionResult> ConnectVirtualMachine(string taskId, string id)
         {
             var vMachine = await _virtualMachineService.GetVirtualMachine(id);
@@ -207,15 +207,17 @@ namespace ExamManager.Controllers
                 return Ok(ResponseFactory.CreateResponse(new InvalidDataException($"Виртуальной машины {id} не существует")));
             }
 
-            var fileText = await _virtualMachineService.GenerateConnectionFile(vMachine);
+            var fileText = new StringBuilder();
 
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(fileText);
-            writer.Flush();
-            stream.Position = 0;
+            fileText.AppendLine("ConnMethod=tcp;");
+            fileText.AppendLine($"ConnTime={DateTime.Now};");
+            fileText.AppendLine($"FriendlyName={vMachine.Name};");
+            fileText.AppendLine($"Host={vMachine.Host}:{vMachine.Port};");
+            fileText.AppendLine($"Password={vMachine.Password};");
+            fileText.AppendLine($"RelativePtr=0;");
+            fileText.AppendLine($"Uuid={vMachine.ObjectID};");
 
-            return File(stream, "text/plain", "connection.vnc");
+            return Ok(new { Text = fileText.ToString() });
         }
     
     }

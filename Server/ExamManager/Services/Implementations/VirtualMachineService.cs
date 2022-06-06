@@ -44,7 +44,7 @@ public class VirtualMachineService : IVirtualMachineService
     }
 
     public async Task<VirtualMachine?> StartVirtualMachine(string vmImageId, Guid ownerId, Guid personalTaskId)
-    {        
+    {
         var vMachineQuery = _dbContext.VirtualMachines!.Include(vm => vm.Image);
         var vMachine = await vMachineQuery.AnyAsync() ? await vMachineQuery.FirstOrDefaultAsync(vm => vm.Image.ID == vmImageId && vm.OwnerID == ownerId && vm.TaskID == personalTaskId) : null;
         // Если уже существует подходящий объект виртуальной машины,
@@ -62,16 +62,29 @@ public class VirtualMachineService : IVirtualMachineService
             _logger.LogError($"Can't find virtual machine image {vmImageId}");
         }
 
-        vMachine = new VirtualMachine();
-        vMachine.OwnerID = ownerId;
-        vMachine.TaskID = personalTaskId;
-        vMachine.Status = VMStatus.LOADING;
-        vMachine.ImageID = imageId.Value;
+        vMachine = new VirtualMachine()
+        {
+            OwnerID = ownerId,
+            TaskID = personalTaskId,
+            Status = VMStatus.LOADING,
+            ImageID = imageId.Value,
+            Host = string.Empty,
+            Name = string.Empty,
+            Password = string.Empty,
+            Port = 0
+        };
 
         _logger.LogInformation($"Creating new virtual machine instance: \nOwner: {vMachine.OwnerID}; \nImage: {vMachine.ImageID}; \nTask: {vMachine.TaskID}");
 
-        await _dbContext.VirtualMachines!.AddAsync(vMachine);
-        await _dbContext.SaveChangesAsync();
+        try
+        {
+            await _dbContext.VirtualMachines!.AddAsync(vMachine);
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+        }
 
         var result = string.Empty;
         try
@@ -98,6 +111,9 @@ public class VirtualMachineService : IVirtualMachineService
         }
         catch
         {
+            vMachine.Status = VMStatus.KILLED;
+            await _dbContext.SaveChangesAsync();
+
             return null;
         }
 

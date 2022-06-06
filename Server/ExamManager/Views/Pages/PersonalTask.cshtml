@@ -15,7 +15,7 @@
     <div class="vmachines-list">
         @foreach (var vMachine in Model.PersonalTask.VirtualMachines)
         {
-            <div id="@vMachine.Image.ID" class="vmachine">
+            <div id="@vMachine.Image.ID" vmid="@vMachine.Instance.Name" class="vmachine">
                 <div class="header">@vMachine.Image.ID</div>
                 <!--С помощью JS подгружается список рабоающих виртуальных машин-->
                 @if ((vMachine.Instance?.Status ?? VMStatus.KILLED) == VMStatus.KILLED)
@@ -24,21 +24,31 @@
                         Отключена
                     </div>
                 }
-                else
+                else if ((vMachine.Instance?.Status ?? VMStatus.RUNNING) == VMStatus.RUNNING)
                 {
                     <div class="description success">
                         Работает
                     </div>
                 }
+                else
+                {
+                    <div class="description warning">
+                        Включение
+                    </div>
+                }
                 <div class="actions">
                     @if ((vMachine.Instance?.Status ?? VMStatus.RUNNING) == VMStatus.RUNNING)
                     {
-                        <input type="button" class="btn-action connecct" value="Подключиться" />
+                        <input type="button" class="btn-action connect" value="Подключиться" />
                         <input type="button" class="btn-cancel turn-off" value="Отключить" />
+                    }
+                    else if ((vMachine.Instance?.Status ?? VMStatus.KILLED) == VMStatus.KILLED)
+                    {
+                        <input type="button" class="btn-info turn-on" value="Включить" />
                     }
                     else
                     {
-                        <input type="button" class="btn-info turn-on" value="Включить" />
+                        <input type="button" class="btn-info turn-on disabled" disabled="disabled" value="Включить" />
                     }
                 </div>
             </div>

@@ -70,6 +70,10 @@ let startTask = function (taskId, virtualMachineId, onResponse){
     handleRequest(`/task/${taskId}/start/${virtualMachineId}`, "GET", null, onResponse);
 }
 
+let connectVMachine = function (vmId, onResponse) {
+    handleRequest(`/task/example/connect/${vmId}`, "GET", null, onResponse);
+}
+
 let stopTask = function (virtualMachineId, onResponse) {
     handleRequest(`/task/stop/${virtualMachineId}`, "GET", null, onResponse);
 }

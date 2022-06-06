@@ -14,6 +14,9 @@ let turnOnVM = function (imageId, vmId) {
     actions.append(connectButton);
     actions.append(turnOffButton);
 
+    let vMachine = $(`#${imageId}`);
+    vMachine.attr('vmId', vmId);
+
     assignListeners();
 }
 
@@ -34,8 +37,19 @@ let turnOffVM = function (imageId) {
 
 let assignListeners = function () {
     $(".connect").on('click', function () {
-        console.log($(this));
-        $(this).parent().parent();
+        let vmId = $(this).parent().parent().attr('vmid');
+        console.log(vmId);
+
+        let onResponse = function (response) {
+            console.log(response);
+            let footer = $('.footer');
+            let parts = response.text.split(";\r\n");
+            for (let part of parts) {
+                footer.append($(`<p>${part}</p>`));
+            }
+        }
+
+        connectVMachine(vmId, onResponse);
     });
 
     // Включение ВМ
@@ -45,6 +59,8 @@ let assignListeners = function () {
         let id = $(this).parent().parent().attr('id');
         let description = $(`#${id} > .description`);
 
+        description.removeClass();
+        description.addClass('description warning');
         description.html('Включение');
 
         let onResponse = function (response) {
