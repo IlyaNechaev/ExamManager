@@ -183,9 +183,16 @@ namespace ExamManager.Controllers
 
         [HttpGet(Routes.CheckTask)]
         [ValidateGuidFormat("taskId")]
-        public async Task<IActionResult> CheckTak(string taskId)
-        {            
-            await _taskService.CheckStudyTaskAsync(Guid.Parse(taskId));
+        public async Task<IActionResult> CheckTak(string taskId, [FromQuery] string vMachine, [FromQuery] string vmImage)
+        {
+            try
+            {
+                await _taskService.CheckStudyTaskAsync(vMachine, vmImage, Guid.Parse(taskId));
+            }
+            catch (Exception ex)
+            {
+                return Ok(ResponseFactory.CreateResponse(ex));
+            }
 
             return Ok(ResponseFactory.CreateResponse());
         }

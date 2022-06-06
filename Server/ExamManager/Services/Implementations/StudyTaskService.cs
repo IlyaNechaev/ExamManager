@@ -263,9 +263,9 @@ public class StudyTaskService : IStudyTaskService
         await _dbContext.SaveChangesAsync();
     }
 
-    public Task CheckStudyTaskAsync(Guid taskId)
+    public async Task CheckStudyTaskAsync(string vMachineId, string vmImageId, Guid pTaskId)
     {
-        throw new NotImplementedException();
+        await _vMachineService.CheckVirtualMachine(vMachineId, vmImageId, pTaskId);
     }
 
     public async Task<string> StartTaskVirtualMachine(string vmImageId, Guid personalTaskId, Guid ownerId)
@@ -274,8 +274,8 @@ public class StudyTaskService : IStudyTaskService
         // TODO
 
         // Отправляем команду на запуск виртуальной машины
-        var virtualMachine = await _vMachineService.StartVirtualMachine(vmImageId, personalTaskId, ownerId);
-        
+        var virtualMachine = await _vMachineService.StartVirtualMachine(vmImageId, ownerId, personalTaskId);
+
         // Отправить уведомление пользователю
         // TODO
 

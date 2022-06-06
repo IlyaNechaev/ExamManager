@@ -50,6 +50,7 @@ public class ScriptManager
         try
         {
             result = await process.StandardOutput.ReadToEndAsync();
+            _logger.LogInformation($"SCRIPT RETURNS: {result}");
             if (!process.HasExited)
             {
                 process.Kill();
