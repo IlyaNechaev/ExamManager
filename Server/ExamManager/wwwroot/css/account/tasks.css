@@ -38,6 +38,8 @@ body .tasks {
 .task .title {
     font-size: 25px;
     font-family: var(--font-Roboto-Slab);
+    overflow: hidden;
+    line-height: 1em;
 }
 
 title * {

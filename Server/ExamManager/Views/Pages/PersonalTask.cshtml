@@ -10,11 +10,7 @@
 <div class="container">
     <div class="page-header">@Model.PersonalTask.Title</div>
     <div class="description">
-        @foreach (var descriptionPart in Model.PersonalTask.Description.Split("\n"))
-        {
-            @descriptionPart
-            <br />
-        }
+        @Html.Raw(Model.PersonalTask.Description)
     </div>
     <div class="vmachines-list">
         @foreach (var vMachine in Model.PersonalTask.VirtualMachines)
@@ -35,14 +31,14 @@
                     </div>
                 }
                 <div class="actions">
-                    @if((vMachine.Instance?.Status ?? VMStatus.KILLED) == VMStatus.KILLED)
+                    @if ((vMachine.Instance?.Status ?? VMStatus.KILLED) == VMStatus.KILLED)
                     {
-                        <input type="button" class="btn-info" value="Включить"/>
+                        <input type="button" class="btn-info" value="Включить" />
                     }
                     else
                     {
-                        <input type="button" class="btn-action" value="Подключиться"/>
-                        <input type="button" class="btn-cancel" value="Отключить"/>                        
+                        <input type="button" class="btn-action" value="Подключиться" />
+                        <input type="button" class="btn-cancel" value="Отключить" />
                     }
                 </div>
             </div>

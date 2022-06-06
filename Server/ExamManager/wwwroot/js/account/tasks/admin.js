@@ -35,7 +35,7 @@ function fillTasks(data) {
 
     for (task of data.tasks) {
 
-        let tableRow = $(`<div class="row" task="${task.id}">` +
+        let tableRow = $(`<div class="row s" task="${task.id}">` +
             `<div>${task.number}</div>` +
             `<div class="bold">${task.title != null ? task.title : "-"}</div>` +
             `<div>${task.description}</div >` +

@@ -234,6 +234,8 @@ public class StudyTaskService : IStudyTaskService
             throw new InvalidDataException($"Не удалось найти индивидуальные задания {string.Join(", ", personalTaskIds)}");
         }
 
+        personalTasks = personalTasks.Where(pTask => pTask.Status != Models.TaskStatus.SUCCESSED).ToList();
+
         _dbContext.RemoveRange(personalTasks);
         await _dbContext.SaveChangesAsync();
     }
@@ -310,7 +312,9 @@ public class StudyTaskService : IStudyTaskService
 
     public async Task WithdrawTaskFromStudentAsync(Guid taskId, Guid studentId)
     {
-        var personalTask = await _dbContext.UserTasks!.FirstOrDefaultAsync(pTask => pTask.TaskID == taskId && pTask.StudentID == studentId);
+        var personalTask = await _dbContext.UserTasks!
+            .Include(pTask => pTask.Task)
+            .FirstOrDefaultAsync(pTask => pTask.TaskID == taskId && pTask.StudentID == studentId);
 
         if (personalTask is null)
         {
@@ -329,6 +333,11 @@ public class StudyTaskService : IStudyTaskService
             throw new InvalidDataException($"Не удалось найти задание {taskNumber} у пользователя {studentName}");
         }
 
+        if (personalTask.Status == Models.TaskStatus.SUCCESSED)
+        {
+            throw new InvalidDataException($"Задание {personalTask.Task?.Number.ToString()} нельзя удалить у студента {personalTask.Student.FirstName}, поскольку оно выполнено");
+        }
+
         _dbContext.Remove(personalTask);
         await _dbContext.SaveChangesAsync();
     }
@@ -343,6 +352,8 @@ public class StudyTaskService : IStudyTaskService
         {
             throw new InvalidDataException($"Не удалось найти задания {string.Join(", ", taskId)} у пользователя {studentId}");
         }
+
+        personalTasks = personalTasks.Where(pTask => pTask.Status != Models.TaskStatus.SUCCESSED).ToList();
 
         _dbContext.RemoveRange(personalTasks);
         await _dbContext.SaveChangesAsync();
