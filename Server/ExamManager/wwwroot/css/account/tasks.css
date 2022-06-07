@@ -11,6 +11,13 @@ body .tasks {
         left: calc(50% - 50px);
     }
 
+.tasks a.download {
+    font-family: var(--font-Roboto);
+    font-size: 1.3em;
+    text-decoration: none;
+    line-height: 2em;
+}
+
 .tasks-list {
     --symbol-height: 1em;
     display: grid;

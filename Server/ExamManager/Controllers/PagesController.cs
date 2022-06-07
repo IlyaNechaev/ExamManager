@@ -36,7 +36,7 @@ namespace ExamManager.Controllers
         {
             var user = (User?)HttpContext.Items["User"];
             // Если пользователь не авторизован
-            if (user is null || user.IsDefault)
+            if (user is null)
             {
                 return View("Login");
             }
@@ -50,10 +50,10 @@ namespace ExamManager.Controllers
         {
             var user = (User?)HttpContext.Items["User"];
 
-            if (user.IsDefault)
-            {
-                RedirectToAction(nameof(LoginPageIndex));
-            }
+            //if (user.IsDefault)
+            //{
+            //    RedirectToAction(nameof(LoginPageIndex));
+            //}
 
             var view = user.Role switch
             {

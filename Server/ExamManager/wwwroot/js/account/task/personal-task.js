@@ -101,14 +101,20 @@ let assignListeners = function () {
 
     $(".check").on('click', function () {
         let taskId = (new URLSearchParams(window.location.search)).get('id');
-        $(this).addClass('disabled');
-        $(this).attr('disabled', 'disabled');
+        let btn = $(this);
+        btn.addClass('disabled');
+        btn.attr('disabled', 'disabled');
 
         let onResponse = function (response) {
             console.log(response);
         }
 
         checkTask(taskId, onResponse);
+
+        setTimeout(function () {
+            btn.removeClass('disabled');
+            btn.removeAttr('disabled');
+        }, 2000);
     });
 
     // Включение ВМ

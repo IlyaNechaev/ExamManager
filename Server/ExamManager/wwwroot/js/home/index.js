@@ -1,31 +1,6 @@
 ﻿let submitButton = $("#submitButton");
 let form = $("#form");
 
-let changeInputSection = function () {
-    let inputForm = $("#input-form");
-    let footer = $(".footer");
-    // Очистка формы
-    inputForm.empty();
-
-    let inputSection = $('<input id="login" class="normal" type="text" placeholder="Новый логин" />' +
-        '<input id="new"  class="normal" type="password" placeholder="Новый пароль" /> ' +
-        '<input id="confirm" class="normal" type="password" placeholder="Подтвердить пароль" />' +
-        '<div id="default"></span>');
-    // Заполнение формы новыми полями
-    inputSection.appendTo(inputForm);
-
-    //Очистка панели кнопок
-    footer.empty();
-
-    let footerButton = $('<input type="submit" name="sumbitButton" value="Изменить"/>');
-    // Заполнение панели кнопками
-    footerButton.appendTo(footer);
-
-    // Изменение функции submit
-    form.off('submit', handleLogin);
-    form.on('submit', handleDefault);
-}
-
 const jwt_token = Cookies.get("token");
 
 // Если пользователь авторизован
@@ -34,18 +9,13 @@ if (jwt_token) {
 
     let onResponse = function (response) {
 
-        if (response["isDefault"]) {
-            changeInputSection();
+        let write = function (response) {
+            console.log(response);
         }
-        else {
-            let write = function (response) {
-                console.log(response);
-            }
-            handleRequest("/pages/home", "GET", null, write);
-        }
+        handleRequest("/pages/home", "GET", null, write);
     }
 
-    handleRequest(`/user/${decoded["Claim.Key.Id"]}`, "GET", null, onResponse);    
+    handleRequest(`/user/${decoded["Claim.Key.Id"]}`, "GET", null, onResponse);
 }
 
 // Запрос при авторизации
@@ -62,7 +32,7 @@ let handleLogin = function (event) {
         password: this.password.value
     };
 
-    let onResponse = function(response) {
+    let onResponse = function (response) {
         onSuccess(response);
     };
     handleRequest("/login", "POST", data, onResponse);
@@ -77,7 +47,7 @@ let onSuccess = function (response) {
     }
 }
 
-let handleBadResponse = function(response){
+let handleBadResponse = function (response) {
     $("#password").val("");
 
     // Вывести ошибки
@@ -91,18 +61,13 @@ let handleBadResponse = function(response){
     }
 }
 
-let handleJWTResponse = function(response){
+let handleJWTResponse = function (response) {
     // Устанавливаем токен
     let jwtToken = response.token;
     Cookies.set("token", jwtToken);
 
     // Если пользователь авторизовался в первый раз
-    if (response.isDefault) {
-        changeInputSection();
-    }
-    else {
-        window.location.replace("/pages/home");
-    }
+    window.location.replace("/pages/home");
 }
 
 let handleDefault = function () {
@@ -115,13 +80,13 @@ let handleDefault = function () {
 
     if (this.new.value !== this.confirm.value) {
         let errors = {
-            "confirm": [ "Пароли должны совпадать" ]
+            "confirm": ["Пароли должны совпадать"]
         };
         handleBadResponse({ errors: errors });
         return;
     }
 
-    let data = 
+    let data =
     {
         id: jwt_decode(Cookies.get("token"))["Claim.Key.Id"],
         login: this.login.value,
