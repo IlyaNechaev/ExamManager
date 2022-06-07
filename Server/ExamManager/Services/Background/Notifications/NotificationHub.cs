@@ -5,6 +5,6 @@ public class NotificationHub : Hub
 {
     public async Task SendNotification(Guid userId, string message)
     {
-        await Clients.User(userId.ToString()).SendAsync(message);
+        await Clients.All.SendAsync("Notify", userId, message);
     }
 }

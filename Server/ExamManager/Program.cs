@@ -36,6 +36,7 @@ builder.Services.AddDbContext<DbContext, ExamManagerDBContext>(
         .EnableDetailedErrors());
 
 builder.Services.AddSingleton<INotificationService, NotificationService>();
+builder.Services.AddSingleton<IVMachinesCheckingService, VMachinesCheckingService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IGroupService, GroupService>();
 builder.Services.AddTransient<ISecurityService, SecurityService>();
@@ -47,7 +48,8 @@ builder.Services.AddTransient<SignInManager>((serviceProvider) => new SignInMana
 builder.Services.AddScriptManager(builder.Environment);
 
 builder.Services.AddSignalR();
-builder.Services.AddHostedService<NotificationService>();
+builder.Services.AddHostedService(sp => (NotificationService)sp.GetService<INotificationService>());
+builder.Services.AddHostedService(sp => (VMachinesCheckingService)sp.GetService<IVMachinesCheckingService>());
 
 //builder.Services.AddClaimsAuthentication();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

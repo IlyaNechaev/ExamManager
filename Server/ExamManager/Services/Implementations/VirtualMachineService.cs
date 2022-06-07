@@ -106,8 +106,12 @@ public class VirtualMachineService : IVirtualMachineService
                 throw new InvalidDataException("Не удалось запустить виртуальную машину");
             }
 
-            vMachine = _mapper.Map<StartVirtualMachineResult, VirtualMachine>(vmStatus.Value);
-
+            var newMachine = _mapper.Map<StartVirtualMachineResult, VirtualMachine>(vmStatus.Value);
+            vMachine.Host = newMachine.Host;
+            vMachine.Port = newMachine.Port;
+            vMachine.Name = newMachine.Name;
+            vMachine.Password = newMachine.Password;
+            vMachine.Status = VMStatus.RUNNING;
         }
         catch
         {
@@ -131,23 +135,30 @@ public class VirtualMachineService : IVirtualMachineService
             throw new InvalidDataException($"Виртуальной машины {virtualMachineId} не существует");
         }
 
-        var result = await _scriptManager.Execute(
-            IVirtualMachineService.VMControl,
-            IVirtualMachineService.StopVM,
-            new()
-            {
-                { "vm_id", virtualMachineId }
-            });
-
-        var vmStatus = JsonConvert.DeserializeObject<VirtualMachineStatus?>(result);
-        if (vmStatus is null || vmStatus.Value.status == VMStatus.RUNNING.ToLowerString())
+        try
         {
-            throw new InvalidDataException($"Не удалось остановить виртуальную машину {virtualMachineId}");
+            var result = await _scriptManager.Execute(
+                IVirtualMachineService.VMControl,
+                IVirtualMachineService.StopVM,
+                new()
+                {
+                    { "vm_id", virtualMachineId }
+                });
+
+            var vmStatus = JsonConvert.DeserializeObject<VirtualMachineStatus?>(result);
+            if (vmStatus is null || vmStatus.Value.status == VMStatus.RUNNING.ToLowerString())
+            {
+                throw new InvalidDataException($"Не удалось остановить виртуальную машину {virtualMachineId}");
+            }
+
+            vMachine.Status = VMStatus.KILLED;
+            await _dbContext.SaveChangesAsync();
         }
-
-        vMachine.Status = VMStatus.KILLED;
-
-        await _dbContext.SaveChangesAsync();
+        catch
+        {
+            vMachine.Status = VMStatus.KILLED;
+            await _dbContext.SaveChangesAsync();
+        }
     }
 
     public async Task<string> GetVirtualMachineStatus(string virtualMachineId)

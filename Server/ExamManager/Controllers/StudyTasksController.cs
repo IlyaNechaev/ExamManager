@@ -167,8 +167,7 @@ namespace ExamManager.Controllers
         }
 
         [HttpGet(Routes.StopTask)]
-        [ValidateGuidFormat("taskId")]
-        public async Task<IActionResult> StopTask(string taskId, string id)
+        public async Task<IActionResult> StopTask(string id)
         {
             try
             {
@@ -184,11 +183,11 @@ namespace ExamManager.Controllers
 
         [HttpGet(Routes.CheckTask)]
         [ValidateGuidFormat("taskId")]
-        public async Task<IActionResult> CheckTak(string taskId, [FromQuery] string vMachine, [FromQuery] string vmImage)
+        public async Task<IActionResult> CheckTak(string taskId)
         {
             try
             {
-                await _taskService.CheckStudyTaskAsync(vMachine, vmImage, Guid.Parse(taskId));
+                await _taskService.CheckStudyTaskAsync(Guid.Parse(taskId));
             }
             catch (Exception ex)
             {

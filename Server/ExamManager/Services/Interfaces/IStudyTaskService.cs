@@ -32,6 +32,8 @@ public interface IStudyTaskService
 
     public Task<IEnumerable<Guid>> GetStudentsHavingTask(Guid taskId);
 
+    public Task CheckTaskStatus(string virtualMachineId);
+
     #endregion
 
     #region TRANSFORM
@@ -67,7 +69,7 @@ public interface IStudyTaskService
     /// <returns>Идентификатор виртуальной машины</returns>
     public Task<string> StartTaskVirtualMachine(string vmImageId, Guid personalTaskId, Guid ownerId);
     public Task StopTaskVirtualMachine(string vMachineId);
-    public Task CheckStudyTaskAsync(string vMachineId, string vmImageId, Guid pTaskId);
+    public Task CheckStudyTaskAsync(Guid pTaskId);
 
     #endregion
 }

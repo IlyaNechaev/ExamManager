@@ -1,7 +1,7 @@
 ﻿@using ExamManager.Models;
 @model (User User, Group Group);
 @{
-    ViewData["Title"] = "Администратор";
+    ViewData["Title"] = @Model.Group.Name;
     ViewData["UserName"] = $"{Model.User.LastName} {Model.User.FirstName}";
     ViewData["IsAdmin"] = Model.User.Role == UserRole.ADMIN;
     Layout = "_AccountLayout";

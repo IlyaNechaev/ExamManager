@@ -31,12 +31,15 @@ public class NotificationService : BackgroundService, INotificationService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var notification = await _notifications.Reader.ReadAsync();
-            using (var scope = _services.CreateScope())
+            if (await _notifications.Reader.WaitToReadAsync(stoppingToken))
             {
-                var hub = scope.ServiceProvider.GetRequiredService<IHubContext<NotificationHub>>();
-                
-                await hub.Clients.User(notification.UserId.ToString()).SendAsync("Notify", notification.Message, stoppingToken);
+                var notification = await _notifications.Reader.ReadAsync();
+                using (var scope = _services.CreateScope())
+                {
+                    var hub = scope.ServiceProvider.GetRequiredService<IHubContext<NotificationHub>>();
+
+                    await hub.Clients.All.SendAsync("Notify", notification.UserId, notification.Message, stoppingToken);
+                }
             }
         }
     }

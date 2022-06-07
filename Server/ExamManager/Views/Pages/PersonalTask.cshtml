@@ -15,7 +15,7 @@
     <div class="vmachines-list">
         @foreach (var vMachine in Model.PersonalTask.VirtualMachines)
         {
-            <div id="@vMachine.Image.ID" vmid="@vMachine.Instance.Name" class="vmachine">
+            <div id="@vMachine.Image.ID" vmid="@(vMachine.Instance?.Name ?? string.Empty)" class="vmachine">
                 <div class="header">@vMachine.Image.ID</div>
                 <!--С помощью JS подгружается список рабоающих виртуальных машин-->
                 @if ((vMachine.Instance?.Status ?? VMStatus.KILLED) == VMStatus.KILLED)
@@ -24,29 +24,29 @@
                         Отключена
                     </div>
                 }
-                else if ((vMachine.Instance?.Status ?? VMStatus.RUNNING) == VMStatus.RUNNING)
+                else if (vMachine.Instance?.Status == VMStatus.RUNNING)
                 {
                     <div class="description success">
                         Работает
                     </div>
                 }
-                else
+                else if (vMachine.Instance?.Status == VMStatus.LOADING)
                 {
                     <div class="description warning">
                         Включение
                     </div>
                 }
                 <div class="actions">
-                    @if ((vMachine.Instance?.Status ?? VMStatus.RUNNING) == VMStatus.RUNNING)
+                    @if ((vMachine.Instance?.Status ?? VMStatus.KILLED) == VMStatus.KILLED)
+                    {
+                        <input type="button" class="btn-info turn-on" value="Включить" />
+                    }
+                    else if (vMachine.Instance?.Status == VMStatus.RUNNING)
                     {
                         <input type="button" class="btn-action connect" value="Подключиться" />
                         <input type="button" class="btn-cancel turn-off" value="Отключить" />
                     }
-                    else if ((vMachine.Instance?.Status ?? VMStatus.KILLED) == VMStatus.KILLED)
-                    {
-                        <input type="button" class="btn-info turn-on" value="Включить" />
-                    }
-                    else
+                    else if (vMachine.Instance?.Status == VMStatus.LOADING)
                     {
                         <input type="button" class="btn-info turn-on disabled" disabled="disabled" value="Включить" />
                     }
@@ -55,7 +55,30 @@
         }
     </div>
     <div class="footer">
-        <input type="button" class="btn-info" value="Проверить" />
+        @if (Model.PersonalTask.Status != ExamManager.Models.TaskStatus.CHECKING)
+        {
+            <input type="button" class="btn-info check" value="Проверить" />
+        }
+        else
+        {
+            <input type="button" class="btn-info check disabled" disabled value="Проверить" />
+        }
+        @if (Model.PersonalTask.Message is not null || Model.PersonalTask.Status == ExamManager.Models.TaskStatus.SUCCESSED)
+        {
+            @if (Model.PersonalTask.Status == ExamManager.Models.TaskStatus.SUCCESSED)
+            {
+                <div class="result success">
+                    Успешно
+                </div>
+            }
+            else if (Model.PersonalTask.Message is not null)
+            {
+                <div class="result danger">
+                    @Model.PersonalTask.Message
+                </div>
+            }
+        }
     </div>
 </div>
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/account/task/personal-task.js"></script>

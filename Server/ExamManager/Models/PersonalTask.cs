@@ -24,5 +24,6 @@ public class PersonalTask
 public enum TaskStatus
 {
     FAILED = 1 << 0,
-    SUCCESSED = 1 << 1
+    SUCCESSED = 1 << 1,
+    CHECKING = 1 << 2
 }

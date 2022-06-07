@@ -6,6 +6,8 @@ public class PersonalTaskView
     public string? Title { get; set; }
     public ushort? Number { get; set; }
     public string Description { get; set; }
+    public string? Message { get; set; }
+    public Models.TaskStatus Status { get; set; }
     public ICollection<(VirtualMachineImage Image, VirtualMachine? Instance)> VirtualMachines { get; set; }
 
     public static PersonalTaskView MapFrom(PersonalTask task)
@@ -16,6 +18,8 @@ public class PersonalTaskView
             Title = task.Task.Title,
             Number = task.Task.Number,
             Description = task.Task.Description!,
+            Status = task.Status,
+            Message = task.Message
         };
 
         taskView.VirtualMachines = new List<(VirtualMachineImage, VirtualMachine?)>();

@@ -3,6 +3,7 @@ using ExamManager.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
+using Newtonsoft.Json;
 
 namespace ExamManager.Services;
 
@@ -12,13 +13,15 @@ public class StudyTaskService : IStudyTaskService
     ExamManagerDBContext _dbContext;
     IVirtualMachineService _vMachineService;
     INotificationService _notificationService;
+    IVMachinesCheckingService _vmCheckingService;
 
     public StudyTaskService(
-        ExamManagerDBContext context, IVirtualMachineService vMachineService, INotificationService notificationService)
+        ExamManagerDBContext context, IVirtualMachineService vMachineService, INotificationService notificationService, IVMachinesCheckingService vmCheckingService)
     {
         _dbContext = context;
         _vMachineService = vMachineService;
         _notificationService = notificationService;
+        _vmCheckingService = vmCheckingService;
     }
 
     public async Task<StudyTask> CreateStudyTaskAsync(string? title, string description, VirtualMachineImage[]? virtualMachines)
@@ -263,9 +266,27 @@ public class StudyTaskService : IStudyTaskService
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task CheckStudyTaskAsync(string vMachineId, string vmImageId, Guid pTaskId)
+    public async Task CheckStudyTaskAsync(Guid pTaskId)
     {
-        await _vMachineService.CheckVirtualMachine(vMachineId, vmImageId, pTaskId);
+        var vMachines = await _dbContext.VirtualMachines.Include(vm => vm.Image).Where(vm => vm.TaskID == pTaskId).ToListAsync();
+        var pTask = await _dbContext.UserTasks.FirstOrDefaultAsync(pTask => pTask.ObjectID == pTaskId);
+
+        if (pTask is null)
+        {
+            throw new InvalidDataException($"Нет задания {pTaskId}");
+        }
+        if (pTask.Status == Models.TaskStatus.CHECKING)
+        {
+            throw new InvalidDataException($"Задание {pTaskId} уже на проверке");
+        }
+
+        pTask.Status = Models.TaskStatus.CHECKING;
+        await _dbContext.SaveChangesAsync();
+
+        foreach (var vMachine in vMachines)
+        {
+            await _vMachineService.CheckVirtualMachine(vMachine.Name, vMachine.Image.ID, pTaskId);
+        }
     }
 
     public async Task<string> StartTaskVirtualMachine(string vmImageId, Guid personalTaskId, Guid ownerId)
@@ -276,13 +297,23 @@ public class StudyTaskService : IStudyTaskService
         // Отправляем команду на запуск виртуальной машины
         var virtualMachine = await _vMachineService.StartVirtualMachine(vmImageId, ownerId, personalTaskId);
 
+
         // Отправить уведомление пользователю
-        // TODO
+        var message = new
+        {
+            Method = "start",
+            VMachineImage = vmImageId,
+            VMachine = virtualMachine?.Name,
+            Status = virtualMachine?.Status ?? VMStatus.KILLED
+        };
+        await _notificationService.NotifyUser(ownerId, JsonConvert.SerializeObject(message));
 
         if (virtualMachine is null)
         {
             throw new InvalidDataException($"Не удалось запустить виртуальную машину {vmImageId}");
         }
+
+        _vmCheckingService.AddVirtualMachine(virtualMachine.Name);
 
         return virtualMachine.Name;
     }
@@ -291,10 +322,36 @@ public class StudyTaskService : IStudyTaskService
     {
         try
         {
+            _vmCheckingService.RemoveVirtualMachine(vMachineId);
             await _vMachineService.StopVirtualMachine(vMachineId);
+
+            var vMachine = await _dbContext.VirtualMachines
+                .Include(vm => vm.Image)
+                .FirstOrDefaultAsync(vMachine => vMachine.Name == vMachineId);
+
+            // Отправить уведомление пользователю
+            var message = new
+            {
+                Method = "stop",
+                VMachine = vMachineId,
+                VMachineImage = vMachine?.Image.ID ?? null,
+                Status = VMStatus.KILLED
+            };
+            await _notificationService.NotifyUser(vMachine.OwnerID, JsonConvert.SerializeObject(message));
         }
         catch
         {
+            var vMachine = await _dbContext.VirtualMachines
+                       .FirstOrDefaultAsync(vMachine => vMachine.Name == vMachineId);
+
+            // Отправить уведомление пользователю
+            var message = new
+            {
+                Method = "stop",
+                VMachine = vMachineId,
+                Status = VMStatus.RUNNING
+            };
+            await _notificationService.NotifyUser(vMachine.OwnerID, JsonConvert.SerializeObject(message));
             throw;
         }
     }
@@ -425,5 +482,46 @@ public class StudyTaskService : IStudyTaskService
             .FirstOrDefaultAsync(pTask => pTask.ObjectID == taskId);
 
         return personalTask;
+    }
+
+    public async Task CheckTaskStatus(string virtualMachineId)
+    {
+        try
+        {
+            var vMachineStatus = await _vMachineService.GetVirtualMachineStatus(virtualMachineId);
+
+            if (vMachineStatus == "invalid")
+            {
+                var vMachine = await _dbContext.VirtualMachines
+                    .FirstOrDefaultAsync(vMachine => vMachine.Name == virtualMachineId);
+
+                var message = new
+                {
+                    Method = "status",
+                    VMachineImage = vMachine.ImageID,
+                    Status = VMStatus.KILLED
+                };
+                await _notificationService.NotifyUser(vMachine.OwnerID, JsonConvert.SerializeObject(message));
+
+                vMachine.Status = VMStatus.KILLED;
+                await _dbContext.SaveChangesAsync();
+            }
+        }
+        catch
+        {
+            //
+            var vMachine = await _dbContext.VirtualMachines
+                    .FirstOrDefaultAsync(vMachine => vMachine.Name == virtualMachineId);
+
+            var message = new
+            {
+                Method = "status",
+                VMachineImage = vMachine.ImageID,
+                Status = VMStatus.KILLED
+            };
+            await _notificationService.NotifyUser(vMachine.OwnerID, JsonConvert.SerializeObject(message));
+
+            await StopTaskVirtualMachine(virtualMachineId);
+        }
     }
 }

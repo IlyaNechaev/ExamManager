@@ -75,7 +75,11 @@ let connectVMachine = function (vmId, onResponse) {
 }
 
 let stopTask = function (virtualMachineId, onResponse) {
-    handleRequest(`/task/stop/${virtualMachineId}`, "GET", null, onResponse);
+    handleRequest(`/task/example/stop/${virtualMachineId}`, "GET", null, onResponse);
+}
+
+let checkTask = function (taskId, onResponse) {
+    handleRequest(`/task/${taskId}/check`, "GET", null, onResponse);
 }
 
 let getGroup = function (groupId, onResponse){

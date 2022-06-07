@@ -102,3 +102,18 @@ body {
     padding: 8px;
     width: 80%;
 }
+
+.result {
+    font-family: var(--font-Roboto);
+    font-weight: 700;
+    font-size: 2em;
+    margin: .5em 0;
+}
+
+    .result.success {
+        color: rgb(45, 180, 52);
+    }
+
+    .result.danger {
+        color: rgb(180, 45, 45);
+    }
