@@ -1,0 +1,55 @@
+﻿@namespace ExamManager.Components
+@using Microsoft.AspNetCore.Components
+@using ExamManager.Services
+@using ExamManager.Models
+
+@inject ExamManager.Services.IUserService UserService
+
+<div class="table">
+    <div class="bar">
+        <input id="student-name"
+               class="student-name"
+               type="text"
+               placeholder="Поиск"
+               @oninput="SearchChanged" />
+        <input id="open-button"
+               type="button"
+               class="btn-action"
+               value="Добавить" />
+        <input id="reload-button"
+               type="button"
+               class="btn-info"
+               value="Обновить" />
+    </div>
+    <div class="header">
+        <div class="row">
+            <div size="1">№</div>
+            <div size="3">Фамилия, имя</div>
+            <div size="2">Группа</div>
+            <div size="2">Задачи</div>
+            <div size="2"></div>
+        </div>
+    </div>
+    <div class="body">
+        <div class="loader"></div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public Guid CurrentUserID { get; set; }
+
+    private List<User> _students { get; set; }
+
+    private async Task SearchChanged(ChangeEventArgs e)
+    {
+        var options = new UserOptions
+            {
+                Name = e.Value.ToString()
+            };
+
+        _students = (await UserService.GetUsers(options, includeGroup: true)).ToList();
+        Console.WriteLine("Hello Blazor");
+    }
+}

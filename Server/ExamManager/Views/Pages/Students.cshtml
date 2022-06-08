@@ -1,4 +1,6 @@
 ﻿@using ExamManager.Models
+@using ExamManager.Components
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model ExamManager.Models.User
 @{
     ViewData["Title"] = "Студенты";
@@ -8,34 +10,8 @@
 }
 
 <div class="page-header">Студенты</div>
-<div class="table">
-    <div class="bar">
-        <input id="student-name"
-               class="student-name"
-               type="text"
-               placeholder="Поиск" />
-        <input id="open-button"
-               type="button"
-               class="btn-action"
-               value="Добавить" />
-        <input id="reload-button"
-               type="button"
-               class="btn-info"
-               value="Обновить" />
-    </div>
-    <div class="header">
-        <div class="row">
-            <div size="1">№</div>
-            <div size="3">Фамилия, имя</div>
-            <div size="2">Группа</div>
-            <div size="2">Задачи</div>
-            <div size="2"></div>
-        </div>
-    </div>
-    <div class="body">
-        <div class="loader"></div>
-    </div>
-</div>
+<component type="typeof(UsersTable)" render-mode="ServerPrerendered"
+           param-CurrentUserID="@Model.ObjectID"/>
 <dialog class="create-student-modal" id="create-student-modal">
     <div class="header">Добавить студентов</div>
     <div class="container">
