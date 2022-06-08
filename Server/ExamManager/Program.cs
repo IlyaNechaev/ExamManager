@@ -22,6 +22,7 @@ builder.Services.AddControllers()
             "https://httpstatuses.com/404";
     });
 
+builder.Services.AddServerSideBlazor();
 // Добавляем MVC
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -83,6 +84,7 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<NotificationHub>("/notification");
     endpoints.MapControllers();
+    endpoints.MapBlazorHub();
 });
 
 app.Run();
