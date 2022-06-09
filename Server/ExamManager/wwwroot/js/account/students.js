@@ -43,13 +43,23 @@ function fillStudents(data) {
             continue;
         }
 
-        let tableRow = $(`<div class="row s" student="${user.id}">` +
+        let tasksDescription;
+        if (user.tasks != null && user.tasks.length > 0) {
+            tasksDescription = $(`<div class="description"></div>`);
+            for (let task of user.tasks) {
+                tasksDescription.append($(`<div class="task-row">${task.title} ${task.status == 1 ? '<span class="text-danger">(Не выполнено)</span>' : '<span class="text-success">(Выполнено)</span>'}</div>`));
+            }
+        }
+        else {
+            tasksDescription = $(`<div class="description">0</div >`);
+        }
+
+        let tableRow = $(`<div class="row" student="${user.id}">` +
             `<div class="number">${index}</div>` +
             `<div class="bold">${user.lastName} ${user.firstName}</div>` +
-            `<div class="description">${user.groupName == null ? "-" : user.groupName}</div >` +
-            `<div class="description">${user.tasks == null ? 0 : user.tasks.length}</div >` +
+            `<div class="description">${user.groupName == null ? "-" : user.groupName}</div>` +
             '</div> ');
-
+        tableRow.append(tasksDescription);
 
         let actionsColumn = $(`<div class="actions"> 
                                </div>`);

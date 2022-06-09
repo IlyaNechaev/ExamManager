@@ -59,6 +59,36 @@
     padding-bottom: 0.5em;
 }
 
+.row .description {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.description .task-row {
+    display: flex;
+    flex-direction: row;
+    border: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+@media (max-width: 1400px) {
+    .description .task-row {
+        flex-direction: column;
+    }
+}
+
+.task-row .text-danger {
+    font-weight: 700;
+    color: red;
+}
+
+.task-row .text-success {
+    font-weight: 700;
+    color: green;
+}
+
 .students-table .header .row div:first-of-type {
     padding-left: .5rem;
 }
