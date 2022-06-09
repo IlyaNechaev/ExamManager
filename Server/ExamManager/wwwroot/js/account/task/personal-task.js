@@ -95,7 +95,7 @@ let assignListeners = function () {
             let actions = $(`[vmid="${vmId}"] > .actions`);
 
             let connectionInfo = $('<div class="connection-info"></div>');
-            let parts = response.text.split(";\r\n");
+            let parts = response.text.split(";\n");
 
             for (let part of parts) {
                 if (part === "") {
