@@ -15,14 +15,25 @@ body .tasks {
     font-family: var(--font-Roboto);
     font-size: 1.3em;
     text-decoration: none;
-    line-height: 2em;
+    line-height: 3em;
+    background-color: rgb(24, 106, 182);
+    color: white;
+    padding: .5em;
+    border-radius: 10px;
+    border: .1em solid rgb(14, 64, 109);
+    transition: background-color 200ms;
 }
+
+    .tasks a.download:hover {
+        background-color: rgb(14, 64, 109);
+    }
 
 .tasks-list {
     --symbol-height: 1em;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
 }
+
     .tasks-list > .description {
         font-family: var(--font-Roboto);
         font-size: 2em;
@@ -32,15 +43,15 @@ body .tasks {
         margin: 2em 0;
     }
 
-        .tasks-list .task {
-            display: grid;
-            grid-template-rows: calc(var(--symbol-height) * 3) calc(var(--symbol-height) * 16) calc(var(--symbol-height) * 3);
-            margin-top: 2em;
-            padding: 20px;
-            width: 80%;
-            border: 1px solid rgba(0, 0, 0, .4);
-            box-shadow: .5em .5em .5em .5em rgba(0, 0, 0, .4);
-        }
+    .tasks-list .task {
+        display: grid;
+        grid-template-rows: calc(var(--symbol-height) * 3) calc(var(--symbol-height) * 16) calc(var(--symbol-height) * 3);
+        margin-top: 2em;
+        padding: 20px;
+        width: 80%;
+        border: 1px solid rgba(0, 0, 0, .4);
+        box-shadow: .5em .5em .5em .5em rgba(0, 0, 0, .4);
+    }
 
 .task .title {
     font-size: 25px;
