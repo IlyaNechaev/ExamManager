@@ -60,6 +60,7 @@ let turnOnVM = function (imageId, vmId) {
 let turnOffVM = function (method, imageId, vmId) {
     let description = $(`#${imageId} > .description`);
     let actions = $(`#${imageId} > .actions`);
+    let connectionInfo = $(`#${imageId} > .connection-info`);
 
     if (method === "stop" && description.parent().attr('vmid') != vmId) {
         return;
@@ -72,6 +73,10 @@ let turnOffVM = function (method, imageId, vmId) {
     actions.empty();
     let turnOnButton = $(`<input type="button" class="btn-info turn-on" value="Включить" />`);
     actions.append(turnOnButton);
+
+    if (connectionInfo != null) {
+        connectionInfo.remove();
+    }
 
     assignListeners();
 }
@@ -87,13 +92,23 @@ let assignListeners = function () {
             if (response.type === "BadResponse") {
                 return;
             }
-            let footer = $('.footer');
-            $(".footer p").remove();
+            let actions = $(`[vmid="${vmId}"] > .actions`);
 
+            let connectionInfo = $('<div class="connection-info"></div>');
             let parts = response.text.split(";\r\n");
+
             for (let part of parts) {
-                footer.append($(`<p>${part}</p>`));
+                if (part === "") {
+                    continue;
+                }
+                let row = $('<div class="row"></div>');
+                row.append($(`<div class="section">${part.split('=')[0]}</div>`));
+                row.append($(`<div class="section">${part.split('=')[1]}</div>`));
+
+                connectionInfo.append(row);
             }
+
+            actions.after(connectionInfo);
         }
 
         connectVMachine(vmId, onResponse);
