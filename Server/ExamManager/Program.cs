@@ -1,8 +1,10 @@
 using AutoMapper;
+using Blazored.LocalStorage;
 using ExamManager.DAO;
 using ExamManager.Mapping;
 using ExamManager.Middleware;
 using ExamManager.Services;
+using MatBlazor;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 
@@ -22,10 +24,28 @@ builder.Services.AddControllers()
             "https://httpstatuses.com/404";
     });
 
+builder.Services.AddHttpClient();
+builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddServerSideBlazor();
 // Добавляем MVC
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddMatToaster(config =>
+{
+    config.Position = MatToastPosition.BottomRight;
+    config.PreventDuplicates = true;
+    config.NewestOnTop = true;
+    config.ShowCloseButton = true;
+    config.ShowProgressBar = true;
+    config.MaximumOpacity = 95;
+
+    config.ShowTransitionDuration = 500;
+    config.VisibleStateDuration = 5000;
+    config.HideTransitionDuration = 1000;
+
+    config.RequireInteraction = false;
+});
 
 var connectionString = configManager.GetConnectionString("DefaultConnection");
 
@@ -56,8 +76,6 @@ builder.Services.AddHostedService(sp => (VMachinesCheckingService)sp.GetService<
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddHttpClient();
 
 builder.Services.AddSingleton(provider => new MapperConfiguration(cfg =>
 {

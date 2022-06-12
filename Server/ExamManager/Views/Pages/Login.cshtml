@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.ModelBinding;
 @using ExamManager.Models;
+@using ExamManager.Components;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model ExamManager.Models.LoginEditModel;
 
 @{
@@ -10,14 +12,16 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <base href="~/" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ExamManager</title>
     <link rel="stylesheet" href="~/css/main-style.css" />
-
+    <link href="ExamManager.styles.css" rel="stylesheet"/>
 </head>
 <body class="main">
-    <form id="form" class="auth-form" method="POST" action="@(Routes.Login)" autocomplete="off">
+    <component type="typeof(LoginForm)" render-mode="ServerPrerendered"/>
+@*    <form id="form" class="auth-form" method="POST" action="@(Routes.Login)" autocomplete="off">
         <div class="header">Авторизация</div>
         <div id="input-form" class="body">
             <input class="normal" type="text" placeholder="Логин" id="login" />
@@ -27,8 +31,9 @@
         <div class="footer">
             <input type="submit" name="sumbitButton" value="Войти"/>
         </div>
-    </form>
+    </form>*@
 </body>
+<script src="/_framework/blazor.server.js"></script>
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/js/js.cookie.js"></script>
 <script src="~/js/jwt-decode.js"></script>

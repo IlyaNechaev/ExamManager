@@ -321,7 +321,7 @@ public static class ResponseFactory
         {
             if (error.Value.Errors.Count > 0)
             {
-                errors.Add(error.Key, error.Value.Errors.Select(msg => msg.ErrorMessage).ToList());
+                errors.Add(error.Key.ToLower(), error.Value.Errors.Select(msg => msg.ErrorMessage).ToList());
             }
         }
 

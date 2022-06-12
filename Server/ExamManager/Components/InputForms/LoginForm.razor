@@ -1,0 +1,103 @@
+﻿@*Usings*@
+@namespace ExamManager.Components
+@using Microsoft.AspNetCore.Components
+@using ExamManager.Models
+@using ExamManager.Models.Response
+@using Newtonsoft.Json
+@using MatBlazor
+
+@*Dependency injection*@
+@inject ExamManager.Services.IUserService UserService
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager;
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject IMatToaster Toaster;
+
+<form class="auth-form" @onsubmit:preventDefault @onsubmit="LoginUser">
+    <div class="header">Авторизация</div>
+    <div class="body">
+        @if (_errors.ContainsKey("login"))
+        {
+            <input class="normal input-validation-error" type="text" placeholder="Логин" autocomplete="off" @bind="_model.Login" @bind:event="onchange" />
+            @foreach (var error in _errors["login"])
+            {
+                <span class="field-validation-error">@error</span>
+            }
+        }
+        else
+        {
+            <input class="normal" type="text" placeholder="Логин" autocomplete="off" @bind="_model.Login" @bind:event="onchange" />
+        }
+        @if (_errors.ContainsKey("password"))
+        {
+            <input class="normal input-validation-error" type="password" placeholder="Пароль" autocomplete="off" @bind="_model.Password" @bind:event="onchange" />
+            @foreach (var error in _errors["password"])
+            {
+                <span class="field-validation-error">@error</span>
+            }
+        }
+        else
+        {
+            <input class="normal" type="password" placeholder="Пароль" autocomplete="off" @bind="_model.Password" @bind:event="onchange" />
+        }
+
+    </div>
+    <div class="footer">
+        <input type="submit" value="Войти" />
+    </div>
+</form>
+<MatToastContainer />
+
+@code {
+
+    private LoginEditModel _model = new();
+    private Dictionary<string, List<string>> _errors = new();
+
+    private async Task LoginUser()
+    {
+        var loginUri = NavigationManager.ToAbsoluteUri(Routes.Login);
+        var client = ClientFactory.CreateClient();
+        Guid userId;
+
+        try
+        {
+            var response = await client.PostAsJsonAsync(loginUri, _model);
+            dynamic responseObj = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+
+            // BadResponse
+            if (responseObj.type == nameof(BadResponse))
+            {
+                var badResponse = await response.Content.ReadFromJsonAsync<BadResponse>();
+                Toaster.Add(badResponse.message, MatToastType.Danger, title: "Ошибка");
+            }
+            // ErrorsResponse
+            else if (responseObj.type == nameof(ErrorsResponse))
+            {
+                var errorsResponse = await response.Content.ReadFromJsonAsync<ErrorsResponse>();
+                _errors = errorsResponse.errors;
+                StateHasChanged();
+            }
+            // JWTResponse
+            else if (responseObj.type == nameof(JWTResponse))
+            {
+                var jwtResponse = await response.Content.ReadFromJsonAsync<JWTResponse>();
+                await LocalStorage.SetItemAsStringAsync("token", jwtResponse.token);
+
+                userId = jwtResponse.id;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+        catch
+        {
+            Toaster.Add("Не удалось совершить запрос. Обратитесь к администратору", MatToastType.Warning, title: "Внимание");
+            return;
+        }
+
+        // TODO
+        // Обработка запроса на вход в систему
+    }
+}

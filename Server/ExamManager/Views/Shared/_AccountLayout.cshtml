@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <base href="~/"/>
+    <base href="~/" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -44,7 +44,7 @@
         @if ((bool?)ViewData["IsAdmin"] ?? false)
         {
             <a href="@(Routes.StudentsPage)" class="@(Context.Request.Path.Value.Equals(Routes.StudentsPage) ? "nav-item hl" : "nav-item" )"><i class="fa fa-solid fa-user-graduate"></i>Студенты</a>
-            <a href="@(Routes.GroupsPage)" class="@(Context.Request.Path.Value.Equals(Routes.GroupsPage) ? "nav-item hl" : "nav-item" )"><i class="fa fa-solid fa-group"></i>Группы</a>
+            <a href="@(Routes.GroupsPage)" class="@(Context.Request.Path.Value.Equals(Routes.GroupsPage) ? "nav-item hl" : "nav-item" )"><i class="fa fa-solid fa-user-group"></i>Группы</a>
             <a href="@(Routes.TasksPage)" class="@(Context.Request.Path.Value.Equals(Routes.TasksPage) ? "nav-item hl" : "nav-item" )"><i class="fa fa-solid fa-list"></i>Задания</a>
         }
         else
@@ -54,13 +54,12 @@
         <a href="@(Routes.SettingsPage)" class="@(Context.Request.Path.Value.Equals(Routes.SettingsPage) ? "nav-item hl" : "nav-item" )"><i class="fa fa-solid fa-gear"></i> Настройки</a>
         <a href="#" id="logout" class="nav-exit">Выйти</a>
     </div>
-    <script src="https://kit.fontawesome.com/bcb194349f.js" crossorigin="anonymous"></script>
     <div class="container">
         @RenderBody()
     </div>
     <script>applyTableTemplate()</script>
 </body>
-<script src="~/_framework/blazor.server.js"></script>
+<script src="/_framework/blazor.server.js"></script>
 <script src="~/js/account/index.js"></script>
 <script src="~/utils/notifications/ts/simple-notify.min.js"></script>
 @if (Context.Request.Path.Value.Equals(Routes.GroupsPage))
@@ -69,10 +68,10 @@
     <script src="~/js/account/groups.js"></script>
 }
 @*@if (Context.Request.Path.Value.Equals(Routes.StudentsPage))
-{
+    {
     <script src="~/js/pagination.js"></script>
     <script src="~/js/account/students.js"></script>
-}*@
+    }*@
 @if (Context.Request.Path.Value.Equals(Routes.GroupPage))
 {
     <script src="~/js/account/group.js"></script>
